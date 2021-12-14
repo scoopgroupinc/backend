@@ -4,10 +4,10 @@
 
 type User {
   id: String!
-  firstName: String!
-  lastName: String!
-  school: String!
-  city: String
+  fullName: String!
+  email: String!
+  phoneNumber: String!
+  password: String!
 }
 
 type Query {
@@ -16,12 +16,30 @@ type Query {
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
+  login(loginUserInput: LoginUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): User!
 }
 
 input CreateUserInput {
+  fullName: String!
+  email: String!
+  phoneNumber: String!
+  password: String!
+}
+
+input LoginUserInput {
+  email: String
+  phoneNumber: String
+  password: String!
+}
+
+input UpdateUserInput {
+  fullName: String
+  email: String
+  phoneNumber: String
+  password: String
   id: String!
-  firstName: String!
   lastName: String!
   school: String!
   city: String!
