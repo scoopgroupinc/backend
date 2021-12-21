@@ -1,0 +1,4 @@
+export type AuthPayload {
+  token: String!
+  user: User!
+}

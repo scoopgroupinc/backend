@@ -17,7 +17,7 @@ export class User {
   @Field()
   @Column({ nullable: true, unique: true })
   phoneNumber: string;
-  @Field()
-  @Column()
+  @Field({ nullable: true})
+  @Column({ nullable: true})
   password: string;
 }

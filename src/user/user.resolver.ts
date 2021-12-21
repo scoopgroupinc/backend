@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, PartialType } from '@nestjs/graphql';
 import {
   BadRequestException,
   Req,
@@ -7,8 +7,10 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
+import { UserToken} from './entities/user-token.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { LoginUserInput } from './dto/login-user.input';
+// import {AuthPayload } from '../dto/schema';
 import { UpdateUserInput } from './dto/update-user.input';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -26,24 +28,23 @@ export class UserResolver {
 
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // return this.userService.create(createUserInput);
     const user = await this.userService.create({
       fullName,
       email,
       phoneNumber,
       password: hashedPassword,
     });
-    console.log("user",user)
-    // const existingUser = await this.userService.findOne({ user.email});
+    console.log('user', user);
     return user;
-    
   }
 
-  @Mutation(() => User)
+  @Mutation(() => UserToken)
   async login(@Args('loginUserInput') loginUserInput: LoginUserInput) {
     const { email, password, phoneNumber } = loginUserInput;
+    console.log('loginUserInput data', loginUserInput);
 
     const user = await this.userService.findOne({ email });
+    console.log('user data', user);
 
     if (!user) {
       throw new BadRequestException('invalid credentials');
@@ -52,13 +53,21 @@ export class UserResolver {
     if (!(await bcrypt.compare(password, user.password))) {
       throw new BadRequestException('invalid credentials');
     }
-     const jwt = await this.jwtService.signAsync({ id: user.id });
+    
+    const userPayload = {
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      id: user.id,
+    };
+  
+    const payload = {
+      message: 'success',
+      token: this.jwtService.sign(userPayload),
+      user,
+    };
+    console.log('xxx', payload);
 
-     return {
-       message: 'success',
-       user,
-       jwt,
-     };
+    return payload;
   }
 
   @Query(() => [User], { name: 'user' })
@@ -66,10 +75,10 @@ export class UserResolver {
     return this.userService.findAll();
   }
 
-  @Query(() => User, { name: 'user' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.userService.findOne(id);
-  }
+  // @Query(() => User, { name: 'user' })
+  // findOne(@Args('id', { type: () => Int }) id: number) {
+  //   return this.userService.findOne(id);
+  // }
 
   // @Mutation(() => User)
   // updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
