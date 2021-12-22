@@ -4,25 +4,38 @@
 
 type User {
   id: String!
-  firstName: String!
-  lastName: String!
-  school: String!
-  city: String
+  firstName: String
+  lastName: String
+  email: String!
+  phoneNumber: String!
+  password: String!
+}
+
+type UserToken {
+  token: String!
+  user: User
+  message: String
 }
 
 type Query {
-  user(id: Int!): User!
+  all_users: [User!]!
 }
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
-  removeUser(id: Int!): User!
+  login(loginUserInput: LoginUserInput!): UserToken!
 }
 
 input CreateUserInput {
-  id: String!
-  firstName: String!
-  lastName: String!
-  school: String!
-  city: String!
+  firstName: String
+  lastName: String
+  email: String
+  phoneNumber: String
+  password: String
+}
+
+input LoginUserInput {
+  email: String
+  phoneNumber: String
+  password: String
 }
