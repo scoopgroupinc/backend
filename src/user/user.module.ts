@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from 'src/auth/auth.service';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { AuthService } from 'src/auth/auth.service';
       secret: 'secret',
       signOptions: { expiresIn: '1d' },
     }),
+    AuthModule,
   ],
   providers: [UserResolver, UserService, AuthService],
 })

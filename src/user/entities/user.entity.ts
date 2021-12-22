@@ -8,16 +8,19 @@ export class User {
   @Field()
   @PrimaryGeneratedColumn('uuid')
   id: string;
-  @Field()
+  @Field({ nullable: true })
   @Column({ nullable: true })
-  fullName: string;
+  firstName: string;
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  lastName: string;
   @Field()
   @Column({ nullable: true, unique: true })
   email: string;
   @Field()
   @Column({ nullable: true, unique: true })
   phoneNumber: string;
-  @Field({ nullable: true})
-  @Column({ nullable: true})
+  @Field()
+  @Column()
   password: string;
 }

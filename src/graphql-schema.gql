@@ -4,10 +4,11 @@
 
 type User {
   id: String!
-  fullName: String!
+  firstName: String
+  lastName: String
   email: String!
   phoneNumber: String!
-  password: String
+  password: String!
 }
 
 type UserToken {
@@ -16,26 +17,18 @@ type UserToken {
   message: String
 }
 
-type Auth {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
 type Query {
-  user(id: Int!): User!
-  auth(id: Int!): Auth!
+  all_users: [User!]!
 }
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   login(loginUserInput: LoginUserInput!): UserToken!
-  createAuth(createAuthInput: CreateAuthInput!): Auth!
-  updateAuth(updateAuthInput: UpdateAuthInput!): Auth!
-  removeAuth(id: Int!): Auth!
 }
 
 input CreateUserInput {
-  fullName: String!
+  firstName: String
+  lastName: String
   email: String
   phoneNumber: String
   password: String
@@ -45,15 +38,4 @@ input LoginUserInput {
   email: String
   phoneNumber: String
   password: String
-}
-
-input CreateAuthInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
-input UpdateAuthInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
 }
