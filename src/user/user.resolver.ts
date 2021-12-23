@@ -16,7 +16,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
-import { UserToken } from './entities/user-token.entity';
+import { UserToken } from './entities/user-token.schema';
 import { CreateUserInput } from './dto/create-user.input';
 import { LoginUserInput } from './dto/login-user.input';
 import { AuthService } from '../auth/auth.service';
