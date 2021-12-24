@@ -1,0 +1,21 @@
+server:
+   port: 4000
+
+DB:
+   type: 'postgres'
+   port: 5432
+   database: 'postgres'
+   host: "52.32.202.140"
+   username: 'icpostgresql'
+   password: '189c57fc38e7c02dfb28f7b9f1a1c6f8'
+   synchronize: true
+
+redis:
+  host: '54.68.182.224'
+  port: 6379
+  password: 'b61023583ec444cb'
+  username: 'icredis'
+
+jwt:
+   secret: 'jwtsecrethere'
+   expiresIn: 7200
