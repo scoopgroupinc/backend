@@ -1,1 +1,6 @@
-import { Entity } from "typeorm";
+import { ObjectType} from '@nestjs/graphql';
+
+@ObjectType()
+export class Auth {
+
+}

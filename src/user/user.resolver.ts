@@ -59,7 +59,7 @@ export class UserResolver {
   async login(@Args('loginUserInput') loginUserInput: LoginUserInput) {
     const { email, password } = loginUserInput;
 
-    const user = await this.userService.findOne({ email });
+    const user = await this.userService.findByEmail(email);
 
     if (!user) {
       throw new BadRequestException('invalid credentials');

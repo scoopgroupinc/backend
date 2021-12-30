@@ -1,3 +1,5 @@
+import { Auth } from 'src/auth/entities/auth.entity';
+import { User } from '../user/entities/user.entity';
 
 export const config = () => ({
   port: parseInt(process.env.PORT, 10) || 3000,
@@ -11,7 +13,7 @@ export const config = () => ({
     database: process.env.DB_DATABASE,
     synchronize: true,
     logging: false,
-    entities: ['dist/**/*.entity.js'],
+    entities: [User, Auth],
   },
 });
 

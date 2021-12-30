@@ -1,4 +1,4 @@
-import { Column, PrimaryGeneratedColumn,Entity, BaseEntity, Unique } from "typeorm"
+import { Column, PrimaryGeneratedColumn,Entity, BaseEntity, Unique, CreateDateColumn } from "typeorm"
 import * as bcrypt from 'bcrypt';
 import { ObjectType, Field } from "@nestjs/graphql";
 
@@ -31,11 +31,10 @@ export class User extends BaseEntity {
   @Column({nullable:false})
   password: string;
   
-  @Field({nullable: true})
-  @Column({nullable:true})
-  createdAt:string;
+  @Field()
+  @CreateDateColumn()
+  createdAt: Date;
 
-  
   @Field({nullable: true})
   @Column({nullable:true})
   profilePhoto:string;
@@ -44,11 +43,12 @@ export class User extends BaseEntity {
   @Column({nullable:true})
   gender:string;
 
+  @Field({nullable: true})
   @Column({nullable: true})
   salt:string;
 
   @Field({nullable: true})
-  @Column()
+  @Column({nullable: true})
   code:number;
 
   @Field({nullable: true})
