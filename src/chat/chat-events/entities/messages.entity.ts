@@ -7,15 +7,15 @@ export class MessageEntity extends BaseEntity{
     id:number;
 
     @CreateDateColumn()
-    created_at:Date;
+    createdAt:Date;
     
     @Column()
     // @ManyToOne(()=>UserEntity,(userEntity)=>userEntity.id)
-    sender_id:number;
+    senderId:number;
  
     // @ManyToOne(()=>UserEntity,(userEntity)=>userEntity.id)
     @Column()
-    reciever_id:number;
+    recieverId:number;
 
     @Column()
     content:string;
@@ -24,13 +24,13 @@ export class MessageEntity extends BaseEntity{
     type:string;
     
     @Column()
-    sent_at:string;
+    sentAt:string;
     
     @Column()
-    media_file:string;
+    mediaFile:string;
 
     @Column()
-    deleted_at:Date;
+    deletedAt:Date;
 
     @ManyToOne(()=>ConversationEntity,(conversationEntity)=>conversationEntity.messages)
     conversation:ConversationEntity

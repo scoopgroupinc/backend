@@ -17,31 +17,31 @@ export class FileResolver{
     ){}
 
         
-    @Mutation(() => MessageDTO)
-    async uploadFile(@Args({name: 'file',type: () => GraphQLUpload})
-    {
-        createReadStream,
-        filename
-    }: FileUpload,
-    @Args('messagedto') messagedto:MessageDTO
-   ): Promise<MessageDTO> {
-    const uid= new ShortUniqueId({ length: 10 });
-    const fileType:MedaFileTypes = await this.checkFileType(messagedto.type);
-    const newFilename: string= fileType.prefix + uid() ;
-      const saveFile =  new Promise(async (resolve,reject)=>{
+  //   @Mutation(() => MessageDTO)
+  //   async uploadFile(@Args({name: 'file',type: () => GraphQLUpload})
+  //   {
+  //       createReadStream,
+  //       filename
+  //   }: FileUpload,
+  //   @Args('messagedto') messagedto:MessageDTO
+  //  ): Promise<MessageDTO> {
+  //   const uid= new ShortUniqueId({ length: 10 });
+  //   const fileType:MedaFileTypes = await this.checkFileType(messagedto.type);
+  //   const newFilename: string= fileType.prefix + uid() ;
+  //     const saveFile =  new Promise(async (resolve,reject)=>{
        
          
-            createReadStream()
-            .pipe(
-                createWriteStream(`./uploads/messageFiles/${fileType.type}/${newFilename}`)
-            )
-            .on('finish',()=>resolve({filename,status:201}))
-            .on('error',()=>reject(null))
-       })
-       if(!saveFile) throw HttpStatus.EXPECTATION_FAILED;
-       messagedto.media_file = newFilename;
-       return null;
-    }
+  //           createReadStream()
+  //           .pipe(
+  //               createWriteStream(`./uploads/messageFiles/${fileType.type}/${newFilename}`)
+  //           )
+  //           .on('finish',()=>resolve({filename,status:201}))
+  //           .on('error',()=>reject(null))
+  //      })
+  //      if(!saveFile) throw HttpStatus.EXPECTATION_FAILED;
+  //      messagedto.media_file = newFilename;
+  //      return null;
+  //   }
 
     checkFileType(fileType):MedaFileTypes{
         switch(fileType){

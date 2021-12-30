@@ -12,7 +12,7 @@ async function bootstrap() {
   const serverConfig = config.get('server');
    
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-   app.useWebSocketAdapter(new RedisIoAdapter(app))
+  //  app.useWebSocketAdapter(new RedisIoAdapter(app))
    app.enableCors();
    app.useGlobalPipes(new ValidationPipe());
   const port = process.env.PORT || serverConfig.port

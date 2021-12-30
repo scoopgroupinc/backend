@@ -1,0 +1,59 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  id: Float!
+  firstName: String
+  lastName: String
+  email: String
+  phoneNumber: String
+  password: String
+  createdAt: String
+  profilePhoto: String
+  gender: String
+  code: Float
+  isVerified: Boolean
+}
+
+type UserToken {
+  token: String!
+  user: User!
+}
+
+type Query {
+  all_users: [User!]!
+}
+
+type Mutation {
+  userSignUp(userAuthInput: UserAuthInput!): User!
+  userLogin(loginUserInput: LoginUserInput!): UserToken!
+  activateAccount(email: String!, code: Float!): User!
+  changePassword(id: Float!, password: String!): User!
+  createUser(createUserInput: CreateUserInput!): User!
+  login(loginUserInput: LoginUserInput!): UserToken!
+}
+
+input UserAuthInput {
+  email: String!
+  password: String!
+  firstName: String!
+  lastName: String!
+  salt: String
+  code: Float
+  createdAt: String
+}
+
+input LoginUserInput {
+  email: String
+  phoneNumber: String
+  password: String
+}
+
+input CreateUserInput {
+  email: String!
+  phoneNumber: String
+  password: String
+  firstName: String
+  lastName: String
+}

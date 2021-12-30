@@ -15,13 +15,16 @@ import { Subscription,take,of  } from 'rxjs';
 import { ChatService } from './chat.service';
 import { MessageDTO } from './dto/message.dto';
 import { ActiveConversationDTO } from './dto/active-conversation.dto';
+import { User } from '../../user/entities/user.entity';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtStrategy } from '../../auth/strategies/jwt.strategy';
 
 
 @WebSocketGateway({ namespace: '/chat' })
 export class MessageGateway implements OnGatewayInit,OnGatewayConnection, OnGatewayDisconnect{
    constructor(
-    //    private authService:AuthService,
-    //    private chatService:ChatService
+       private jwtService:JwtStrategy,
+       private chatService:ChatService
     ){}
 
     @WebSocketServer() server:Server;
@@ -42,92 +45,92 @@ export class MessageGateway implements OnGatewayInit,OnGatewayConnection, OnGate
 
     public async handleDisconnect(client:Socket){
         this.logger.log(`Client disconnected: ${client.id}`);
-        // return await this.chatService
-        // .leaveConversation(client.id)
-        // .pipe(take(1))
-        // .subscribe();
+        return await this.chatService
+        .leaveConversation(client.id)
+        .pipe(take(1))
+        .subscribe();
     }
     
-    // @UseGuards()
-    public handleConnection(client:Socket):void{
-        this.logger.log(`Client connected: ${client.id}`);
-        const jwt= client.handshake.headers.authorization || null;
-        // this.authService.getJwtUser(jwt).subscribe((user:User)=>{
-        //     if(!user){
-        //       return  this.handleDisconnect(client);
-        //     }
+    @UseGuards(AuthGuard())
+    public async handleConnection(client:Socket):Promise<void>{
+        // this.logger.log(`Client connected: ${client.id}`);
+        // const jwt= client.handshake.headers.authorization || null;
+        //  const user:User = await this.jwtService.validate(jwt);
+        // if(!user){
+        //     return  this.handleDisconnect(client);
+        //   }
 
-        //     client.data.user= user;
-        //     this.getConversations(client,user.user_id);
-            
-        // })
+        //   client.data.user= user;
+        //   this.getConversations(client,user.id);
        
     }
 
-    // getConversations(client:Socket,user_id:number):Subscription{
-    //     // return  this.chatService.getConversationWithUsers(user_id)
-    //     // .subscribe((conversations)=>{
-    //     //     this.server.to(client.id).emit('conversations',conversations);
-    //     // })
-    // }
+    getConversations(client:Socket,userId:number):Subscription{
+        return  this.chatService.getConversationWithUsers(userId)
+        .subscribe((conversations)=>{
+            this.server.to(client.id).emit('conversations',conversations);
+        })
+    }
 
 
     @SubscribeMessage('createconversation')
    async  createConversation (client:Socket,match){
-        // return this.chatService
-        // .createConversation(client.data.user,match)
-        // .pipe(take(1))
-        // .subscribe(()=>{
-        //     this.getConversations(client,client.data.user.user_id)
-        // })
+        return this.chatService
+        .createConversation(client.data.user,match)
+        .pipe(take(1))
+        .subscribe(()=>{
+            this.getConversations(client,client.data.user.user_id)
+        })
    }
 
    @SubscribeMessage('msgToServer')
     public handleMessage(client:Socket,payload:any):void{
 
         console.log(client,payload)
-        if(!payload.conversation){
-            // return of(null);
-        }
+        // if(!payload.conversation){
+        //     return of(null);
+        // }
        
         const {user}= client.data;
         payload.user= user;
 
         if(payload.conversation.id){
-            // this.chatService.createMessage(payload)
-            // .pipe(take(1))
-            // .subscribe((message:MessageDTO)=>{
-            //     payload.id= message.id;
+            this.chatService.createMessage(payload)
+            .pipe(take(1))
+            .subscribe((message:MessageDTO)=>{
+                payload.id= message.id;
 
-            //     this.chatService
-            //     .getActiveUsers(payload.conversation.id)
-            //     .pipe(take(1))
-            //     .subscribe((activeConversations:ActiveConversationDTO[])=>{
-            //         activeConversations.forEach(
-            //             (activeConversation:ActiveConversationDTO)=>{
-            //                 this.server
-            //                 .to(activeConversation.socket_id)
-            //                 .emit('msgToClient',payload)
-            //             }
-            //         )
-            //     })
-            // })
+                this.chatService
+                .getActiveUsers(payload.conversation.id)
+                .pipe(take(1))
+                .subscribe((activeConversations:ActiveConversationDTO[])=>{
+                    activeConversations.forEach(
+                        (activeConversation:ActiveConversationDTO)=>{
+                            this.server
+                            .to(activeConversation.socketId)
+                            .emit('msgToClient',payload)
+                        }
+                    )
+                })
+            })
         }
-        // return this.server.to(payload.room).emit('msgToClient',payload)
+        return this.server.to(payload.room).emit('msgToClient',payload)
     }
 
-    @SubscribeMessage('deletedMessage')
-    deleteMessage(message_id:number){
-    //   return  this.chatService.deleteMessage(message_id)
-    //     .pipe(take(1))
-    //     .subscribe();
+    @SubscribeMessage('deleteMessage')
+    deleteMessage(client:Socket, messageId:number):Subscription{
+       this.chatService.deleteMessage(messageId)
+        .pipe(take(1))
+        .subscribe();
+
+     return this.server.to(client.id).emit('delMsg',true)
     }
 
     @SubscribeMessage('leaveConversation')
     leaveConversation(client:Socket){
-        // this.chatService.leaveConversation(client.id)
-        // .pipe(take(1))
-        // .subscribe();
+        this.chatService.leaveConversation(client.id)
+        .pipe(take(1))
+        .subscribe();
     }
 
     @SubscribeMessage('getMediFile')

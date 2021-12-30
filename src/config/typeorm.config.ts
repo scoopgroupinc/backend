@@ -1,5 +1,7 @@
 import {TypeOrmModuleOptions} from '@nestjs/typeorm'
 import * as config from 'config'
+import join from 'path'
+import { User } from '../user/entities/user.entity';
 
 const {type,host,port,username,password,database,synchronize} = config.get('DB');
 console.log(host)
@@ -11,6 +13,8 @@ export const typeOrmConfig:TypeOrmModuleOptions={
  username:process.env.RDS_USERNAME||username, //DB username here
  password:process.env.RDS_PASWORD||password, //Db password goes here
  database: process.env.RDS_DB_NAME||database,  //Name of Database goes here
- entities:[__dirname+'/../**/*.entity.ts'], // Gets all entities with extension .entity.ts
- synchronize: process.env.TYPEORM_SYC || synchronize
+//  entities: ['src/**/*.entity{.ts,.js}'], // Gets all entities with extension .entity.ts
+ synchronize: process.env.TYPEORM_SYC || synchronize,
+ entities: [User],
+
 }

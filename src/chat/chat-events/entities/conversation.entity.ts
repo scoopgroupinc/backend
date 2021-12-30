@@ -20,5 +20,5 @@ export class ConversationEntity extends BaseEntity{
     isDeleted:Boolean
 
     @Column()
-    socket_id:string;
+    socketId:string;
 }

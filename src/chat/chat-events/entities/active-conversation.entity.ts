@@ -6,11 +6,11 @@ export class ActiveConversationEntity{
   id:number;
 
   @Column()
-  socket_id:string;
+  socketId:string;
 
   @Column()
-  user_id:number;
+  userId:number;
 
   @Column()
-  conversation_id:number
+  conversationId:number
 }

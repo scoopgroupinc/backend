@@ -1,7 +1,9 @@
+import { User } from "../../../user/entities/user.entity";
+
 export class ConversationDTO{
     id?:number;
-    // users?: User[];
-    socket_id?:string;
+     users?: User[];
+    socketId?:string;
     lastUpdated?:Date;
     isDeleted?:Boolean;
     messages?:any
