@@ -3,8 +3,7 @@
 # ------------------------------------------------------
 
 type User {
-<<<<<<< HEAD
-  id: Float!
+  userId: String!
   firstName: String
   lastName: String
   email: String
@@ -15,24 +14,12 @@ type User {
   gender: String
   code: Float
   isVerified: Boolean
-=======
-  id: String!
-  firstName: String
-  lastName: String
-  email: String!
-  phoneNumber: String!
-  password: String!
->>>>>>> b7b2a5e70f2ee2fbeb47525dac80466ac2d05b69
 }
 
 type UserToken {
   token: String!
-<<<<<<< HEAD
-  user: User!
-=======
   user: User
   message: String
->>>>>>> b7b2a5e70f2ee2fbeb47525dac80466ac2d05b69
 }
 
 type Query {
@@ -40,50 +27,19 @@ type Query {
 }
 
 type Mutation {
-<<<<<<< HEAD
-  userSignUp(userAuthInput: UserAuthInput!): User!
-  userLogin(loginUserInput: LoginUserInput!): UserToken!
-  activateAccount(email: String!, code: Float!): User!
-  changePassword(id: Float!, password: String!): User!
-=======
->>>>>>> b7b2a5e70f2ee2fbeb47525dac80466ac2d05b69
   createUser(createUserInput: CreateUserInput!): User!
   login(loginUserInput: LoginUserInput!): UserToken!
 }
 
-<<<<<<< HEAD
-input UserAuthInput {
-  email: String!
-  password: String!
-  firstName: String!
-  lastName: String!
-  salt: String
-  code: Float
-  createdAt: String
-}
-
-input LoginUserInput {
-=======
 input CreateUserInput {
   firstName: String
   lastName: String
->>>>>>> b7b2a5e70f2ee2fbeb47525dac80466ac2d05b69
   email: String
   phoneNumber: String
   password: String
 }
 
-<<<<<<< HEAD
-input CreateUserInput {
-  email: String!
-  phoneNumber: String
-  password: String
-  firstName: String
-  lastName: String
-=======
 input LoginUserInput {
   email: String
-  phoneNumber: String
   password: String
->>>>>>> b7b2a5e70f2ee2fbeb47525dac80466ac2d05b69
 }
