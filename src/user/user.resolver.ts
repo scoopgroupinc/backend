@@ -16,18 +16,20 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
-import { UserToken } from '../auth/dto/auth-token.dto';
-import { CreateUserInput } from './dto/user.input';
+import { UserToken } from './entities/user-token.schema';
+import { CreateUserInput } from './dto/create-user.input';
 import { LoginUserInput } from './dto/login-user.input';
-import { JwtAuthService } from '../auth/jwt.service';
+import { AuthService } from '../auth/auth.service';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 import { GqlAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Resolver(() => User)
 export class UserResolver {
   constructor(
     private readonly userService: UserService,
-    private jwtService: JwtAuthService,
+    private jwtService: JwtService,
+    private authService: AuthService,
   ) {}
 
   @Mutation(() => User)
@@ -48,8 +50,6 @@ export class UserResolver {
       email,
       phoneNumber,
       password: hashedPassword,
-      createdAt:new Date(),
-      code:1245
     });
 
     return user;
@@ -57,7 +57,7 @@ export class UserResolver {
 
   @Mutation(() => UserToken)
   async login(@Args('loginUserInput') loginUserInput: LoginUserInput) {
-    const { email, password, phoneNumber } = loginUserInput;
+    const { email, password } = loginUserInput;
 
     const user = await this.userService.findOne({ email });
 
@@ -71,7 +71,7 @@ export class UserResolver {
 
     const payload = {
       message: 'success',
-      // token: this.jwtService.generateJwt(user),
+      token: this.authService.generateJwt(user),
       user,
     };
 
@@ -82,9 +82,5 @@ export class UserResolver {
   @Query(() => [User], { name: 'all_users' })
   findAll() {
     return this.userService.findAll();
-  }
-
-  hashPasswords(){
-   
   }
 }

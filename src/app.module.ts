@@ -1,21 +1,28 @@
+import { DatabaseConfig } from './config/database.config';
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GraphQLModule } from '@nestjs/graphql';
-import { join } from 'path';  
+import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
-import { typeOrmConfig } from './config/typeorm.config';
+import { config } from './config/config';
 
 @Module({
-  imports: [   
+  imports: [
+    ConfigModule.forRoot({
+      load: [config],
+      isGlobal: true,
+    }),
+    UserModule,
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/graphql-schema.gql'),
-      debug: true,
-      playground: true
     }),
-    TypeOrmModule.forRoot(typeOrmConfig),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useClass: DatabaseConfig,
+    }),
     AuthModule,
-    UserModule,
   ],
   controllers: [],
   providers: [],

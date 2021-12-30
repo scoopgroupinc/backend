@@ -5,11 +5,11 @@ import { ObjectType, Field } from "@nestjs/graphql";
 
 @Entity('user')
 @ObjectType()
-@Unique(['email'])
+@Unique(['email','phoneNumber'])
 export class User extends BaseEntity {
   @Field()
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn({type:'bigint'})
+  userId: string;
 
   @Field({nullable: true})
   @Column({ nullable: true })

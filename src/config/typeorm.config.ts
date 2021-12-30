@@ -1,6 +1,5 @@
 import {TypeOrmModuleOptions} from '@nestjs/typeorm'
 import * as config from 'config'
-import join from 'path'
 import { User } from '../user/entities/user.entity';
 
 const {type,host,port,username,password,database,synchronize} = config.get('DB');

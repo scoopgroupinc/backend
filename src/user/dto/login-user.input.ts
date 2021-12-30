@@ -6,7 +6,5 @@ export class LoginUserInput {
   @Field({ nullable: true })
   email: string;
   @Field({ nullable: true })
-  phoneNumber: string;
-  @Field({ nullable: true })
   password: string;
 }

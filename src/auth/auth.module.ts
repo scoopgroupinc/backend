@@ -23,11 +23,6 @@ const {secret} = config.get('jwt')
     TypeOrmModule.forFeature([User])
 
   ],
-  // controllers:[
-  //   AuthResolver,
-  //   JwtAuthService,
-  
-  // ],
   providers: [AuthResolver, JwtAuthService,JwtStrategy, GqlAuthGuard,AuthService],
   exports: [
     AuthService,
