@@ -34,15 +34,7 @@ export class User extends BaseEntity {
   @Field()
   @CreateDateColumn()
   createdAt: Date;
-
-  @Field({nullable: true})
-  @Column({nullable:true})
-  profilePhoto:string;
-
-  @Field({nullable: true})
-  @Column({nullable:true})
-  gender:string;
-
+  
   @Field({nullable: true})
   @Column({nullable: true})
   salt:string;

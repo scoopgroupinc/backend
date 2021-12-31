@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  UnauthorizedException,
+} from '@nestjs/common';
+
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -9,11 +14,23 @@ import { User } from './entities/user.entity';
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    
   ) {}
-  
 
   async create(data: any): Promise<User> {
+    const findByEmail = await this.userRepository.findOne({ where: { email:data.email } });
+    const findByPhone = await this.userRepository.findOne({
+          where: { phoneNumber: data.phoneNumber },
+        });
+
+    if(findByEmail){
+      throw new BadRequestException('email already exist');
+      
+    }
+
+    if (findByPhone) {
+      throw new BadRequestException('phone  already exist');
+    }
+
     return this.userRepository.save(data);
   }
 

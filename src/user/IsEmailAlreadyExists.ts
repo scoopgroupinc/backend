@@ -7,6 +7,7 @@ import {
   import { User } from './entities/user.entity';
   import { InjectRepository } from '@nestjs/typeorm';
   import { Repository } from 'typeorm';
+  import { UserService } from './user.service';
   
   @ValidatorConstraint({ async: true })
   export class IsEmailAlreadyExistConstraint
@@ -14,13 +15,18 @@ import {
   {
     constructor(
       @InjectRepository(User) private userRepository: Repository<User>,
+      private userService: UserService,
     ) {}
-  
-    validate(email: string) {
-      return this.userRepository.findOne({ where: { email }}).then((user) => {
-        if (user) return false;
+
+   async validate(email: string):Promise<boolean> {
+      // return this.userRepository.findOne({ where: { email } }).then((user) => {
+      //   if (user) return false;
+      //   return true;
+      // });
+      const user = await this.userService.findByEmail(email);
+       if (user) return false;
         return true;
-      });
+
     }
   }
   

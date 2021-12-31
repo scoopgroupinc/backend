@@ -10,8 +10,6 @@ type User {
   phoneNumber: String
   password: String
   createdAt: DateTime!
-  profilePhoto: String
-  gender: String
   salt: String
   code: Float
   isVerified: Boolean

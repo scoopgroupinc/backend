@@ -13,7 +13,7 @@ export class CreateUserInput {
   @Field({ nullable: true })
   lastName: string;
 
-  @IsEmailAlreadyExist({ message: 'email already in use' })
+  // @IsEmailAlreadyExist({ message: 'email already in use' })
   @IsEmail({}, { message: 'must be a valid email' })
   @Field({ nullable: true })
   email: string;
