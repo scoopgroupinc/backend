@@ -4,7 +4,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 
-
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UpdateUserInput } from './dto/update-user.input';
@@ -17,14 +16,15 @@ export class UserService {
   ) {}
 
   async create(data: any): Promise<User> {
-    const findByEmail = await this.userRepository.findOne({ where: { email:data.email } });
+    const findByEmail = await this.userRepository.findOne({
+      where: { email: data.email },
+    });
     const findByPhone = await this.userRepository.findOne({
-          where: { phoneNumber: data.phoneNumber },
-        });
+      where: { phoneNumber: data.phoneNumber },
+    });
 
-    if(findByEmail){
+    if (findByEmail) {
       throw new BadRequestException('email already exist');
-      
     }
 
     if (findByPhone) {
