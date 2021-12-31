@@ -1,17 +1,31 @@
 import { LocationService } from "./location.service";
-import { Mutation, Args } from "@nestjs/graphql";
-import { CreateLocationInput } from "./location.input";
-import { LocationType } from "./location.type";
+import { Mutation, Args, Query, Resolver } from "@nestjs/graphql";
+import { CreateLocationInput } from "./dto/location.input";
+import { LocationEntity } from "./entities/location.entity";
 
+@Resolver(()=>LocationEntity)
 export class LocationResolver{
     constructor(
         private locationService:LocationService
     ){}
 
-    @Mutation( () =>LocationType )
-    createLocation(
+    @Mutation( () =>LocationEntity )
+    async saveUserLocation(
         @Args('createLocationInput') createLocationInput:CreateLocationInput
     ){
-        return this.locationService.createLocation(createLocationInput);
+        return await this.locationService.saveUserLocation(createLocationInput);
     }
+    
+    @Query(()=>[LocationEntity],{name:'user-location',description:'fetch user location details'})
+    async getUserLocation(@Args('userId') userId:string):Promise<LocationEntity>{
+        return await this.locationService.findUser(userId);
+    }
+
+
+
+
+
+
+
+
 }

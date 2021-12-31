@@ -4,14 +4,10 @@ import {
   Query,
   Mutation,
   Args,
-  Int,
-  PartialType,
+ 
 } from '@nestjs/graphql';
 import {
-  BadRequestException,
-  Req,
-  Res,
-  UnauthorizedException,
+ 
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -20,7 +16,6 @@ import { UserToken } from './entities/user-token.schema';
 import { CreateUserInput } from './dto/create-user.input';
 import { LoginUserInput } from './dto/login-user.input';
 import { AuthService } from '../auth/auth.service';
-import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { GqlAuthGuard } from '../auth/guards/jwt-auth.guard';
 
@@ -34,48 +29,27 @@ export class UserResolver {
 
   @Mutation(() => User)
   async createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-    const {
-      firstName,
-      lastName,
-      email,
-      password,
-      phoneNumber,
-    } = createUserInput;
-
-    const hashedPassword = await bcrypt.hash(password, 12);
-
-    const user = await this.userService.create({
-      firstName,
-      lastName,
-      email,
-      phoneNumber,
-      password: hashedPassword,
-    });
-
-    return user;
+     return await this.userService.create(createUserInput);
   }
 
   @Mutation(() => UserToken)
   async login(@Args('loginUserInput') loginUserInput: LoginUserInput) {
-    const { email, password } = loginUserInput;
+   
+    return await this.userService.login(loginUserInput);
+  }
+  
+  @Mutation(()=>User)
+  async activateAccount(@Args('code') code:number, @Args('email') email:string){
+    return await this.userService.activateAccount(code,email);
+  }
 
-    const user = await this.userService.findOne({ email });
+  
+  async resendCode(@Args('email') email:string){
+    return await this.resendCode(email);
+  }
 
-    if (!user) {
-      throw new BadRequestException('invalid credentials');
-    }
-
-    if (!(await bcrypt.compare(password, user.password))) {
-      throw new BadRequestException('invalid credentials');
-    }
-
-    const payload = {
-      message: 'success',
-      token: this.authService.generateJwt(user),
-      user,
-    };
-
-    return payload;
+  async forgotPassword(@Args('email')  email:string){
+     
   }
 
   @UseGuards(GqlAuthGuard)
@@ -83,4 +57,6 @@ export class UserResolver {
   findAll() {
     return this.userService.findAll();
   }
+
+
 }
