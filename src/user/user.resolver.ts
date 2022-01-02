@@ -26,6 +26,8 @@ import { AuthService } from '../auth/auth.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { GqlAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { argsToArgsConfig } from 'graphql/type/definition';
+import {UserDelete} from "./entities/delete-user.schema"
 
 @Resolver(() => User)
 export class UserResolver {
@@ -76,9 +78,53 @@ export class UserResolver {
     return payload;
   }
 
+  @Query(() => User)
+  async findById(@Args('userId') userId: string) {
+    const user = await this.userService.findOne(userId);
+    if (!user) {
+      throw new BadRequestException('user do not exist');
+    }
+    return user;
+  }
+
+  @Query(() => User)
+  async findByEmail(@Args('userEmail') userEmail: string) {
+    const user = await this.userService.findByEmail(userEmail);
+    if (!user) {
+      throw new BadRequestException('user with email does not exist');
+    }
+    return user;
+  }
+
+  @Query(() => User)
+  async findByPhone(@Args('userPhone') userPhone: string) {
+    const user = await this.userService.findByPhone(userPhone);
+    if (!user) {
+      throw new BadRequestException('user with phone contact does not exist');
+    }
+    return user;
+  }
+
   @UseGuards(GqlAuthGuard)
   @Query(() => [User], { name: 'all_users' })
   findAll() {
     return this.userService.findAll();
+  }
+
+  @Mutation(() => User)
+  updateUser(@Args('data') data: UpdateUserInput) {
+    return this.userService.updateUser( data);
+  }
+
+  @Mutation(() => UserDelete)
+  async deleteUser(@Args('userId') userId: string) {
+    const user = await this.userService.findOne(userId);
+    if (!user) {
+      throw new BadRequestException('user do not exist');
+    }
+    return {
+      message: 'user succefully deleted',
+      user: await this.userService.delete(userId),
+    };
   }
 }

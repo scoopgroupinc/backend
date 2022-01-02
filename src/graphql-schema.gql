@@ -26,13 +26,23 @@ type UserToken {
   message: String
 }
 
+type UserDelete {
+  user: User
+  message: String
+}
+
 type Query {
+  findById(userId: String!): User!
+  findByEmail(userEmail: String!): User!
+  findByPhone(userPhone: String!): User!
   all_users: [User!]!
 }
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   login(loginUserInput: LoginUserInput!): UserToken!
+  updateUser(data: UpdateUserInput!): User!
+  deleteUser(userId: String!): UserDelete!
 }
 
 input CreateUserInput {
@@ -46,4 +56,13 @@ input CreateUserInput {
 input LoginUserInput {
   email: String
   password: String
+}
+
+input UpdateUserInput {
+  userId: String
+  email: String
+  phoneNumber: String
+  password: String
+  firstName: String
+  lastName: String
 }

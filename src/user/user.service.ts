@@ -16,7 +16,6 @@ export class UserService {
   ) {}
 
   async create(data: any): Promise<User> {
-    
     return this.userRepository.save(data);
   }
 
@@ -44,6 +43,16 @@ export class UserService {
     }
   }
 
+  async findByPhone(phoneNumber: string): Promise<User> {
+    try {
+      return await this.userRepository.findOneOrFail({
+        where: { phoneNumber },
+      });
+    } catch (e) {
+      return null;
+    }
+  }
+
   async findAll() {
     try {
       return await this.userRepository.find();
@@ -52,19 +61,22 @@ export class UserService {
     }
   }
 
-  async update(userId: string, data: UpdateUserInput): Promise<User> {
+  async updateUser( data: UpdateUserInput): Promise<UpdateUserInput> {
     try {
-      const user = await this.findOne(userId);
-      // Object.assign(user, data);
-     if(user) {
-        return await this.userRepository.save(data);
-     }
-    } catch (e) {
+      const user = await this.findOne(data.userId);
+     
+      if (user) {
+
+        return await this.userRepository.save({...user,...data});
+      }
+    } catch (err) {
       return null;
     }
+
+    
   }
 
-  async remove(userId: string): Promise<User> {
+  async delete(userId: string): Promise<User> {
     try {
       const user = await this.findOne(userId);
       return await this.userRepository.remove(user);
