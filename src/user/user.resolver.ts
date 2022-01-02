@@ -1,3 +1,5 @@
+
+import { UpdateAuthInput } from './../auth/dto/update-auth.input';
 import { Token } from 'graphql';
 import {
   Resolver,
@@ -18,6 +20,7 @@ import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 import { UserToken } from './entities/user-token.schema';
 import { CreateUserInput } from './dto/create-user.input';
+import { UpdateUserInput } from './dto/update-user.input';
 import { LoginUserInput } from './dto/login-user.input';
 import { AuthService } from '../auth/auth.service';
 import * as bcrypt from 'bcrypt';
@@ -34,13 +37,8 @@ export class UserResolver {
 
   @Mutation(() => User)
   async createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-    const {
-      firstName,
-      lastName,
-      email,
-      password,
-      phoneNumber,
-    } = createUserInput;
+    const { firstName, lastName, email, password, phoneNumber } =
+      createUserInput;
 
     const hashedPassword = await bcrypt.hash(password, 12);
 

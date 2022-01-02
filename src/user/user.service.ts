@@ -16,21 +16,7 @@ export class UserService {
   ) {}
 
   async create(data: any): Promise<User> {
-    const findByEmail = await this.userRepository.findOne({
-      where: { email: data.email },
-    });
-    const findByPhone = await this.userRepository.findOne({
-      where: { phoneNumber: data.phoneNumber },
-    });
-
-    if (findByEmail) {
-      throw new BadRequestException('email already exist');
-    }
-
-    if (findByPhone) {
-      throw new BadRequestException('phone  already exist');
-    }
-
+    
     return this.userRepository.save(data);
   }
 
@@ -44,7 +30,7 @@ export class UserService {
 
   async findOne(userId: string): Promise<User> {
     try {
-      return await this.userRepository.findOneOrFail({ userId });
+      return await this.userRepository.findOne({ userId });
     } catch (e) {
       return null;
     }
@@ -70,7 +56,9 @@ export class UserService {
     try {
       const user = await this.findOne(userId);
       // Object.assign(user, data);
-      return await this.userRepository.save(user);
+     if(user) {
+        return await this.userRepository.save(data);
+     }
     } catch (e) {
       return null;
     }
