@@ -1,22 +1,21 @@
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as config from 'config'; 
-import {WsAdapter} from '@nestjs/platform-ws'
+import { ValidationPipe } from '@nestjs/common';
 import {NestExpressApplication} from '@nestjs/platform-express'
+import {WsAdapter} from '@nestjs/platform-ws'
 import { RedisIoAdapter } from './chat/adapters/redis.adapter';
 import { IoAdapter } from '@nestjs/platform-socket.io';
-import { ValidationPipe } from '@nestjs/common';
+
 
 
 async function bootstrap() {
-  const serverConfig = config.get('server');
-   
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  //  app.useWebSocketAdapter(new RedisIoAdapter(app))
-   app.enableCors();
-   app.useGlobalPipes(new ValidationPipe());
-  const port = process.env.PORT || serverConfig.port
+    //  app.useWebSocketAdapter(new RedisIoAdapter(app))
+  app.enableCors();
+  app.useGlobalPipes(new ValidationPipe());
+  const configService = app.get(ConfigService)
+  const port = configService.get('PORT')
   console.log(port)
   await app.listen(port);
 }

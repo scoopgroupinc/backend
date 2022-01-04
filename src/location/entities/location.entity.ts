@@ -1,39 +1,32 @@
-import { Entity, BaseEntity, PrimaryColumn, Column, Unique } from "typeorm";
-import { ObjectType, Field } from "@nestjs/graphql";
+import { Entity, BaseEntity, PrimaryColumn, PrimaryGeneratedColumn, Column, Unique } from "typeorm";
 
 @Entity('location')
-@ObjectType()
 @Unique(['userId'])
 export class LocationEntity extends BaseEntity{
-    @Field()
-    @PrimaryColumn({type:'bigint'})
-    userId:string
+    @PrimaryGeneratedColumn({type:'bigint'})
+    id:string
     
-    @Field({nullable:true})
-    @Column({nullable:true})
+    @Column()
+    userId:string
+
+    @Column()
     latitude: string;
 
-    @Field({nullable:true})
-    @Column({nullable:true})
+    @Column()
     longitude:string;
 
-    @Field({nullable:true})
-    @Column({nullable:true})
-    addressLine1:string;
+    @Column()
+    address_line_1:string;
 
-    @Field({nullable:true})
-    @Column({nullable:true})
-    addressLine2:string;
+    @Column()
+    address_line_2:string;
 
-    @Field({nullable:true})
-    @Column({nullable:true})
-    stateProvince:string;
+    @Column()
+    state_province:string;
 
-    @Field({nullable:true})
-    @Column({nullable:true})
+    @Column()
     country:string;
 
-    @Field({nullable:true})
-    @Column({nullable:true})
-    zipPostal:number
+    @Column()
+    zip_postal:number
 }

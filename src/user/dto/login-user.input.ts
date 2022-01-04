@@ -7,6 +7,7 @@ export class LoginUserInput {
   @Field({ nullable: false })
   @IsEmail()
   email: string;
+  
   @Field({ nullable: false })
   password: string;
 

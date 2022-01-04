@@ -9,10 +9,10 @@ export class LocationResolver{
         private locationService:LocationService
     ){}
 
-    @Mutation( () =>LocationEntity )
+    @Mutation(() =>LocationEntity)
     async saveUserLocation(
         @Args('createLocationInput') createLocationInput:CreateLocationInput
-    ){
+    ):Promise<any>{
         return await this.locationService.saveUserLocation(createLocationInput);
     }
     

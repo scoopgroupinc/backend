@@ -2,9 +2,9 @@ export class locationDTO{
     id:number;
     latitude:string;
     longitude:string;
-    addressLine1:string;
-    addressLine2?:string;
-    stateProvince:string;
+    address_line_1:string;
+    address_line_2?:string;
+    state_province:string;
     country:string;
-    zipPostal:number;
+    zip_postal:number;
 }

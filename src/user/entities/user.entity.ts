@@ -1,4 +1,4 @@
-import { Column, PrimaryGeneratedColumn,Entity, BaseEntity, Unique } from "typeorm"
+import { Column, PrimaryGeneratedColumn,Entity, BaseEntity, Unique, CreateDateColumn } from "typeorm"
 import * as bcrypt from 'bcrypt';
 import { ObjectType, Field } from "@nestjs/graphql";
 
@@ -34,17 +34,22 @@ export class User extends BaseEntity {
   @Field({nullable: true})
   @Column({nullable:true})
   createdAt:string;  
- 
+    
+  @Field({nullable: true})
   @Column({nullable: true})
   salt:string;
 
   @Field({nullable: true})
-  @Column()
+  @Column({nullable: true})
   code:number;
 
   @Field({nullable: true})
   @Column({default:false, nullable:false})
   isVerified:Boolean;
+
+  @Field({nullable:true})
+  @Column({nullable:true})
+  resetCode:number
 
   async validatePassword(password:string):Promise<Boolean>{
    const hash = await bcrypt.hash(password,this.salt)

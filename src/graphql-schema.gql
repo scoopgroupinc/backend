@@ -10,8 +10,10 @@ type User {
   phoneNumber: String
   password: String
   createdAt: String
+  salt: String
   code: Float
   isVerified: Boolean
+  resetCode: Float
 }
 
 type UserDevice {
@@ -90,17 +92,6 @@ type UserProfile {
   petsVisible: Boolean
 }
 
-type LocationEntity {
-  userId: String!
-  latitude: String
-  longitude: String
-  addressLine1: String
-  addressLine2: String
-  stateProvince: String
-  country: String
-  zipPostal: Float
-}
-
 type UserPreference {
   userId: ID!
   createdAt: String
@@ -113,15 +104,11 @@ type UserPreference {
 }
 
 type Query {
-  all_users: [User!]!
   user_Device(macAddress: String!): UserDevice!
   user_Profile(userId: String!): UserProfile!
 
   """fetch user preference"""
   user_preference(userId: String!): UserPreference!
-
-  """fetch user location details"""
-  user_location(userId: String!): [LocationEntity!]!
 }
 
 type Mutation {
@@ -131,10 +118,11 @@ type Mutation {
   activateAccount(email: String!, code: Float!): User!
   resend_activation_code(email: String!): Boolean!
   forgotPassword(email: String!): Boolean!
+  verifyPasswordResetCode(code: Float!, email: String!): Boolean!
+  resetPassword(password: String!, email: String!): User!
   saveDeviceDetails(userdeviceInput: UserDeviceInput!): UserDevice!
   saveUserProfile(userProfileInput: UserProfileInput!): UserProfile!
   saveUserPreference(userPreferenceInput: UserPreferenceInput!): UserPreference!
-  saveUserLocation(createLocationInput: CreateLocationInput!): LocationEntity!
 }
 
 input CreateUserInput {
@@ -233,15 +221,4 @@ input UserPreferenceInput {
   distance: Float
   ethnicityPreferences: [String!]
   sportsPreferences: [String!]
-}
-
-input CreateLocationInput {
-  userId: ID!
-  latitude: String!
-  longitude: String!
-  addressLine1: String!
-  addressLine2: String!
-  stateProvince: String!
-  country: String!
-  zipPostal: Float!
 }

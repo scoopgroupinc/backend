@@ -1,3 +1,10 @@
+import { Auth } from 'src/auth/entities/auth.entity';
+import { User } from '../user/entities/user.entity';
+import { UserDevice } from '../user-devices/entities/user-devices.entity';
+import { LocationEntity } from '../location/entities/location.entity';
+import { UserProfile } from '../user-profile/entities/user-profile.entity';
+import { UserPreference } from '../user-preference/entities/user-preference.entity';
+import { TagsEntity } from '../tags/entities/tags.entity';
 
 export const config = () => ({
   port: parseInt(process.env.PORT, 10) || 3000,
@@ -11,7 +18,11 @@ export const config = () => ({
     database: process.env.DB_DATABASE,
     synchronize: true,
     logging: false,
-    entities: ['dist/**/*.entity.js'],
+    entities: [User, Auth, UserDevice,
+                LocationEntity,
+                UserProfile,
+                UserPreference,
+                TagsEntity],
   },
 });
 
