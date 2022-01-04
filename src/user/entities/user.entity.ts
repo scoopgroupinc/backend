@@ -1,26 +1,54 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
-import { Column, PrimaryGeneratedColumn,Entity } from "typeorm"
+import { Column, PrimaryGeneratedColumn,Entity, BaseEntity, Unique, CreateDateColumn } from "typeorm"
+import * as bcrypt from 'bcrypt';
+import { ObjectType, Field } from "@nestjs/graphql";
 
 
-@ObjectType()
 @Entity('user')
-export class User {
+@ObjectType()
+@Unique(['email','phoneNumber'])
+export class User extends BaseEntity {
   @Field()
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-  @Field({ nullable: true })
+  @PrimaryGeneratedColumn({type:'bigint'})
+  userId: string;
+
+  @Field({nullable: true})
   @Column({ nullable: true })
   firstName: string;
-  @Field({ nullable: true })
+  
+  @Field({nullable: true})
   @Column({ nullable: true })
   lastName: string;
-  @Field()
-  @Column({ nullable: true, unique: true })
+
+  @Field({nullable: true})
+  @Column({ nullable: false, unique: true })
   email: string;
-  @Field()
+  
+  @Field({nullable: true})
   @Column({ nullable: true, unique: true })
   phoneNumber: string;
-  @Field()
-  @Column()
+
+  @Field({nullable: true})
+  @Column({nullable:false})
   password: string;
+  
+  @Field()
+  @CreateDateColumn()
+  createdAt: Date;
+  
+  @Field({nullable: true})
+  @Column({nullable: true})
+  salt:string;
+
+  @Field({nullable: true})
+  @Column({nullable: true})
+  code:number;
+
+  @Field({nullable: true})
+  @Column({default:false, nullable:false})
+  isVerified:Boolean;
+
+  async validatePassword(password:string):Promise<Boolean>{
+   const hash = await bcrypt.hash(password,this.salt)
+   return hash== this.password;
+  }
 }

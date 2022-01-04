@@ -1,21 +1,15 @@
-import { InputType, Field, Int } from '@nestjs/graphql';
-import { User } from '../entities/user.entity';
+import { InputType, Field } from '@nestjs/graphql';
+import {  IsEmail, IsNotEmpty } from 'class-validator';
+
 
 @InputType()
 export class LoginUserInput {
+  @IsNotEmpty()
+  @IsEmail({}, { message: 'must be a valid email' })
   @Field({ nullable: true })
   email: string;
-  @Field({ nullable: true })
-  phoneNumber: string;
+
+  @IsNotEmpty()
   @Field({ nullable: true })
   password: string;
 }
-
-// type authPayload {
-//   access_token:string
-// }
-
-// export type AuthPayload = { 
-//   token: string
-//   user: User
-// }

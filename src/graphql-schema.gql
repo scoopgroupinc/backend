@@ -3,13 +3,22 @@
 # ------------------------------------------------------
 
 type User {
-  id: String!
+  userId: String!
   firstName: String
   lastName: String
-  email: String!
-  phoneNumber: String!
-  password: String!
+  email: String
+  phoneNumber: String
+  password: String
+  createdAt: DateTime!
+  salt: String
+  code: Float
+  isVerified: Boolean
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type UserToken {
   token: String!
@@ -31,11 +40,10 @@ input CreateUserInput {
   lastName: String
   email: String
   phoneNumber: String
-  password: String
+  password: String!
 }
 
 input LoginUserInput {
   email: String
-  phoneNumber: String
   password: String
 }
