@@ -27,7 +27,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { GqlAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { argsToArgsConfig } from 'graphql/type/definition';
-import {UserDelete} from "./entities/delete-user.schema"
+import { UserType } from './entities/delete-user.schema';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -111,12 +111,20 @@ export class UserResolver {
     return this.userService.findAll();
   }
 
-  @Mutation(() => User)
-  updateUser(@Args('data') data: UpdateUserInput) {
-    return this.userService.updateUser( data);
+  @Mutation(() => UserType)
+  async updateUser(@Args('data') data: UpdateUserInput) {
+     const user = await this.userService.findOne(data.userId);
+        if (!user) {
+          throw new BadRequestException('user do not exist');
+        }
+
+    return {
+      message: 'user succefully updated',
+      user: this.userService.updateUser(data),
+    };
   }
 
-  @Mutation(() => UserDelete)
+  @Mutation(() => UserType)
   async deleteUser(@Args('userId') userId: string) {
     const user = await this.userService.findOne(userId);
     if (!user) {
