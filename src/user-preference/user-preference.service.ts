@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, BadRequestException } from "@nestjs/common";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserPreference } from "./entities/user-preference.entity";
@@ -14,23 +14,23 @@ export class UserPreferenceService{
 
     async saveUserPreference(userPreferenceInput:UserPreferenceInput){
         const {userId} =userPreferenceInput;
-        if(await this.findone(userId)) return await this.UpdateOne(userPreferenceInput);
+        if(await this.findOne(userId)) return await this.UpdateOne(userPreferenceInput);
 
-        userPreferenceInput.createdAt = new Date().toString();
+        userPreferenceInput.createdAt = new Date().toISOString().toString();
         return await this.createOne(userPreferenceInput);
     }
 
-    async findone(userId:string):Promise<UserPreference>{
+    async findOne(userId:string):Promise<UserPreference>{
         return await this.userPreferenceRepository.findOne({userId});
+        
     }
 
     async UpdateOne(userPreferenceInput:UserPreferenceInput):Promise<any>{
         const {userId} = userPreferenceInput;
-        return await this.userPreferenceRepository.createQueryBuilder()
-               .update(UserPreference)
-               .set(userPreferenceInput)
-               .where('userId =: userId',{userId})
-               .execute();
+        const preference = await this.findOne(userId);
+        if(!preference) throw new BadRequestException('User not found');
+        return await this.userPreferenceRepository.save({...preference,...userPreferenceInput})
+       
     }
 
     async createOne(userPreferenceInput:UserPreferenceInput):Promise<any>{

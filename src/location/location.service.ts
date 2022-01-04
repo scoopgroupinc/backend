@@ -16,7 +16,7 @@ export class LocationService{
         try {
             const {userId} = createLocationInput;
             const user = await this.findUser(userId);
-            if(user) return await this.updateProfile(createLocationInput);
+            if(user) return await this.updateLocation(createLocationInput);
             return await this.createLocation(createLocationInput);
         } catch (error) {
             console.log(error)
@@ -35,13 +35,11 @@ export class LocationService{
         return await this.locationRepository.findOne({userId});
     }
 
-    async updateProfile(createLocationInput:CreateLocationInput):Promise<any>{
-        const {userId} = createLocationInput;
-        return await this.locationRepository.createQueryBuilder()
-                  .update(LocationEntity)
-                  .set(createLocationInput)
-                  .where('userId=:userId',{userId})
-                  .execute();
+    async updateLocation(updateLocationInput:CreateLocationInput):Promise<any>{
+        const {userId} = updateLocationInput;
+        const location = await this.findUser(userId);
+        return await this.locationRepository.save({...location,updateLocationInput});
+               
     }
 
 

@@ -4,21 +4,19 @@ import { IsEmail } from 'class-validator';
 
 @InputType()
 export class UpdateUserInput extends PartialType(UserInput) {
-  @Field(() => String)
-  userId: string;
-
+ 
   @Field(()=>String)
   @IsEmail()
-  email:string;
+  email?:string;
 
   @Field()
-  firstName: string; 
+  firstName?: string; 
 
   @Field()
-  lastName: string; 
+  lastName?: string; 
 
   @Field()
-  phoneNumber: string;
+  phoneNumber?: string;
 }
 
 

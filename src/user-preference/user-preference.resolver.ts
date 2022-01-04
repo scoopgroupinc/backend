@@ -13,15 +13,15 @@ export class UserPreferenceResolver{
     ){}
 
     @Mutation(()=>UserPreference)
-    @UseGuards(AuthGuard())
+    // @UseGuards(AuthGuard())
     async saveUserPreference(@Args('userPreferenceInput') userPreferenceInput:UserPreferenceInput):Promise<UserPreferenceInput>{
         return await this.preferenceService.saveUserPreference(userPreferenceInput);
     }
 
-    @Query(()=>[UserPreference],{name:'user-preference',description:'fetch user preference'})
-    @UseGuards(AuthGuard())
+    @Query(()=>UserPreference,{name:'user_preference',description:'fetch user preference'})
+    // @UseGuards(AuthGuard())
     async getUserPreference(@Args('userId') userId:string):Promise<UserPreference>{
-        return await this.preferenceService.findone(userId);
+        return await this.preferenceService.findOne(userId);
     }
 }
 

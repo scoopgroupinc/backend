@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+import * as nodemailer from 'nodemailer';
 import * as config from 'config';
 
 const {user,pass,host,port} = config.get('mail');

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, BadRequestException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserProfile } from "./entities/user-profile.entity";
 import { Repository } from "typeorm";
@@ -38,11 +38,10 @@ export class UserProfileService{
 
     async updateOne(userProfileInput:UserProfileInput):Promise<any>{
           const {userId} = userProfileInput;
-        return await this.userProfileRespository.createQueryBuilder()
-                 .update(UserProfile)
-                 .set(userProfileInput)
-                 .where('userId =: userId',{userId})
-                 .execute();
+         const profile = await this.findOne(userId);
+         if(!profile) return new BadRequestException('User profile does not exist');
+         return await this.userProfileRespository.save({...profile,...userProfileInput});
+      
     }
 
     async createProfile(userProfileInput:UserProfileInput):Promise<any>{

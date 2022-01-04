@@ -1,38 +1,43 @@
-import { InputType, Field } from "@nestjs/graphql";
-import { IsString,IsNumber, IsObject, } from "class-validator";
+import { InputType, Field, ID } from "@nestjs/graphql";
+import { IsString,IsNumber, IsObject, IsArray, IsOptional, } from "class-validator";
 
 @InputType()
 export class UserPreferenceInput{
-    @Field()
+    @Field(()=>ID)
     userId:string;
 
-    @Field()
-    @IsString()
+    @Field(()=>String,{nullable:true})
+    // @IsString()
     createdAt?:string;
 
-    @Field({nullable:true})
-    @IsObject()    
+    @Field(()=>[String],{nullable:true})
+    @IsArray()  
+    @IsOptional()  
     heightRange?: string[]
 
-    @Field({nullable:true})
-    @IsObject()    
+    @Field(()=>[String],{nullable:true})
+    @IsArray()   
+    @IsOptional()
     ageRange?: string[]
 
    
-    @Field({nullable: true})   
-    @IsObject()
+    @Field(()=>[String],{nullable: true})   
+    @IsArray()
     gender?:string[];
 
 
     @Field({nullable:true})
     @IsNumber()
-    distance:number;
+    @IsOptional()
+    distance?:number;
 
-    @Field({nullable:true})
-    @IsObject()
-    ethnicityPreferences:string[];
+    @Field(()=>[String],{nullable:true})
+    @IsArray()
+    @IsOptional()
+    ethnicityPreferences?:string[];
 
-    @Field({nullable:true})
-    @IsObject()
-    sportsPreferences:string[]
+    @Field(()=>[String],{nullable:true})
+    @IsArray()
+    @IsOptional()
+    sportsPreferences?:string[]
 }

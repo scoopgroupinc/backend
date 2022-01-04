@@ -1,18 +1,18 @@
-import { InputType, Field } from "@nestjs/graphql";
-import { IsString,IsNumber, IsObject, IsBoolean, } from "class-validator";
+import { InputType, Field, ID } from "@nestjs/graphql";
+import { IsString,IsNumber, IsObject, IsBoolean, IsArray, } from "class-validator";
 
 
 @InputType()
 export class UserProfileInput {
-    @Field()   
+    @Field(()=>ID)   
     userId:string;
 
-    @Field()
+    @Field(()=>String)
     @IsString()
     createdAt?:string;
 
 
-    @Field({nullable:true})
+    @Field(()=>String,{nullable:true})
     @IsString()
     profilePhoto:string;
     
@@ -73,16 +73,16 @@ export class UserProfileInput {
     @IsBoolean()
     educationLevelVisible:Boolean;
 
-    @Field({nullable:true})
-    @IsString()
+    @Field(()=>[String],{nullable:true})
+    @IsArray()
     ethinicity:string[];
 
     @Field({nullable:true})
     @IsBoolean()
     ethinicityVisible:Boolean;
 
-    @Field({nullable:true})
-    @IsString()
+    @Field(()=>[String],{nullable:true})
+    @IsArray()
     sports:string[]
 
     
@@ -122,8 +122,8 @@ export class UserProfileInput {
     @IsBoolean()
     drugsVisible?:Boolean;
 
-    @Field({nullable:true})
-    @IsObject()
+    @Field(()=>[String],{nullable:true})
+    @IsArray()
     diet?:string[];
 
     @Field({nullable:true})
@@ -138,32 +138,32 @@ export class UserProfileInput {
     @IsBoolean()
     languagesVisible?:Boolean;
 
-    @Field({nullable:true})
-    @IsObject()
+    @Field(()=>[String],{nullable:true})
+    @IsArray()
     musicGenre?:string[];
 
     @Field({nullable:true})
     @IsBoolean()
     musicGenreVisible?:Boolean;
 
-    @Field({nullable:true})
-    @IsObject()
+    @Field(()=>[String],{nullable:true})
+    @IsArray()
     creativeOulet?:string[];
 
     @Field({nullable:true})
     @IsBoolean()
     creativeOuletVisible?:Boolean;
     
-    @Field({nullable:true})
-    @IsObject()
+    @Field(()=>[String],{nullable:true})
+    @IsArray()
     religions?:string[];
 
     @Field({nullable:true})
     @IsBoolean()
     religionsVisible?:Boolean;
 
-    @Field({nullable:true})
-    @IsObject()
+    @Field(()=>[String],{nullable:true})
+    @IsArray()
     religiousPractice?:string[];
 
     @Field({nullable:true})
@@ -186,8 +186,8 @@ export class UserProfileInput {
     @IsBoolean()
     meyerBriggsVisible?:Boolean;
 
-    @Field({nullable:true})
-    @IsObject()
+    @Field(()=>[String],{nullable:true})
+    @IsArray()
     characteristics?:string[];
 
     @Field({nullable:true})
@@ -210,24 +210,24 @@ export class UserProfileInput {
     @IsBoolean()
     parentingGoalVisible?:Boolean;
 
-    @Field({nullable:true})
-    @IsObject()
+    @Field(()=>[String],{nullable:true})
+    @IsArray()
     relationshipGoals?:string[];
 
     @Field({nullable:true})
     @IsBoolean()
     relationshipGoalsVisible?:Boolean;
 
-    @Field({nullable:true})
-    @IsObject()
+    @Field(()=>[String],{nullable:true})
+    @IsArray()
     relationshipTypes?:string[];
 
     @Field({nullable:true})
     @IsBoolean()
     relationshipTypesVisible?:Boolean;
 
-    @Field({nullable:true})
-    @IsObject()
+    @Field(()=>[String],{nullable:true})
+    @IsArray()
     pets?:string[];
 
     @Field({nullable:true})

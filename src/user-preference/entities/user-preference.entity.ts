@@ -1,5 +1,5 @@
 import { Entity, Unique, BaseEntity, PrimaryColumn, Column } from "typeorm";
-import { ObjectType, Field } from "@nestjs/graphql";
+import { ObjectType, Field, ID } from "@nestjs/graphql";
 
 export enum gender{
     male='male',
@@ -12,38 +12,38 @@ export enum gender{
 @Unique(['userId'])
 export class UserPreference extends BaseEntity{
 
-    @Field()
+    @Field(()=>ID)
     @PrimaryColumn({type:'bigint'})
     userId:string;
 
     @Field({nullable:true})
     @Column({nullable:true})
-    createdAt:string;
+    createdAt?:string;
 
-    @Field({nullable:true})    
-    @Column({array:true,default:[]})
-    heightRange:string[];
+    @Field(()=>[String],{nullable:true})    
+    @Column('simple-array',{nullable:true,default:[]})
+    heightRange?:string[];
 
     
-    @Field({nullable:true})    
-    @Column({array:true,default:[]})
-    ageRange:string[];
+    @Field(()=>[String],{nullable:true})    
+    @Column('simple-array',{nullable:true,default:[]})
+    ageRange?:string[];
 
-    @Field({nullable:true})    
-    @Column({array:true,default:[], enum:gender})
-    gender:string[];
+    @Field(()=>[String],{nullable:true})    
+    @Column('simple-array',{nullable:true,default:[]})
+    gender?:string[];
 
     @Field({nullable:false})
-    @Column({type:'number', default:30})
-    distance:number;
+    @Column({nullable:true, default:30})
+    distance?:number;
     
-    @Field({nullable:true})
-    @Column({array:true,default:[]})
-    ethnicityPreferences:string[];
+    @Field(()=>[String],{nullable:true})
+    @Column('simple-array',{nullable:true,default:[]})
+    ethnicityPreferences?:string[];
 
-    @Field({nullable:true})
-    @Column({array:true,default:[]})
-    sportsPreferences:string[];
+    @Field(()=>[String],{nullable:true})
+    @Column('simple-array',{nullable:true,default:[]})
+    sportsPreferences?:string[];
 
     
 }

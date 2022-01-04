@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, BadRequestException, UnauthorizedException, NotFoundException, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -7,6 +7,8 @@ import { User } from './entities/user.entity';
 import {Mailer} from  '../common/email.service';
 import { LoginUserInput } from './dto/login-user.input';
 import { AuthService } from '../auth/auth.service';
+import {UserDeviceService} from '../user-devices/user-devices.service'
+import { UpdateUserInput } from './dto/update-user.input';
 
 
 
@@ -15,6 +17,7 @@ export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private authService: AuthService,
+    private deviceService:UserDeviceService
   ) {}
 
   async create(data: any){
@@ -25,11 +28,12 @@ export class UserService {
     
      try {
       await  this.userRepository.save({
-                              email,
+                              email:email.toLowerCase(),
                               password:hashedPassword,
                               salt,
                               code,
-                              isVerified:false
+                              isVerified:false,
+                              createdAt:new Date().toString()
                             });
 
        return await this.sendVerificationMail(email,code);
@@ -40,34 +44,41 @@ export class UserService {
     
   }
 
+  async updateAccount(updateUser:UpdateUserInput):Promise<any>{
+     const {email} = updateUser;
+     const user = await this.findOne(email);
+     if(!user) throw new NotFoundException('User not found');
+    
+     return await this.userRepository.save({...user,...updateUser});
+  }
+
   async login(loginUserInput:LoginUserInput){
-     const {email,password} = loginUserInput;
+     const {email,password,macAddress} = loginUserInput;
      
      const user = await this.findOne(email);
      if(!(user && await user.validatePassword(password))){
-      throw new BadRequestException('invalid credentials');
+      throw new BadRequestException('Invalid credentials');
      }
      
-     if(!user.isVerified) throw new BadRequestException('kindly activate your account')
+     if(!user.isVerified) throw new BadRequestException('Kindly activate your account')
 
      const payload = {
       token: this.authService.generateJwt(user),
       user,
     };
-
+    
+    this.deviceService.updateLastLogin(macAddress);
     return payload;
   }
 
   async activateAccount(code:number,email:string){
      const user= await this.findOne(email);
      if(!(user &&user.code===code)){
-           throw new BadRequestException('Unable to activate account')
+           throw new BadRequestException('Unable to activate account. Wrong Code')
      }
-     return await this.userRepository.createQueryBuilder()
-                  .update(User)
-                  .set({isVerified:true})
-                  .where('email= :email',{email})
-                  .execute();   
+     
+     return await this.userRepository.save({...user,isVerified:true});
+      
   }
 
   async resendActivationCode(email:string){
@@ -75,12 +86,23 @@ export class UserService {
 
    if (!user) throw new UnauthorizedException('Something went wrong');
 
-    return await this.sendVerificationMail(email,user.code);
+    const result =  await this.sendVerificationMail(email,user.code);
+    return result
+  }
+
+  async forgotPassword(email:string):Promise<Boolean>{
+    const user= await this.findOne(email);
+    if(!user) throw new HttpException('User not found',HttpStatus.NOT_FOUND);
+    const code = await this.generateFourDigitCode();
+     await this.userRepository.save({...user,code:code})
+     return await this.sendVerificationMail(email,code);
   }
   
 
   async findOne(email: any): Promise<User> {
-    return this.userRepository.findOne({email});
+         
+    const user =await this.userRepository.findOne({where:{email}});
+    return user;
   }
   async findOneByID(userId: any): Promise<User> {
     return this.userRepository.findOne({userId});
@@ -106,7 +128,7 @@ export class UserService {
     return await Math.floor(1000 + Math.random() * 9000);
   }
 
-  findAll() {
-    return this.userRepository.find();
+  async findAll() {
+    return await this.userRepository.find();
   }
 }

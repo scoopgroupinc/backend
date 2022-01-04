@@ -20,8 +20,8 @@ export class TagsEntity extends BaseEntity{
     name:string;
 
     @Field()
-    @Column({type:'string',enum:tagType})
-    type:tagType;
+    @Column({enum:tagType})
+    type:string;
 
     @Field()
     @Column({type:'decimal'})
@@ -32,7 +32,7 @@ export class TagsEntity extends BaseEntity{
     visible:Boolean;
 
     @Field()
-    @Column({type:'string'})
+    @Column({type:'varchar'})
     emoji:string;
 
 }

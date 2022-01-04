@@ -1,15 +1,10 @@
-import { Token } from 'graphql';
 import {
   Resolver,
   Query,
   Mutation,
-  Args,
- 
+  Args, 
 } from '@nestjs/graphql';
-import {
- 
-  UseGuards,
-} from '@nestjs/common';
+import {UseGuards} from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 import { UserToken } from './entities/user-token.schema';
@@ -18,6 +13,8 @@ import { LoginUserInput } from './dto/login-user.input';
 import { AuthService } from '../auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { GqlAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { UpdateUserInput } from './dto/update-user.input';
+import { UserInput } from './dto/user.input';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -32,6 +29,11 @@ export class UserResolver {
      return await this.userService.create(createUserInput);
   }
 
+  @Mutation(()=>User)
+  async updateUser(@Args('updateUserInput') updateUserInput:UpdateUserInput){
+    return await this.userService.updateAccount(updateUserInput);
+  }
+
   @Mutation(() => UserToken)
   async login(@Args('loginUserInput') loginUserInput: LoginUserInput) {
    
@@ -43,19 +45,20 @@ export class UserResolver {
     return await this.userService.activateAccount(code,email);
   }
 
-  
+  @Mutation(()=>Boolean,{name:'resend_activation_code'})
   async resendCode(@Args('email') email:string){
-    return await this.resendCode(email);
+    return await this.userService.resendActivationCode(email);
   }
 
-  async forgotPassword(@Args('email')  email:string){
-     
+  @Mutation(()=>Boolean)
+  async forgotPassword(@Args('email')  email:string):Promise<Boolean>{
+     return await this.userService.forgotPassword(email);
   }
 
-  @UseGuards(GqlAuthGuard)
+  // @UseGuards(GqlAuthGuard)
   @Query(() => [User], { name: 'all_users' })
-  findAll() {
-    return this.userService.findAll();
+  async findAll() {
+    return await this.userService.findAll();
   }
 
 

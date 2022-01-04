@@ -1,0 +1,247 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  userId: String!
+  firstName: String
+  lastName: String
+  email: String
+  phoneNumber: String
+  password: String
+  createdAt: String
+  code: Float
+  isVerified: Boolean
+}
+
+type UserDevice {
+  id: ID!
+  userId: ID!
+  createdAt: String!
+  osType: String
+  macAddress: String
+  version: String
+  lastLogin: String
+}
+
+type UserToken {
+  token: String!
+  user: User
+  message: String
+}
+
+type UserProfile {
+  userId: ID!
+  createdAt: String!
+  profilePhoto: String
+  birthday: String
+  height: Float
+  gender: String
+  locationId: Float
+  jobTitle: String
+  jobTitleVisible: Boolean
+  company: String
+  companyVisible: Boolean
+  homeTown: String
+  homeTownVisible: Boolean
+  school: String
+  schoolVisible: Boolean
+  educationLevel: String
+  educationLevelVisible: Boolean
+  ethinicity: [String!]
+  ethinicityVisible: Boolean
+  sports: [String!]
+  sportsVisible: Boolean
+  smoking: String
+  smokingVisible: Boolean
+  cannabis: String
+  cannabisVisible: Boolean
+  alcohol: String
+  alcoholVisible: Boolean
+  drugs: String
+  drugsVisible: Boolean
+  diet: [String!]
+  dietVisible: Boolean
+  languages: String
+  languagesVisible: Boolean
+  musicGenre: [String!]
+  musicGenreVisible: Boolean
+  creativeOulet: [String!]
+  creativeOuletVisible: Boolean
+  religions: [String!]
+  religionsVisible: Boolean
+  religiousPractice: [String!]
+  religiousPracticeVisible: String
+  zodiac: String
+  zodiacVisible: Boolean
+  meyerBriggs: String
+  meyerBriggsVisible: Boolean
+  characteristics: [String!]
+  characteristicsVisible: Boolean
+  politics: String
+  politicsVisible: Boolean
+  parentingGoal: String
+  parentingGoalVisible: Boolean
+  relationshipGoals: [String!]
+  relationshipGoalsVisible: Boolean
+  relationshipTypes: [String!]
+  relationshipTypesVisible: Boolean
+  pets: [String!]
+  petsVisible: Boolean
+}
+
+type LocationEntity {
+  userId: String!
+  latitude: String
+  longitude: String
+  addressLine1: String
+  addressLine2: String
+  stateProvince: String
+  country: String
+  zipPostal: Float
+}
+
+type UserPreference {
+  userId: ID!
+  createdAt: String
+  heightRange: [String!]
+  ageRange: [String!]
+  gender: [String!]
+  distance: Float!
+  ethnicityPreferences: [String!]
+  sportsPreferences: [String!]
+}
+
+type Query {
+  all_users: [User!]!
+  user_Device(macAddress: String!): UserDevice!
+  user_Profile(userId: String!): UserProfile!
+
+  """fetch user preference"""
+  user_preference(userId: String!): UserPreference!
+
+  """fetch user location details"""
+  user_location(userId: String!): [LocationEntity!]!
+}
+
+type Mutation {
+  createUser(createUserInput: CreateUserInput!): User!
+  updateUser(updateUserInput: UpdateUserInput!): User!
+  login(loginUserInput: LoginUserInput!): UserToken!
+  activateAccount(email: String!, code: Float!): User!
+  resend_activation_code(email: String!): Boolean!
+  forgotPassword(email: String!): Boolean!
+  saveDeviceDetails(userdeviceInput: UserDeviceInput!): UserDevice!
+  saveUserProfile(userProfileInput: UserProfileInput!): UserProfile!
+  saveUserPreference(userPreferenceInput: UserPreferenceInput!): UserPreference!
+  saveUserLocation(createLocationInput: CreateLocationInput!): LocationEntity!
+}
+
+input CreateUserInput {
+  email: String
+  password: String
+}
+
+input UpdateUserInput {
+  email: String!
+  firstName: String!
+  lastName: String!
+  phoneNumber: String!
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
+  macAddress: String!
+}
+
+input UserDeviceInput {
+  userId: ID!
+  createdAt: String
+  osType: String
+  macAddress: String
+  version: String
+  lastLogin: String
+}
+
+input UserProfileInput {
+  userId: ID!
+  createdAt: String!
+  profilePhoto: String
+  birthday: String
+  height: Float
+  gender: String
+  locationId: Float
+  jobTitle: String
+  jobTitleVisible: Boolean
+  company: String
+  companyVisible: Boolean
+  homeTown: String
+  homeTownVisible: Boolean
+  school: String
+  schoolVisible: Boolean
+  educationLevel: String
+  educationLevelVisible: Boolean
+  ethinicity: [String!]
+  ethinicityVisible: Boolean
+  sports: [String!]
+  sportsVisible: Boolean
+  smoking: String
+  smokingVisible: Boolean
+  cannabis: String
+  cannabisVisible: Boolean
+  alcohol: String
+  alcoholVisible: Boolean
+  drugs: String
+  drugsVisible: Boolean
+  diet: [String!]
+  dietVisible: Boolean
+  languages: String
+  languagesVisible: Boolean
+  musicGenre: [String!]
+  musicGenreVisible: Boolean
+  creativeOulet: [String!]
+  creativeOuletVisible: Boolean
+  religions: [String!]
+  religionsVisible: Boolean
+  religiousPractice: [String!]
+  religiousPracticeVisible: Boolean
+  zodiac: String
+  zodiacVisible: Boolean
+  meyerBriggs: String
+  meyerBriggsVisible: Boolean
+  characteristics: [String!]
+  characteristicsVisible: Boolean
+  politics: String
+  politicsVisible: Boolean
+  parentingGoal: String
+  parentingGoalVisible: Boolean
+  relationshipGoals: [String!]
+  relationshipGoalsVisible: Boolean
+  relationshipTypes: [String!]
+  relationshipTypesVisible: Boolean
+  pets: [String!]
+  petsVisible: Boolean
+}
+
+input UserPreferenceInput {
+  userId: ID!
+  createdAt: String
+  heightRange: [String!]
+  ageRange: [String!]
+  gender: [String!]
+  distance: Float
+  ethnicityPreferences: [String!]
+  sportsPreferences: [String!]
+}
+
+input CreateLocationInput {
+  userId: ID!
+  latitude: String!
+  longitude: String!
+  addressLine1: String!
+  addressLine2: String!
+  stateProvince: String!
+  country: String!
+  zipPostal: Float!
+}

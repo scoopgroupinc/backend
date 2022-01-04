@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable,NotFoundException } from "@nestjs/common";
 import { TagsInput } from "./dto/tags.input";
 import { Repository } from "typeorm";
 import { TagsEntity } from "./entities/tags.entity";
@@ -38,10 +38,9 @@ export class TagsService{
 
     async updateTag(tagInput:TagsInput):Promise<any>{
         const {id}=tagInput;
-        return await this.tagsRepository.createQueryBuilder()
-                   .update(TagsEntity)
-                   .set(tagInput)
-                   .where('id=:id',{id})
-                   .execute();
+        const tags = await this.findOne(id);
+        if(!tags) return new NotFoundException('Not Found');
+        return await this.tagsRepository.save({...tags,...tagInput});
+      
     }
 }

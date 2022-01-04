@@ -5,7 +5,7 @@ import { ObjectType, Field } from "@nestjs/graphql";
 
 @Entity('user')
 @ObjectType()
-@Unique(['email','phoneNumber',''])
+@Unique(['email','phoneNumber'])
 export class User extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn({type:'bigint'})
