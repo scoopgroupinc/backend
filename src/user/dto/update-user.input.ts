@@ -1,14 +1,7 @@
 // import { CreateUserInput} from "./create-user.input"
 import { UserInput } from './user.input';
-import { InputType, Field, Int, PartialType } from '@nestjs/graphql';
-import { IsAlpha, IsEmail, IsNotEmpty, Length } from 'class-validator';
-import { IsPhonelAlreadyExist } from '../IsPhoneAlreadyExist';
-import { IsEmailAlreadyExist } from '../IsEmailAlreadyExist';
-
-import { ID, ObjectType } from 'type-graphql';
-
-
-
+import { InputType, Field} from '@nestjs/graphql';
+import { IsEmail, Length } from 'class-validator';
 @InputType()
 export class UpdateUserInput {
   @Field({ nullable: true })
