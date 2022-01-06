@@ -39,7 +39,7 @@ export class UserService {
                               salt,
                               code,
                               isVerified:false,
-                              createdAt:new Date().toString()
+                              createdAt:new Date().toISOString().toString()
                             });
 
        return await this.sendVerificationMail(email,code);

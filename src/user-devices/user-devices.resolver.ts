@@ -22,7 +22,7 @@ export class UserDeviceResolver{
         return await this.userDeviceService.saveDeviceDetails(userdeviceInput)
     }
     
-    @Query(()=>UserDevice,{name:'user_Device'})
+    @Query(()=>UserDevice,{name:'getUserDevice'})
     // @UseGuards(AuthGuard())
     async getUserData(@Args('macAddress') macAddress:string,
                     //   @Args('userId') userId?:string,

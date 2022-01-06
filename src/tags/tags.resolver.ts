@@ -14,12 +14,12 @@ export class TagsResolver{
         return await this.tagsService.saveTag(tagInput);
     }
 
-    @Query(()=>[TagsEntity],{name:'specific_Tag',description:'fetch a tag'})
+    @Query(()=>[TagsEntity],{name:'getspecificTag',description:'fetch a tag'})
     async getTag(@Args('id') id:string):Promise<TagsEntity>{
         return await this.tagsService.findOne(id);
     }
 
-    @Query(()=>[TagsEntity],{name:'all_Tags',description:'fetch all tags'})
+    @Query(()=>[TagsEntity],{name:'getAlTags',description:'fetch all tags'})
     async getAllTags():Promise<TagsEntity[]>{
         return await this.tagsService.findAll()
     }

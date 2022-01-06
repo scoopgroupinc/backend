@@ -48,7 +48,7 @@ export class UserResolver {
     return await this.userService.activateAccount(code,email);
   }
 
-  @Mutation(()=>Boolean,{name:'resend_activation_code'})
+  @Mutation(()=>Boolean,{name:'resendActivationCode'})
   async resendCode(@Args('email') email:string){
     return await this.userService.resendActivationCode(email);
   }

@@ -32,6 +32,18 @@ type UserToken {
   message: String
 }
 
+type LocationEntity {
+  id: ID!
+  userId: String!
+  latitude: String
+  longitude: String
+  address_line_1: String
+  address_line_2: String
+  state_province: String
+  country: String
+  zip_postal: Float
+}
+
 type UserProfile {
   userId: ID!
   createdAt: String!
@@ -104,11 +116,14 @@ type UserPreference {
 }
 
 type Query {
-  user_Device(macAddress: String!): UserDevice!
-  user_Profile(userId: String!): UserProfile!
+  getUserDevice(macAddress: String!): UserDevice!
+  getUserProfile(userId: String!): UserProfile!
 
   """fetch user preference"""
-  user_preference(userId: String!): UserPreference!
+  getUserPreference(userId: String!): UserPreference!
+
+  """fetch user location details"""
+  getUserLocation(userId: String!): LocationEntity!
 }
 
 type Mutation {
@@ -116,13 +131,14 @@ type Mutation {
   updateUser(updateUserInput: UpdateUserInput!): User!
   login(loginUserInput: LoginUserInput!): UserToken!
   activateAccount(email: String!, code: Float!): User!
-  resend_activation_code(email: String!): Boolean!
+  resendActivationCode(email: String!): Boolean!
   forgotPassword(email: String!): Boolean!
   verifyPasswordResetCode(code: Float!, email: String!): Boolean!
   resetPassword(password: String!, email: String!): User!
   saveDeviceDetails(userdeviceInput: UserDeviceInput!): UserDevice!
   saveUserProfile(userProfileInput: UserProfileInput!): UserProfile!
   saveUserPreference(userPreferenceInput: UserPreferenceInput!): UserPreference!
+  saveUserLocation(createLocationInput: CreateLocationInput!): LocationEntity!
 }
 
 input CreateUserInput {
@@ -221,4 +237,15 @@ input UserPreferenceInput {
   distance: Float
   ethnicityPreferences: [String!]
   sportsPreferences: [String!]
+}
+
+input CreateLocationInput {
+  userId: ID!
+  latitude: String!
+  longitude: String!
+  addressLine1: String!
+  addressLine2: String!
+  stateProvince: String!
+  country: String!
+  zipPostal: Float!
 }

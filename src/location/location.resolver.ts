@@ -16,8 +16,8 @@ export class LocationResolver{
         return await this.locationService.saveUserLocation(createLocationInput);
     }
     
-    @Query(()=>[LocationEntity],{name:'user_location',description:'fetch user location details'})
-    async getUserLocation(@Args('userId') userId:string):Promise<LocationEntity>{
+    @Query(()=>LocationEntity,{name:'getUserLocation',description:'fetch user location details'})
+    async getUserLocation(@Args('userId') userId:string):Promise<any>{
         return await this.locationService.findUser(userId);
     }
 

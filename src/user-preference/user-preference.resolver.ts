@@ -18,7 +18,7 @@ export class UserPreferenceResolver{
         return await this.preferenceService.saveUserPreference(userPreferenceInput);
     }
 
-    @Query(()=>UserPreference,{name:'user_preference',description:'fetch user preference'})
+    @Query(()=>UserPreference,{name:'getUserPreference',description:'fetch user preference'})
     // @UseGuards(AuthGuard())
     async getUserPreference(@Args('userId') userId:string):Promise<UserPreference>{
         return await this.preferenceService.findOne(userId);

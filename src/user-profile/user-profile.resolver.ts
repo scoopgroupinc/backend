@@ -12,13 +12,13 @@ export class UserProfileResolver{
         
     ){}
 
-     @Mutation(()=>UserProfile)
+     @Mutation(()=>UserProfile,{name:'saveUserProfile'})
     //  @UseGuards(AuthGuard())
     async saveUserProfile(@Args('userProfileInput') userProfileInput:UserProfileInput):Promise<any>{
       return await this.saveUserProfile(userProfileInput);
     }
 
-    @Query(()=>UserProfile,{name:'user_Profile'})
+    @Query(()=>UserProfile,{name:'getUserProfile'})
     async getUserProfile(@Args('userId') userId:string):Promise<UserProfile>{
         return await this.userProfileService.findOne(userId);
     }
