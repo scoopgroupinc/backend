@@ -31,10 +31,10 @@ export class User extends BaseEntity {
   @Column({nullable:false})
   password: string;
   
-  @Field()
-  @CreateDateColumn()
-  createdAt: Date;
-  
+  @Field({nullable: true})
+  @Column({nullable:true})
+  createdAt:string;  
+    
   @Field({nullable: true})
   @Column({nullable: true})
   salt:string;
@@ -46,6 +46,10 @@ export class User extends BaseEntity {
   @Field({nullable: true})
   @Column({default:false, nullable:false})
   isVerified:Boolean;
+
+  @Field({nullable:true})
+  @Column({nullable:true})
+  resetCode:number
 
   async validatePassword(password:string):Promise<Boolean>{
    const hash = await bcrypt.hash(password,this.salt)

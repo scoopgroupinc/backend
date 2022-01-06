@@ -23,7 +23,7 @@ import {
       //   if (user) return false;
       //   return true;
       // });
-      const user = await this.userService.findByEmail(email);
+      const user = await this.userService.findOne(email);
        if (user) return false;
         return true;
 
