@@ -12,7 +12,7 @@ import {
 import {UseGuards} from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
-import { UserToken } from './entities/user-token.schema';
+import { UserToken } from './types/user-token.schema';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { LoginUserInput } from './dto/login-user.input';
@@ -21,7 +21,7 @@ import { JwtService } from '@nestjs/jwt';
 import { GqlAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UserInput } from './dto/user.input';
 import { argsToArgsConfig } from 'graphql/type/definition';
-import { UserType } from './entities/delete-user.schema';
+import { UserType } from './types/delete-user.schema';
 
 @Resolver(() => User)
 export class UserResolver {

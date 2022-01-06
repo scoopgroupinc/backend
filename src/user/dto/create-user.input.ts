@@ -1,7 +1,7 @@
 import { InputType, Field, Int } from '@nestjs/graphql';
 import { IsAlpha, IsEmail, IsNotEmpty, Length } from 'class-validator';
-import { IsPhonelAlreadyExist } from '../IsPhoneAlreadyExist';
-import { IsEmailAlreadyExist } from '../IsEmailAlreadyExist';
+import { IsPhonelAlreadyExist } from '../../utils/IsPhoneAlreadyExist';
+import { IsEmailAlreadyExist } from '../../utils/IsEmailAlreadyExist';
 
 
 @InputType()
