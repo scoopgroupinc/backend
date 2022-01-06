@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from 'src/auth/auth.service';
 import { AuthModule } from 'src/auth/auth.module';
+import { UserDeviceModule } from '../user-devices/user-devices.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { AuthModule } from 'src/auth/auth.module';
       signOptions: { expiresIn: '1d' },
     }),
     AuthModule,
+    UserDeviceModule
   ],
   providers: [UserResolver, UserService, AuthService],
 })

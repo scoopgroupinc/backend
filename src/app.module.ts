@@ -7,6 +7,9 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { config } from './config/config';
+import { UserProfileModule } from './user-profile/user-profile.module';
+import { LocationModule } from './location/location.module';
+import { UserPreferenceModule } from './user-preference/user-preference.module';
 
 @Module({
   imports: [
@@ -14,7 +17,7 @@ import { config } from './config/config';
       load: [config],
       isGlobal: true,
     }),
-    UserModule,
+   
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/graphql-schema.gql'),
     }),
@@ -23,6 +26,10 @@ import { config } from './config/config';
       useClass: DatabaseConfig,
     }),
     AuthModule,
+    UserModule,
+    UserProfileModule,
+    UserPreferenceModule,
+    LocationModule
   ],
   controllers: [],
   providers: [],
