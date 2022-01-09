@@ -133,7 +133,7 @@ export class UserService {
    
       reciever: email,
       subject: 'Scoop account Activation',
-      message: `Hi,`,
+      message: `Dear user,`,
       html: `<h2>Hi ! </h2> <p>Kindly enter the code below to verify your accoount.</p>` +
              `<h6>${code}</h6>`
       }
