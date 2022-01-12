@@ -6,19 +6,17 @@ import { UserDeviceService } from "./user-devices.service";
 import { JwtAuthService } from "../auth/jwt.service";
 import { JwtService } from "@nestjs/jwt";
 import { PassportModule } from "@nestjs/passport";
+import { JwtModule } from "@nestjs/jwt";
 
 @Module({
-    imports:[
-        TypeOrmModule.forFeature([UserDevice]), 
-        PassportModule.register({defaultStrategy:'jwt'}) 
-        
-    ],
-    providers:[UserDeviceResolver,
-               UserDeviceService,
-              ],
-    exports:[
-        UserDeviceService
-    ]
+  imports: [
+    TypeOrmModule.forFeature([UserDevice]),
+    JwtModule.register({
+      secret: 'secret',
+      signOptions: { expiresIn: '1d' },
+    }),
+  ],
+  providers: [UserDeviceResolver, UserDeviceService],
+  exports: [UserDeviceService],
 })
-
-export class UserDeviceModule{}
+export class UserDeviceModule {}

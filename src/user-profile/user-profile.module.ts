@@ -4,13 +4,18 @@ import { UserProfile } from "./entities/user-profile.entity";
 import { UserProfileResolver } from "./user-profile.resolver";
 import { UserProfileService } from "./user-profile.service";
 import { PassportModule } from "@nestjs/passport";
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-    imports:[
-        TypeOrmModule.forFeature([UserProfile]),
-        PassportModule.register({defaultStrategy:'jwt'})
-    ],
-    providers:[UserProfileResolver,UserProfileService],
-    exports:[]
+  imports: [
+    TypeOrmModule.forFeature([UserProfile]),
+    JwtModule.register({
+      secret: 'secret',
+      signOptions: { expiresIn: '1d' },
+    }),
+  ],
+
+  providers: [UserProfileResolver, UserProfileService],
+  exports: [],
 })
-export class UserProfileModule{}
+export class UserProfileModule {}
