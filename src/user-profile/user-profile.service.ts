@@ -23,7 +23,7 @@ export class UserProfileService {
     @InjectRepository(UserProfile)
     private userProfileRespository: Repository<UserProfile>,
     private readonly configService: ConfigService,
-    private readonly profileFilesRespository: Repository<ProfileFiles>,
+    @InjectRepository(ProfileFiles) private profileFilesRespository: Repository<ProfileFiles>,
   ) {}
 
   async saveUserProfile(userProfileInput: UserProfileInput) {

@@ -1,3 +1,4 @@
+
 import {TypeOrmModuleOptions} from '@nestjs/typeorm'
 import * as config from 'config'
 import { User } from '../user/entities/user.entity';
@@ -6,6 +7,7 @@ import { LocationEntity } from '../location/entities/location.entity';
 import { UserProfile } from '../user-profile/entities/user-profile.entity';
 import { UserPreference } from '../user-preference/entities/user-preference.entity';
 import { TagsEntity } from '../tags/entities/tags.entity';
+import ProfileFiles from '../user-profile/entities/profileFiles.entity';
 
 const {type,host,port,username,password,database,synchronize} = config.get('DB');
 console.log(host)
@@ -24,6 +26,9 @@ export const typeOrmConfig:TypeOrmModuleOptions={
             LocationEntity,
             UserProfile,
             UserPreference,
-            TagsEntity],
+            TagsEntity,
+            ProfileFiles
+
+        ],
 
 }

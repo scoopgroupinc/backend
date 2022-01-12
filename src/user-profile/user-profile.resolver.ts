@@ -33,7 +33,7 @@ export class UserProfileResolver {
     return await this.userProfileService.findOne(userId);
   }
 
-  @Mutation(() => UserProfile, { name: 'uploadProfileFiles' })
+  // @Mutation(() => UserProfile, { name: 'uploadProfileFiles' })
   @UseInterceptors(FileInterceptor('file'))
   async addProfileFiles(
     @Req() request,

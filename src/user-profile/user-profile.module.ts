@@ -11,7 +11,7 @@ import { ConfigService } from '@nestjs/config';
     TypeOrmModule.forFeature([UserProfile, ProfileFiles]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
-  controllers:[UserProfileResolver],
+  // controllers:[UserProfileResolver],
   providers: [
     UserProfileResolver,
     UserProfileService,
