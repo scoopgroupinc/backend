@@ -120,9 +120,15 @@ type UserPreference {
   sportsPreferences: [String!]
 }
 
+type ProfileFiles {
+  userId: ID!
+  url: String
+  key: String
+}
+
 type Query {
   getUserDevice(macAddress: String!): UserDevice!
-  getUserProfile(userId: String!): UserProfile!
+  getUserProfile(userId: String!): Boolean!
 
   """fetch user preference"""
   getUserPreference(userId: String!): UserPreference!
@@ -143,6 +149,7 @@ type Mutation {
   resetPassword(password: String!, email: String!): User!
   saveDeviceDetails(userdeviceInput: UserDeviceInput!): UserDevice!
   saveUserProfile(userProfileInput: UserProfileInput!): UserProfile!
+  addProfileFiles(image: Upload!): ProfileFiles!
   saveUserPreference(userPreferenceInput: UserPreferenceInput!): UserPreference!
   saveUserLocation(createLocationInput: CreateLocationInput!): LocationEntity!
 }
@@ -233,6 +240,9 @@ input UserProfileInput {
   pets: [String!]
   petsVisible: Boolean
 }
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 input UserPreferenceInput {
   userId: ID!

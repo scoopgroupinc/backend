@@ -257,12 +257,5 @@ export class UserProfile extends BaseEntity {
   @Field({ nullable: true })
   @Column({ type: 'boolean', default: true })
   petsVisible?: Boolean;
-
-  @JoinColumn()
-  @OneToOne(() => ProfileFiles, {
-    eager: true,
-    nullable: true,
-  })
-  public avatar?: ProfileFiles;
 }
 

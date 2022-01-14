@@ -70,33 +70,34 @@ export class UserProfileService {
         Key: `${uuid()}-${filename}`,
       })
       .promise();
+      console.log("upload result",uploadResult)
 
     const newFile = this.profileFilesRespository.create({
       key: uploadResult.Key,
       url: uploadResult.Location,
     });
-    await this.profileFilesRespository.save(newFile);
-    return newFile;
+    
+    return await this.profileFilesRespository.save(newFile);
   }
 
-  async getById(userId: string) {
-    const user = await this.userProfileRespository.findOne({ userId });
-    if (user) {
-      return user;
-    }
-    throw new HttpException(
-      'User with this id does not exist',
-      HttpStatus.NOT_FOUND,
-    );
-  }
+  // async getById(userId: string) {
+  //   const user = await this.userProfileRespository.findOne({ userId });
+  //   if (user) {
+  //     return user;
+  //   }
+  //   throw new HttpException(
+  //     'User with this id does not exist',
+  //     HttpStatus.NOT_FOUND,
+  //   );
+  // }
 
-  async addFiles(userId: string, imageBuffer: Buffer, filename: string) {
-    const avatar = await this.uploadProfileFiles(imageBuffer, filename);
-    const user = await this.getById(userId);
-    await this.userProfileRespository.update(userId, {
-      ...user,
-      avatar,
-    });
-    return;
-  }
+  // async addFiles(userId: string, imageBuffer: Buffer, filename: string) {
+  //   const avatar = await this.uploadProfileFiles(imageBuffer, filename);
+  //   const user = await this.getById(userId);
+  //   await this.userProfileRespository.update(userId, {
+  //     ...user,
+  //     avatar,
+  //   });
+  //   return;
+  // }
 }

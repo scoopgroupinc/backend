@@ -1,15 +1,22 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, PrimaryColumn, BaseEntity } from 'typeorm';
+import { Field, ObjectType,ID, InputType } from '@nestjs/graphql';
 
-@Entity("profileFiles")
-class ProfileFiles {
-  @PrimaryGeneratedColumn()
-  public id: number;
 
+@Entity('profileFiles')
+@ObjectType()
+class ProfileFiles extends BaseEntity{
+
+  @Field(() => ID)
+  @PrimaryColumn({ type: 'bigint' })
+  userId: string;
+
+  @Field(() => String, { nullable: true })
   @Column()
-  public url: string;
+  url: string;
 
+  @Field(() => String, { nullable: true })
   @Column()
-  public key: string;
+   key: string;
 }
 
 export default ProfileFiles;

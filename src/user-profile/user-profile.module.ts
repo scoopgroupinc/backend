@@ -8,7 +8,7 @@ import { PassportModule } from "@nestjs/passport";
 import { ConfigService } from '@nestjs/config';
 @Module({
   imports: [
-    TypeOrmModule.forFeature([UserProfile, ProfileFiles]),
+    TypeOrmModule.forFeature([UserProfile,ProfileFiles]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
   // controllers:[UserProfileResolver],

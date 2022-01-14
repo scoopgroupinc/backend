@@ -5,6 +5,9 @@ import { LocationEntity } from '../location/entities/location.entity';
 import { UserProfile } from '../user-profile/entities/user-profile.entity';
 import { UserPreference } from '../user-preference/entities/user-preference.entity';
 import { TagsEntity } from '../tags/entities/tags.entity';
+import ProfileFiles from '../user-profile/entities/profileFiles.entity';
+
+
 
 export const config = () => ({
   port: parseInt(process.env.PORT, 10) || 3000,
@@ -22,7 +25,8 @@ export const config = () => ({
                 LocationEntity,
                 UserProfile,
                 UserPreference,
-                TagsEntity],
+                TagsEntity,
+              ProfileFiles],
   },
 });
 
