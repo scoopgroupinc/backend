@@ -10,6 +10,7 @@ import { config } from './config/config';
 import { UserProfileModule } from './user-profile/user-profile.module';
 import { LocationModule } from './location/location.module';
 import { UserPreferenceModule } from './user-preference/user-preference.module';
+import { FileUploadModule } from './file-upload/file-upload.module';
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { UserPreferenceModule } from './user-preference/user-preference.module';
     UserModule,
     UserProfileModule,
     UserPreferenceModule,
-    LocationModule
+    LocationModule,
+    FileUploadModule,
   ],
   controllers: [],
   providers: [],

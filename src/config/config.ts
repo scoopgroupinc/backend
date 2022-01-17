@@ -6,6 +6,7 @@ import { UserProfile } from '../user-profile/entities/user-profile.entity';
 import { UserPreference } from '../user-preference/entities/user-preference.entity';
 import { TagsEntity } from '../tags/entities/tags.entity';
 import ProfileFiles from '../user-profile/entities/profileFiles.entity';
+import FileUpload from 'src/file-upload/entities/file-upload.entity';
 
 
 
@@ -26,6 +27,7 @@ export const config = () => ({
                 UserProfile,
                 UserPreference,
                 TagsEntity,
+                FileUpload,
               ProfileFiles],
   },
 });

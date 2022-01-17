@@ -7,7 +7,8 @@ import { LocationEntity } from '../location/entities/location.entity';
 import { UserProfile } from '../user-profile/entities/user-profile.entity';
 import { UserPreference } from '../user-preference/entities/user-preference.entity';
 import { TagsEntity } from '../tags/entities/tags.entity';
-import ProfileFiles from '../user-profile/entities/profileFiles.entity';
+import ProfileFiles from '../user-profile/entities/profileFiles.entity'
+import FileUpload from 'src/file-upload/entities/file-upload.entity';
 
 const {type,host,port,username,password,database,synchronize} = config.get('DB');
 console.log(host)
@@ -27,6 +28,7 @@ export const typeOrmConfig:TypeOrmModuleOptions={
             UserProfile,
             UserPreference,
             TagsEntity,
+            FileUpload,
             ProfileFiles
 
         ],
