@@ -14,14 +14,24 @@ export class TagsResolver{
         return await this.tagsService.saveTag(tagInput);
     }
 
-    @Query(()=>[TagsEntity],{name:'getspecificTag',description:'fetch a tag'})
+    @Query(()=>TagsEntity,{name:'getspecificTag',description:'fetch a tag'})
     async getTag(@Args('id') id:string):Promise<TagsEntity>{
         return await this.tagsService.findOne(id);
     }
 
-    @Query(()=>[TagsEntity],{name:'getAlTags',description:'fetch all tags'})
-    async getAllTags():Promise<TagsEntity[]>{
-        return await this.tagsService.findAll()
+    @Query(()=>[TagsEntity],{name:'getTags',description:'Filter by: all,"", frequency, physical_activity,education,religion etc '})
+    async getTags(@Args('tagType') tagType:string):Promise<TagsEntity[]>{
+        return await this.tagsService.getTags(tagType)
+    }
+
+    // @Query(()=>[TagsEntity],{description:"search by: frequency, physical_activity,education,religion etc"})
+    // async getTagsbyType(@Args('tagType') tagType:string){
+    //     return await this.tagsService.getTagsbyType(tagType);
+    // }
+
+    @Query(()=>Boolean)
+    async uploadTags(){
+        return await this.tagsService.uploadTags();
     }
 
 }

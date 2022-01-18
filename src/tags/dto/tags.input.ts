@@ -8,14 +8,14 @@ export class TagsInput{
     @Field(()=>ID)
     id:string;
 
-    @Field()
+    @Field(()=>String)
     @MaxLength(30)
     name:string;
 
-    @Field()    
+    @Field(()=>String)    
     type:tagType;
 
-    @Field()
+    @Field(()=>Number)
     @IsDecimal()
     order:number;
 
@@ -23,7 +23,7 @@ export class TagsInput{
     @IsBoolean()
     visible:Boolean;
 
-    @Field()
+    @Field(()=>String)
     @IsString()
     emoji:string;
 

@@ -3,6 +3,7 @@ import { TagsInput } from "./dto/tags.input";
 import { Repository } from "typeorm";
 import { TagsEntity } from "./entities/tags.entity";
 import { InjectRepository } from "@nestjs/typeorm";
+import readXlsxFile  from 'read-excel-file/node';
 
 @Injectable()
 export class TagsService{
@@ -33,14 +34,78 @@ export class TagsService{
     }
 
     async findAll():Promise<TagsEntity[]>{
-        return await this.tagsRepository.find({});
+       const result=await this.tagsRepository.find({});
+
+       result.forEach(tag=>{
+           if(tag.emoji!==""){
+             tag.emoji= this.convertFromHexaToEmoji(tag.emoji);
+           }
+        })
+       return result;
+    }
+
+    async getTags(tagType:string):Promise<TagsEntity[]>{
+        if(tagType==='all'||tagType==='') return await this.findAll()
+
+        return await this.getTagsbyType(tagType);
     }
 
     async updateTag(tagInput:TagsInput):Promise<any>{
         const {id}=tagInput;
-        const tags = await this.findOne(id);
-        if(!tags) return new NotFoundException('Not Found');
-        return await this.tagsRepository.save({...tags,...tagInput});
+        const tag = await this.findOne(id);
+        if(!tag) return new NotFoundException('Not Found');
+        return await this.tagsRepository.save({...tag,...tagInput});
       
     }
+
+    async getTagsbyType(tagType:string):Promise<TagsEntity[]>{
+        const result=  await this.tagsRepository.find({type:tagType});
+        result.forEach(tag=>{
+            if(tag.emoji!==""){
+              tag.emoji= this.convertFromHexaToEmoji(tag.emoji);
+            }
+         })
+        return result;
+    }
+
+    async uploadTags(){
+        // let path= __dirname+'/tags.xlsx';
+
+        // readXlsxFile(path).then(async rows=>{
+        //     rows.shift();
+
+        //     let tags=[]
+        //     rows.forEach((row) => {
+                
+        //         let tag = {
+        //           type: row[0],
+        //           name: row[1],
+        //           order: row[2],
+        //           visible: row[3],
+        //           emoji:row[4]!==null?this.convertFromEmojiToHexa(row[4]):null
+        //         };
+        
+        //         tags.push(tag);
+        //       });
+
+        //     await this.tagsRepository.create(tags);
+        //     const result=await this.tagsRepository.save(tags);
+        //     if(result) return true
+
+        //     return false;
+        
+        // })
+        return true
+        
+    }
+
+     convertFromEmojiToHexa(emoji){
+         return emoji.toString().codePointAt(0).toString(16)
+    }
+
+    convertFromHexaToEmoji(hex){
+        return String.fromCodePoint(parseInt('0x'+hex));
+   }
+
+
 }

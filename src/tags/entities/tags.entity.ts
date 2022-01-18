@@ -15,24 +15,24 @@ export class TagsEntity extends BaseEntity{
     @PrimaryGeneratedColumn({type:'bigint'})
     id:string;
 
-    @Field()
+    @Field(()=>String,{nullable:true})
     @Column()
     name:string;
 
-    @Field()
+    @Field(()=>String,{nullable:true})
     @Column({enum:tagType})
     type:string;
 
-    @Field()
-    @Column({type:'decimal'})
-    order:number;
+    @Field(()=>Number,{nullable:true})
+    @Column({type:'decimal',nullable:true})
+    order:number | null;
 
-    @Field()
+    @Field(()=>Boolean,{nullable:true})
     @Column({type:'boolean'})
     visible:Boolean;
 
-    @Field()
-    @Column({type:'varchar'})
-    emoji:string;
+    @Field(()=>String,{nullable:true})
+    @Column({type:'text',nullable:true})
+    emoji:string | null;
 
 }
