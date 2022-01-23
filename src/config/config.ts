@@ -18,11 +18,18 @@ export const config = () => ({
     database: process.env.DB_DATABASE,
     synchronize: true,
     logging: false,
-    entities: [User, Auth, UserDevice,
-                LocationEntity,
-                UserProfile,
-                UserPreference,
-                TagsEntity],
+    entities: [
+      User,
+      Auth,
+      UserDevice,
+      LocationEntity,
+      UserProfile,
+      UserPreference,
+      TagsEntity,
+    ],
+    ssl: {
+      rejectUnauthorized: false,
+    },
   },
 });
 

@@ -13,9 +13,9 @@ export class UserProfileResolver{
     ){}
 
      @Mutation(()=>UserProfile,{name:'saveUserProfile'})
-    //  @UseGuards(AuthGuard())
+    //  @UseGuards(Aut
     async saveUserProfile(@Args('userProfileInput') userProfileInput:UserProfileInput):Promise<any>{
-      return await this.saveUserProfile(userProfileInput);
+     return await this.userProfileService.saveUserProfile(userProfileInput);
     }
 
     @Query(()=>UserProfile,{name:'getUserProfile'})
