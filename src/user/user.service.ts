@@ -64,6 +64,9 @@ export class UserService {
      const user = await this.findOne(email);
      if(!(user && await user.validatePassword(password))){
       throw new BadRequestException('Invalid credentials');
+  
+
+  
      }
      
      if(!user.isVerified) throw new BadRequestException('Kindly activate your account')
