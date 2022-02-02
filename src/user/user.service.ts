@@ -22,7 +22,7 @@ export class UserService {
     @InjectRepository(User) private userRepository: Repository<User>,
     private authService: AuthService,
     private deviceService: UserDeviceService,
-  ) {}
+  ) { }
 
   async create(data: any) {
     const { email, password } = data;
@@ -40,10 +40,13 @@ export class UserService {
         createdAt: new Date().toISOString().toString(),
       });
 
-      return await this.sendVerificationMail(email, code);
+      const result = await this.sendVerificationMail(email, code);
+      if (result) return 'Account created successfully. Check email to activate account';
+
+      throw new HttpException('Sign Up failed', HttpStatus.EXPECTATION_FAILED);
     } catch (error) {
       console.log(error);
-      return error;
+      throw new HttpException('Sign Up failed', HttpStatus.EXPECTATION_FAILED);
     }
   }
 
@@ -90,22 +93,25 @@ export class UserService {
     if (!user) throw new UnauthorizedException('Something went wrong');
 
     const result = await this.sendVerificationMail(email, user.code);
-    return result;
+    if (result) return 'Activation Code sent';
+    return 'Failed to send code';
   }
 
-  async forgotPassword(email: string): Promise<any> {
+  async forgotPassword(email: string): Promise<string> {
     const user = await this.findOne(email);
     if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     const code = await this.generateFourDigitCode();
     await this.userRepository.save({ ...user, resetCode: code });
-    return await this.sendforgotPasswordMail(email, code);
+    const result = await this.sendforgotPasswordMail(email, code);
+    if (result) return 'Your password has been changed successfully';
+    return 'Password reset failed';
   }
 
-  async verifyResetCode(email: string, code: number): Promise<boolean> {
+  async verifyResetCode(email: string, code: number): Promise<string> {
     const user = await this.findOne(email);
     if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    if (user && user.resetCode === code) return true;
-    return false;
+    if (user && user.resetCode === code) return 'Code verified';
+    throw new HttpException('Invnalid code', HttpStatus.EXPECTATION_FAILED);
   }
 
   async resetPassword(email: string, password: string) {

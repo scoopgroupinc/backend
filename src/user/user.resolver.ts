@@ -6,10 +6,10 @@ import {
   Resolver,
   Query,
   Mutation,
-  Args, 
+  Args,
 } from '@nestjs/graphql';
 
-import {UseGuards} from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 import { UserToken } from './types/user-token.schema';
@@ -29,9 +29,9 @@ export class UserResolver {
     private userService: UserService,
     private jwtService: JwtService,
     private authService: AuthService,
-  ) {}
+  ) { }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => String)
   async createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
     return await this.userService.create(createUserInput);
   }
@@ -41,8 +41,8 @@ export class UserResolver {
     return await this.userService.updateAccount(updateUserInput);
   }
 
-  @Query(()=>User)
-  async getUser(@Args('userId') userId:string){
+  @Query(() => User)
+  async getUser(@Args('userId') userId: string) {
     return await this.userService.findOneByID(userId);
   }
 
@@ -71,17 +71,17 @@ export class UserResolver {
     return await this.userService.activateAccount(code, email);
   }
 
-  @Mutation(() => Boolean, { name: 'resendActivationCode' })
+  @Mutation(() => String, { name: 'resendActivationCode' })
   async resendCode(@Args('email') email: string) {
     return await this.userService.resendActivationCode(email);
   }
 
-  @Mutation(() => Boolean)
-  async forgotPassword(@Args('email') email: string): Promise<Boolean> {
+  @Mutation(() => String)
+  async forgotPassword(@Args('email') email: string): Promise<string> {
     return await this.userService.forgotPassword(email);
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => String)
   async verifyPasswordResetCode(
     @Args('email') email: string,
     @Args('code') code: number,

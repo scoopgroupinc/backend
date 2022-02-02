@@ -207,14 +207,14 @@ type Query {
 }
 
 type Mutation {
-  createUser(createUserInput: CreateUserInput!): Boolean!
+  createUser(createUserInput: CreateUserInput!): String!
   updateUser(updateUserInput: UpdateUserInput!): User!
   deleteUser(userId: String!): UserType!
   login(loginUserInput: LoginUserInput!): UserToken!
   activateAccount(email: String!, code: Float!): User!
-  resendActivationCode(email: String!): Boolean!
-  forgotPassword(email: String!): Boolean!
-  verifyPasswordResetCode(code: Float!, email: String!): Boolean!
+  resendActivationCode(email: String!): String!
+  forgotPassword(email: String!): String!
+  verifyPasswordResetCode(code: Float!, email: String!): String!
   resetPassword(password: String!, email: String!): User!
   saveDeviceDetails(userdeviceInput: UserDeviceInput!): UserDevice!
   saveUserProfile(userProfileInput: UserProfileInput!): UserProfile!
