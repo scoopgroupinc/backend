@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Column, PrimaryGeneratedColumn,Entity, BaseEntity, Unique, CreateDateColumn } from "typeorm"
 import * as bcrypt from 'bcrypt';
 import { ObjectType, Field } from "@nestjs/graphql";
@@ -45,13 +46,13 @@ export class User extends BaseEntity {
 
   @Field({nullable: true})
   @Column({default:false, nullable:false})
-  isVerified:Boolean;
+  isVerified:boolean;
 
   @Field({nullable:true})
   @Column({nullable:true})
   resetCode:number
 
-  async validatePassword(password:string):Promise<Boolean>{
+  async validatePassword(password:string):Promise<boolean>{
    const hash = await bcrypt.hash(password,this.salt)
    return hash== this.password;
   }

@@ -26,7 +26,7 @@ import { UserType } from './types/delete-user.schema';
 @Resolver(() => User)
 export class UserResolver {
   constructor(
-    private readonly userService: UserService,
+    private userService: UserService,
     private jwtService: JwtService,
     private authService: AuthService,
   ) {}
@@ -39,6 +39,11 @@ export class UserResolver {
   @Mutation(() => User)
   async updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
     return await this.userService.updateAccount(updateUserInput);
+  }
+
+  @Query(()=>User)
+  async getUser(@Args('userId') userId:string){
+    return await this.userService.findOneByID(userId);
   }
 
   @Mutation(() => UserType)

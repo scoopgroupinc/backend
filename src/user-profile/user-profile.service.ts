@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Injectable, BadRequestException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { UserProfile } from "./entities/user-profile.entity";
@@ -22,7 +23,7 @@ export class UserProfileService{
                 return await this.updateOne(userProfileInput);
             }
         
-            userProfileInput.createdAt = new Date().toString();
+            userProfileInput.createdAt = new Date().toISOString().toString();
             return await this.createProfile(userProfileInput);
         } catch (error) {
             console.log(error)

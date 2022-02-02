@@ -14,11 +14,11 @@ import { MessageDTO } from "./dto/message.dto";
 export class ChatService{
     constructor(
         @InjectRepository(ConversationEntity)
-        private readonly converationRepository:Repository<ConversationEntity>,
+        private converationRepository:Repository<ConversationEntity>,
         @InjectRepository(ActiveConversationEntity)
-        private readonly activeConversationRepository:Repository<ActiveConversationEntity>,
+        private activeConversationRepository:Repository<ActiveConversationEntity>,
         @InjectRepository(MessageEntity)
-        private readonly messageRepository:Repository<MessageEntity>
+        private messageRepository:Repository<MessageEntity>
         
     ){ }
 

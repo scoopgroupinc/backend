@@ -4,31 +4,31 @@ import { ObjectType, Field, ID, Float } from '@nestjs/graphql';
 @Entity('rating')
 @ObjectType()
 export class Rating extends BaseEntity {
-  @Field(() => ID)
-  @PrimaryGeneratedColumn({ type: 'bigint' })
-  id: string;
+    @Field(() => ID)
+    @PrimaryGeneratedColumn({ type: 'bigint' })
+    id: string;
 
-  @Field(() => String)
-  @Column()
-  createdAt: string;
+    @Field(() => String)
+    @Column()
+    createdAt: string;
 
-  @Field(() => String)
-  @Column()
-  contentId: string;
+    @Field(() => String)
+    @Column({ type: 'bigint', nullable: true })
+    contentId: string;
 
-  @Field(() => String)
-  @Column()
-  criteriaId: string;
+    @Field(() => String)
+    @Column()
+    criteriaId: string;
 
-  @Field(() => String)
-  @Column({ nullable: true })
-  raterId: string;
+    @Field(() => String)
+    @Column({ type: 'bigint', nullable: true })
+    raterId: string;
 
-  @Field(() => Float)
-  @Column({ type: 'decimal' })
-  rating: number;
+    @Field(() => Float)
+    @Column({ type: 'decimal' })
+    rating: number;
 
-  @Field(() => Boolean)
-  @Column({ default: false })
-  final: boolean;
+    @Field(() => Boolean)
+    @Column({ default: false })
+    final: boolean;
 }

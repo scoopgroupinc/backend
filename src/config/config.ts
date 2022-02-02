@@ -5,6 +5,10 @@ import { LocationEntity } from '../location/entities/location.entity';
 import { UserProfile } from '../user-profile/entities/user-profile.entity';
 import { UserPreference } from '../user-preference/entities/user-preference.entity';
 import { TagsEntity } from '../tags/entities/tags.entity';
+import { Rating } from 'src/rating/entities/rating.entity';
+import { RatingComment } from 'src/rating-comment/entities/rating-comment.entity';
+import { RatingGroup } from 'src/rating-group/entities/rating-group.entity';
+import { RateCriterias } from 'src/rate-criterias/entities/rate-criterias.entity';
 
 export const config = () => ({
   port: parseInt(process.env.PORT, 10) || 3000,
@@ -18,11 +22,18 @@ export const config = () => ({
     database: process.env.DB_DATABASE,
     synchronize: true,
     logging: false,
-    entities: [User, Auth, UserDevice,
-                LocationEntity,
-                UserProfile,
-                UserPreference,
-                TagsEntity],
+    entities: [
+      User,
+      Auth,
+      UserDevice,
+      LocationEntity,
+      UserProfile,
+      UserPreference,
+      TagsEntity,
+      Rating,
+      RatingComment,
+      RatingGroup,
+      RateCriterias
+    ],
   },
 });
-

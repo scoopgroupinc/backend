@@ -14,10 +14,12 @@ export class RatingCommentService {
   async saveRatingComment(
     ratingCommentInput: RatingCommentInput[],
   ): Promise<RatingCommentInput[]> {
-    const ratnCommentEntries = await this.ratingCommentRepositry.create(
+    const lastIndex = RatingCommentInput.length - 1;
+    RatingCommentInput[lastIndex].final = true;
+    const ratingCommentEntries = await this.ratingCommentRepositry.create(
       ratingCommentInput,
     );
-    return await this.ratingCommentRepositry.save(ratnCommentEntries);
+    return await this.ratingCommentRepositry.save(ratingCommentEntries);
   }
 
   async getRatingComment(commentIds: string[]): Promise<any> {
@@ -26,7 +28,6 @@ export class RatingCommentService {
       const comments = await this.ratingCommentRepositry.find({
         id: In(commentIds),
       });
-
       return comments;
     } catch (error) {
       console.log(error);

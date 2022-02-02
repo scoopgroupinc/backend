@@ -17,10 +17,10 @@ export class RatingResolver {
   }
 
   @Query(() => RatingOutput, {
-    description: 'Fetch rating details by owner',
+    description: 'Fetch rating for specific content',
   })
-  async getRatingByOwner(@Args('contentId') contentId: string): Promise<any> {
-    return await this.ratingService.getRatingByOwner(contentId);
+  async getRatingByContent(@Args('contentId') contentId: string): Promise<any> {
+    return await this.ratingService.getRatingByContent(contentId);
   }
 
   @Query(() => [RatingComment], {
