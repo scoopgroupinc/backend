@@ -4,13 +4,12 @@ import { UserProfileService } from "./user-profile.service";
 import { UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { UserProfileInput } from "./dto/user-profile.input";
+import { GqlAuthGuard } from '../auth/guards/jwt-auth.guard';
 
-@Resolver(()=>UserProfile)
-export class UserProfileResolver{
-    constructor(
-        private userProfileService:UserProfileService
-        
-    ){}
+
+@Resolver(() => UserProfile)
+export class UserProfileResolver {
+  constructor(private userProfileService: UserProfileService) {}
 
      @Mutation(()=>UserProfile,{name:'saveUserProfile'})
     //  @UseGuards(Aut
@@ -18,8 +17,11 @@ export class UserProfileResolver{
      return await this.userProfileService.saveUserProfile(userProfileInput);
     }
 
-    @Query(()=>UserProfile,{name:'getUserProfile'})
-    async getUserProfile(@Args('userId') userId:string):Promise<UserProfile>{
-        return await this.userProfileService.findOne(userId);
-    }
+
+ 
+  @UseGuards(GqlAuthGuard)
+  @Query(() => UserProfile, { name: 'getUserProfile' })
+  async getUserProfile(@Args('userId') userId: string): Promise<UserProfile> {
+    return await this.userProfileService.findOne(userId);
+  }
 }
