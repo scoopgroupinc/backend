@@ -23,6 +23,7 @@ import { UserInput } from './dto/user.input';
 import { argsToArgsConfig } from 'graphql/type/definition';
 import { UserType } from './types/delete-user.schema';
 
+
 @Resolver(() => User)
 export class UserResolver {
   constructor(
@@ -40,7 +41,7 @@ export class UserResolver {
   async updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
     return await this.userService.updateAccount(updateUserInput);
   }
-
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => UserType)
   async deleteUser(@Args('userId') userId: string) {
     const user = await this.userService.findOne(userId);
@@ -70,7 +71,7 @@ export class UserResolver {
   async resendCode(@Args('email') email: string) {
     return await this.userService.resendActivationCode(email);
   }
-
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => Boolean)
   async forgotPassword(@Args('email') email: string): Promise<Boolean> {
     return await this.userService.forgotPassword(email);
@@ -83,7 +84,7 @@ export class UserResolver {
   ) {
     return await this.userService.verifyResetCode(email, code);
   }
-
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => User)
   async resetPassword(
     @Args('email') email: string,

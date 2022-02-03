@@ -14,9 +14,9 @@ async function bootstrap() {
     //  app.useWebSocketAdapter(new RedisIoAdapter(app))
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
-  const configService = app.get(ConfigService)
-  const port = configService.get('PORT')
-  console.log(port)
-  await app.listen(port);
+  // const configService = app.get(ConfigService)
+  // // const port = configService.get('PORT')
+  // console.log('proooooot', process.env.PORT);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();

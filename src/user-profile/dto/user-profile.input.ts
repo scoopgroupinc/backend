@@ -14,7 +14,7 @@ export class UserProfileInput {
 
     @Field(()=>String,{nullable:true})
     @IsString()
-    profilePhoto:string;
+    profilePhoto?:string;
     
     @Field({nullable:true})
     @IsString()
@@ -30,16 +30,15 @@ export class UserProfileInput {
     gender?:string;
 
     @Field({nullable:true})
-    @IsString()
     locationId?:number
     
     @Field({nullable:true})
     @IsString()
-    jobTitle:string;
+    jobTitle?:string;
 
     @Field({nullable:true})
     @IsBoolean()
-    jobTitleVisible:Boolean;
+    jobTitleVisible?:Boolean;
 
     @Field({nullable:true})
     @IsString()
@@ -47,7 +46,7 @@ export class UserProfileInput {
 
     @Field({nullable:true})
     @IsBoolean()
-    companyVisible:Boolean;
+    companyVisible?:Boolean;
 
     @Field({nullable:true})
     @IsString()
@@ -83,12 +82,12 @@ export class UserProfileInput {
 
     @Field(()=>[String],{nullable:true})
     @IsArray()
-    sports:string[]
+    sports?:string[]
 
     
     @Field({nullable:true})
     @IsBoolean()
-    sportsVisible:Boolean;
+    sportsVisible?:Boolean;
 
     @Field({nullable:true})
     @IsString()
