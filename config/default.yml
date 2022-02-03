@@ -5,9 +5,9 @@ DB:
    type: 'postgres'
    port: 5432
    database: 'postgres'
-   host: "3.133.209.250"
+   host: "3.17.50.223"
    username: 'icpostgresql'
-   password: '7175a5c3d7f94ea7'
+   password: 'a271fd81ec6cdc4fcb8801e2fd571d7d'
    synchronize: true
 
 redis:
