@@ -11,13 +11,14 @@ import { GqlAuthGuard } from '../auth/guards/jwt-auth.guard';
 export class UserProfileResolver {
   constructor(private userProfileService: UserProfileService) {}
 
-  @UseGuards(GqlAuthGuard)
-  @Mutation(() => UserProfile, { name: 'saveUserProfile' })
-  async saveUserProfile(
-    @Args('userProfileInput') userProfileInput: UserProfileInput,
-  ): Promise<any> {
-    return await this.saveUserProfile(userProfileInput);
-  }
+     @Mutation(()=>UserProfile,{name:'saveUserProfile'})
+    //  @UseGuards(Aut
+    async saveUserProfile(@Args('userProfileInput') userProfileInput:UserProfileInput):Promise<any>{
+     return await this.userProfileService.saveUserProfile(userProfileInput);
+    }
+
+
+ 
   @UseGuards(GqlAuthGuard)
   @Query(() => UserProfile, { name: 'getUserProfile' })
   async getUserProfile(@Args('userId') userId: string): Promise<UserProfile> {
