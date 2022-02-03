@@ -7,8 +7,13 @@ import { TagsInput } from './dto/tags.input';
 export class TagsResolver {
     constructor(private tagsService: TagsService) { }
 
+    @Mutation(() => TagsEntity)
+    async saveTag(@Args('tagInput') tagInput: TagsInput) {
+        return await this.tagsService.saveTag(tagInput);
+    }
+
     @Query(() => TagsEntity, {
-        name: 'getSpecificTag',
+        name: 'getspecificTag',
         description: 'fetch a tag',
     })
     async getTag(@Args('id') id: string): Promise<TagsEntity> {
@@ -17,12 +22,19 @@ export class TagsResolver {
 
     @Query(() => [TagsEntity], {
         name: 'getTags',
-        description: `Filter by: all,"", frequency, physical_activity,education,religion etc. 
-    Passing all or an empty string as parameter will fetch all
-       tags. To filter particular tags of type, pass the type as a parameter `,
+        description:
+            'Filter by: all,"", frequency, physical_activity,education,religion etc ',
     })
     async getTags(@Args('tagType') tagType: string): Promise<TagsEntity[]> {
         return await this.tagsService.getTags(tagType);
+    }
+
+    @Query(() => [TagsEntity], {
+        description:
+            'search by: frequency, physical_activity,education,religion etc',
+    })
+    async getTagsbyType(@Args('tagType') tagType: string) {
+        return await this.tagsService.getTagsbyType(tagType);
     }
 
     @Query(() => String)
