@@ -4,16 +4,17 @@ import { UserPreference } from "./entities/user-preference.entity";
 import { UserPreferenceResolver } from "./user-preference.resolver";
 import { UserPreferenceService } from "./user-preference.service";
 import { PassportModule } from "@nestjs/passport";
+import { JwtModule } from "@nestjs/jwt";
 
 @Module({
-    imports:[
-            TypeOrmModule.forFeature([UserPreference]),
-            PassportModule.register({defaultStrategy:'jwt'})
-    ],
-    providers:[
-        UserPreferenceResolver,UserPreferenceService
-    ],
-    exports:[]
+  imports: [
+    TypeOrmModule.forFeature([UserPreference]),
+    JwtModule.register({
+      secret: 'secret',
+      signOptions: { expiresIn: '1d' },
+    }),
+  ],
+  providers: [UserPreferenceResolver, UserPreferenceService],
+  exports: [],
 })
-
-export class UserPreferenceModule{}
+export class UserPreferenceModule {}
