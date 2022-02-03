@@ -4,11 +4,11 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Rating } from "./entities/rating.entity";
 import { Repository, In } from "typeorm";
 import { RatingInput } from "./dto/rating.input";
-import { SaveRatingInput, UpdateRatingInput } from "./dto/save-rating.input";
+import { SaveRatingInput } from "./dto/save-rating.input";
 import { RateCriteriasService } from "src/rate-criterias/rate-criterias.service";
-import { RatingGroupService } from "src/rating-group/rating-group.service";
+import { RatingGroupService } from "../rating-group/rating-group.service";
 import { RatingCommentService } from "src/rating-comment/rating-comment.service";
-import { AverageOutput, RatingOutput } from "./dto/rating.output";
+import { AverageOutput } from "./dto/rating.output";
 import { RatingCommentInput } from "src/rating-comment/dto/rating-comment.input";
 
 
@@ -33,29 +33,25 @@ export class RatingService {
         return await this.ratingRepository.save(ratingEntries);
     }
 
-    async getRatingByOwner(contentId: string): Promise<any> {
+    async getRatingByContent(contentId: string): Promise<any> {
         const details = await this.ratingRepository.find({ where: { contentId, final: true } });
 
 
         if (details.length !== 0) {
             try {
 
-                //   const allCritarias = await this.rateCriteriaService.getAllCriterias();
-                const allCritarias = [
-                    { id: '4', title: 'Trustworty', des: 'ghksnd smdsk' },
-                    { id: '2', title: 'Smart', des: 'ghksnd smdsk' },
-                    { id: '3', title: 'Attractive', des: 'gokie smdsk' },
-                ];
+                const allCritarias = await this.rateCriteriaService.getAllCriterias();
+
                 const newObject = [];
-                details.forEach((element) => {
-                    const criteria = allCritarias.find(
-                        (item) => item.id === element.criteriaId,
+                details.forEach(({ id, contentId, rating, criteriaId }) => {
+                    const { title } = allCritarias.find(
+                        (item) => item.id === criteriaId,
                     );
                     const data = {
-                        id: element.id,
-                        contentId: element.contentId,
-                        rating: element.rating,
-                        criteria: criteria.title,
+                        id,
+                        contentId,
+                        rating,
+                        criteria: title,
                     };
                     newObject.push(data);
                 });

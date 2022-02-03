@@ -15,7 +15,7 @@ export class LocationEntity extends BaseEntity {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: string;
   @Field(() => String)
-  @Column()
+  @Column({ type: 'bigint' })
   userId: string;
   @Field(() => String, { nullable: true })
   @Column()

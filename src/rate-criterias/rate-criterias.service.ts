@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { RateCriterias } from "./entities/rate-criterias.entity";
@@ -27,30 +27,31 @@ export class RateCriteriasService {
     }
 
 
-    async uploadCriterias(): Promise<boolean> {
+    async uploadCriterias(): Promise<any> {
+        const allCriterias = await this.getAllCriterias();
+        if (allCriterias.length > 0) throw new HttpException('Criterias already uploaded', HttpStatus.FORBIDDEN);
+        const filePath = path.resolve('dist/tags.xlsx');
+        readXlsxFile(filePath, { sheet: 'criterias' }).then(async rows => {
+            rows.shift();
 
-        // const filePath = path.resolve('dist/tags.xlsx');
-        // readXlsxFile(filePath, { sheet: 'criterias' }).then(async rows => {
-        //     rows.shift();
+            const criterias = []
+            rows.forEach((row) => {
 
-        //     const criterias = []
-        //     rows.forEach((row) => {
+                const criteria = {
+                    title: row[0],
+                    description: row[1],
+                    type: row[2],
+                    criteriaId: row[3].toString()
+                };
 
-        //         const criteria = {
-        //             title: row[0],
-        //             description: row[1],
-        //             type: row[2],
-        //             criteriaId: row[3].toString()
-        //         };
+                criterias.push(criteria);
+            });
 
-        //         criterias.push(criteria);
-        //     });
-
-        //     await this.rateCiteriasRepository.create(criterias);
-        //     const result = await this.rateCiteriasRepository.save(criterias);
-        //     if (!result) return false;
-        // })
-        return true;
+            await this.rateCiteriasRepository.create(criterias);
+            const result = await this.rateCiteriasRepository.save(criterias);
+            if (!result) throw new HttpException('upload failed', HttpStatus.BAD_REQUEST);
+        })
+        return 'upload successful';
     }
 
 

@@ -5,20 +5,24 @@ import { ObjectType, Field } from "@nestjs/graphql";
 
 @Entity('rating_comment')
 @ObjectType()
-export class RatingComment extends BaseEntity{
+export class RatingComment extends BaseEntity {
     @Field()
-    @PrimaryGeneratedColumn({type:'bigint'})
-    id:string;
+    @PrimaryGeneratedColumn({ type: 'bigint' })
+    id: string;
 
     @Field()
-    @Column({nullable:true})    
-    startTime:string;
+    @Column({ nullable: true })
+    startTime: string;
 
     @Field()
-    @Column({nullable:true})
-    endTime:string;
+    @Column({ nullable: true })
+    endTime: string;
 
     @Field()
     @Column()
-    comment:string;
+    comment: string;
+
+    @Field(() => Boolean)
+    @Column({ default: false })
+    final: boolean;
 }

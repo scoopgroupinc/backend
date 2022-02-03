@@ -3,7 +3,6 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserProfile } from "./entities/user-profile.entity";
 import { UserProfileResolver } from "./user-profile.resolver";
 import { UserProfileService } from "./user-profile.service";
-import { PassportModule } from "@nestjs/passport";
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
@@ -18,4 +17,4 @@ import { JwtModule } from '@nestjs/jwt';
   providers: [UserProfileResolver, UserProfileService],
   exports: [],
 })
-export class UserProfileModule {}
+export class UserProfileModule { }

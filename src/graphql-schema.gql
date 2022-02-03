@@ -51,12 +51,12 @@ type LocationEntity {
 
 type UserProfile {
   userId: ID!
-  createdAt: String!
+  createdAt: String
   profilePhoto: String
   birthday: String
-  height: Float
+  height: String
   gender: String
-  locationId: Float
+  locationId: String
   jobTitle: String
   jobTitleVisible: Boolean
   company: String
@@ -120,7 +120,47 @@ type UserPreference {
   sportsPreferences: [String!]
 }
 
+type TagsEntity {
+  id: String!
+  name: String
+  type: String
+  order: Float
+  visible: Boolean
+  emoji: String
+}
+
+type RatingComment {
+  id: String!
+  startTime: String!
+  endTime: String!
+  comment: String!
+  final: Boolean!
+}
+
+type RateCriterias {
+  id: ID!
+  criteriaId: String!
+  title: String!
+  description: String!
+  type: String!
+}
+
+type RatingOutput {
+  Trustworty: Float
+  Smart: Float
+  Attractive: Float
+  well_written: Float
+  Informative: Float
+  Engaging: Float
+}
+
+type AverageOutput {
+  average: Float
+  count: Float
+}
+
 type Query {
+  getUser(userId: String!): User!
   getUserDevice(macAddress: String!): UserDevice!
   getUserProfile(userId: String!): UserProfile!
 
@@ -129,22 +169,61 @@ type Query {
 
   """fetch user location details"""
   getUserLocation(userId: String!): LocationEntity!
+
+  """fetch a tag"""
+  getSpecificTag(id: String!): TagsEntity!
+
+  """
+  Filter by: all,"", frequency, physical_activity,education,religion etc. 
+      Passing all or an empty string as parameter will fetch all
+         tags. To filter particular tags of type, pass the type as a parameter 
+  """
+  getTags(tagType: String!): [TagsEntity!]!
+  uploadTags: String!
+
+  """Fetch rating for specific content"""
+  getRatingByContent(contentId: String!): RatingOutput!
+
+  """Fetch content comments by owner"""
+  getRatingContentComments(contentId: String!): [RatingComment!]!
+
+  """
+  Fetch average rating based on criteria id and/ or rater id. The first parameter 
+         is the rater id and then the criteria id. Passing the rater id as an empty string  will return a result of the 
+          average rating for the criteria id provided
+  """
+  getAverageRatings(criteriaId: String!, raterId: String!): AverageOutput!
+
+  """fetch a tag"""
+  getspecificTag(criteriaId: String!): RateCriterias!
+
+  """
+  Filter by: all,"", user_prompts and visual_prompts. 
+      Passing all or an empty string as parameter will fetch all criterias
+         tags. To filter particular criterias of type, pass the type as a parameter 
+  """
+  getCriterias(criteriaType: String!): [RateCriterias!]!
+  uploadCriterias: String!
 }
 
 type Mutation {
-  createUser(createUserInput: CreateUserInput!): Boolean!
+  createUser(createUserInput: CreateUserInput!): String!
   updateUser(updateUserInput: UpdateUserInput!): User!
   deleteUser(userId: String!): UserType!
   login(loginUserInput: LoginUserInput!): UserToken!
   activateAccount(email: String!, code: Float!): User!
-  resendActivationCode(email: String!): Boolean!
-  forgotPassword(email: String!): Boolean!
-  verifyPasswordResetCode(code: Float!, email: String!): Boolean!
+  resendActivationCode(email: String!): String!
+  forgotPassword(email: String!): String!
+  verifyPasswordResetCode(code: Float!, email: String!): String!
   resetPassword(password: String!, email: String!): User!
   saveDeviceDetails(userdeviceInput: UserDeviceInput!): UserDevice!
   saveUserProfile(userProfileInput: UserProfileInput!): UserProfile!
+  uploadFile(file: Upload!): Boolean!
+
+  """Use this endpoint to savs and update entity"""
   saveUserPreference(userPreferenceInput: UserPreferenceInput!): UserPreference!
   saveUserLocation(createLocationInput: CreateLocationInput!): LocationEntity!
+  saveRatingGroup(ratingGroupInput: SaveRatingInput!): String!
 }
 
 input CreateUserInput {
@@ -176,12 +255,12 @@ input UserDeviceInput {
 
 input UserProfileInput {
   userId: ID!
-  createdAt: String!
+  createdAt: String
   profilePhoto: String
   birthday: String
-  height: Float
+  height: String
   gender: String
-  locationId: Float
+  locationId: String
   jobTitle: String
   jobTitleVisible: Boolean
   company: String
@@ -234,6 +313,9 @@ input UserProfileInput {
   petsVisible: Boolean
 }
 
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
 input UserPreferenceInput {
   userId: ID!
   createdAt: String
@@ -254,4 +336,28 @@ input CreateLocationInput {
   stateProvince: String!
   country: String!
   zipPostal: Float!
+}
+
+input SaveRatingInput {
+  id: ID
+  raterId: String!
+  contentId: String!
+  type: String!
+  comment: [RatingCommentInput!]!
+  ratingDetails: [saveRatingDto!]!
+  startTime: String!
+  endTime: String!
+}
+
+input RatingCommentInput {
+  id: ID
+  startTime: String!
+  endTime: String!
+  comment: String!
+}
+
+input saveRatingDto {
+  id: ID
+  criteriaId: String!
+  rating: Float!
 }

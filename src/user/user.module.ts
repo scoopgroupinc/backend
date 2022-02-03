@@ -19,5 +19,6 @@ import { UserDeviceModule } from '../user-devices/user-devices.module';
     UserDeviceModule
   ],
   providers: [UserResolver, UserService, AuthService],
+  exports:[UserService]
 })
 export class UserModule {}

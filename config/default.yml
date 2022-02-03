@@ -5,13 +5,13 @@ DB:
    type: 'postgres'
    port: 5432
    database: 'postgres'
-   host: "18.214.236.253"
+   host: "3.17.50.223"
    username: 'icpostgresql'
-   password: '7d2fc198087efb162b821d6704b18182'
+   password: 'a271fd81ec6cdc4fcb8801e2fd571d7d'
    synchronize: true
 
 redis:
-  host: '54.68.182.224'
+  host: '18.218.140.148'
   port: 6379
   password: 'b61023583ec444cb'
   username: 'icredis'

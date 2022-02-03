@@ -28,7 +28,7 @@ export class RateCriteriasResolver {
         return await this.rateCriteriaService.getRatingCriteriaByType(criteriaType);
     }
 
-    @Query(() => Boolean)
+    @Query(() => String)
     async uploadCriterias() {
         return await this.rateCriteriaService.uploadCriterias();
     }

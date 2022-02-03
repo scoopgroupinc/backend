@@ -1,4 +1,3 @@
-
 import { TagsEntity } from './entities/tags.entity';
 import { TagsService } from './tags.service';
 import { Mutation, Args, Resolver, Query } from '@nestjs/graphql';
@@ -38,7 +37,7 @@ export class TagsResolver {
         return await this.tagsService.getTagsbyType(tagType);
     }
 
-    @Query(() => Boolean)
+    @Query(() => String)
     async uploadTags() {
         return await this.tagsService.uploadTags();
     }
