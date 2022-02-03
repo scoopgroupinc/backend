@@ -13,7 +13,7 @@ export class TagsResolver {
     }
 
     @Query(() => TagsEntity, {
-        name: 'getspecificTag',
+        name: 'getSpecificTag',
         description: 'fetch a tag',
     })
     async getTag(@Args('id') id: string): Promise<TagsEntity> {

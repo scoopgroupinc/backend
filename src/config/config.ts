@@ -35,5 +35,8 @@ export const config = () => ({
       RatingGroup,
       RateCriterias
     ],
+    ssl: {
+      rejectUnauthorized: false,
+    },
   },
 });

@@ -70,7 +70,7 @@ export class UserService {
       throw new BadRequestException('Kindly activate your account');
 
     const payload = {
-      token: this.authService.generateJwt(user),
+      token: this.authService.generateJwt(user.email),
       user,
     };
 
@@ -84,7 +84,15 @@ export class UserService {
       throw new BadRequestException('Unable to activate account. Wrong Code');
     }
 
-    return await this.userRepository.save({ ...user, isVerified: true });
+    const result = await this.userRepository.save({ ...user, isVerified: true });
+    if (result) {
+      const payload = {
+        token: this.authService.generateJwt(result.email),
+        result,
+      }
+
+      return payload;
+    }
   }
 
   async resendActivationCode(email: string) {

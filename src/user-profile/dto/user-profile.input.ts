@@ -1,15 +1,8 @@
 /* eslint-disable prettier/prettier */
 import { InputType, Field, ID } from '@nestjs/graphql';
 import {
-  IsString,
-  IsNumber,
-  IsObject,
-  IsBoolean,
-  IsArray,
-  IsEmpty,
   IsOptional,
 } from 'class-validator';
-import { Column } from 'typeorm';
 
 @InputType()
 export class UserProfileInput {

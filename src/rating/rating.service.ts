@@ -6,7 +6,7 @@ import { Repository, In } from "typeorm";
 import { RatingInput } from "./dto/rating.input";
 import { SaveRatingInput } from "./dto/save-rating.input";
 import { RateCriteriasService } from "src/rate-criterias/rate-criterias.service";
-import { RatingGroupService } from "src/rating-group/rating-group.service";
+import { RatingGroupService } from "../rating-group/rating-group.service";
 import { RatingCommentService } from "src/rating-comment/rating-comment.service";
 import { AverageOutput } from "./dto/rating.output";
 import { RatingCommentInput } from "src/rating-comment/dto/rating-comment.input";

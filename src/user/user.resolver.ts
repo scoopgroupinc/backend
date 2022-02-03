@@ -1,7 +1,4 @@
 import { BadRequestException } from '@nestjs/common';
-
-import { UpdateAuthInput } from './../auth/dto/update-auth.input';
-import { Token } from 'graphql';
 import {
   Resolver,
   Query,
@@ -19,8 +16,6 @@ import { LoginUserInput } from './dto/login-user.input';
 import { AuthService } from '../auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { GqlAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { UserInput } from './dto/user.input';
-import { argsToArgsConfig } from 'graphql/type/definition';
 import { UserType } from './types/delete-user.schema';
 
 @Resolver(() => User)
@@ -36,16 +31,19 @@ export class UserResolver {
     return await this.userService.create(createUserInput);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => User)
   async updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
     return await this.userService.updateAccount(updateUserInput);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Query(() => User)
   async getUser(@Args('userId') userId: string) {
     return await this.userService.findOneByID(userId);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => UserType)
   async deleteUser(@Args('userId') userId: string) {
     const user = await this.userService.findOne(userId);
@@ -63,7 +61,7 @@ export class UserResolver {
     return await this.userService.login(loginUserInput);
   }
 
-  @Mutation(() => User)
+  @Mutation(() => UserToken)
   async activateAccount(
     @Args('code') code: number,
     @Args('email') email: string,
@@ -89,6 +87,7 @@ export class UserResolver {
     return await this.userService.verifyResetCode(email, code);
   }
 
+  @UseGuards(GqlAuthGuard)
   @Mutation(() => User)
   async resetPassword(
     @Args('email') email: string,
