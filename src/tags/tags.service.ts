@@ -71,7 +71,7 @@ export class TagsService {
 
     async uploadTags() {
 
-        const alltags = await this.getTags("");
+        const alltags = await this.getTags("religion");
         if (alltags.length > 0) throw new HttpException('Tags already uploaded', HttpStatus.FORBIDDEN);
         const filePath = path.resolve('dist/tags.xlsx');
 
