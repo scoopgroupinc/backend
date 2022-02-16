@@ -8,12 +8,14 @@ import { WsAdapter } from '@nestjs/platform-ws'
 import { RedisIoAdapter } from './chat/adapters/redis.adapter';
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { graphqlUploadExpress } from 'graphql-upload'
+import * as multer from 'multer';
 
 
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   //  app.useWebSocketAdapter(new RedisIoAdapter(app))
+
   app.use(graphqlUploadExpress());
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());

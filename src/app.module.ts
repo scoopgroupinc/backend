@@ -27,7 +27,7 @@ import { PromptsModule } from './prompts/prompts.module';
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/graphql-schema.gql'),
       playground: true,
-      introspection: true
+      introspection: true,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

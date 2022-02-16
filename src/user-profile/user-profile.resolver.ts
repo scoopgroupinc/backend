@@ -1,12 +1,15 @@
 /* eslint-disable prettier/prettier */
 import { Resolver, Args, Mutation, Query } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { GraphQLUpload, FileUpload } from 'graphql-upload';
+import { createWriteStream, statSync } from 'fs';
+import { GraphQLString } from 'graphql';
+import { v4 as uuid } from 'uuid';
+
 import { UserProfile } from './entities/user-profile.entity';
 import { UserProfileService } from './user-profile.service';
-import { UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UserProfileInput } from './dto/user-profile.input';
-import { GraphQLUpload, FileUpload } from 'graphql-upload';
-import { createWriteStream } from 'fs';
 
 @Resolver(() => UserProfile)
 export class UserProfileResolver {
@@ -27,18 +30,20 @@ export class UserProfileResolver {
     return await this.userProfileService.findOne(userId);
   }
 
-  @Mutation(() => Boolean)
-  async uploadFile(
+  @Mutation(() => GraphQLString)
+  async uploadProfilePic(
+    @Args('userId') userId: string,
     @Args({ name: 'file', type: () => GraphQLUpload })
-    { createReadStream, filename }: FileUpload,
-  ): Promise<any> {
-    // createReadStream()
-    // .pipe(createWriteStream(__dirname+`/uploads/${filename}`))
-    // .on('finish', () => true)
-    // .on('error', () =>false)
+    { createReadStream, filename, mimetype }: FileUpload): Promise<any> {
 
-    // console.log(this.someFunction)
-    return true;
+    await this.userProfileService.fileFilter(mimetype)
+    this.userProfileService.createFileStream(createReadStream, filename, userId)
+    return 'success';
+  }
+
+  @Query(() => GraphQLString)
+  async getUserProfilePic(@Args('userId') userId: string) {
+    return await this.userProfileService.getUserProfilePic(userId)
   }
 
 }

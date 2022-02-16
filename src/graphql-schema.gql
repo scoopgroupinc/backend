@@ -170,6 +170,7 @@ type Query {
   getUser(userId: String!): User!
   getUserDevice(macAddress: String!): UserDevice!
   getUserProfile(userId: String!): UserProfile!
+  getUserProfilePic(userId: String!): String!
 
   """fetch user preference"""
   getUserPreference(userId: String!): UserPreference!
@@ -239,7 +240,7 @@ type Mutation {
   resetPassword(password: String!, email: String!): User!
   saveDeviceDetails(userdeviceInput: UserDeviceInput!): UserDevice!
   saveUserProfile(userProfileInput: UserProfileInput!): UserProfile!
-  uploadFile(file: Upload!): Boolean!
+  uploadFile(file: Upload!, userId: String!): String!
 
   """Use this endpoint to savs and update entity"""
   saveUserPreference(userPreferenceInput: UserPreferenceInput!): UserPreference!

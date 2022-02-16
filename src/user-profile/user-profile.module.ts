@@ -13,7 +13,6 @@ import { JwtModule } from '@nestjs/jwt';
       signOptions: { expiresIn: '1d' },
     }),
   ],
-
   providers: [UserProfileResolver, UserProfileService],
   exports: [],
 })
