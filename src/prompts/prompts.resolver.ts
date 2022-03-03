@@ -1,11 +1,11 @@
-import { Mutation, Resolver, Args, Query } from '@nestjs/graphql';
-import { PromptsInput } from './dto/prompts.input';
-import { Prompts } from './entities/prompts.entity';
-import { PromptsService } from './prompts.service';
+import { Mutation, Resolver, Args, Query } from '@nestjs/graphql'
+import { PromptsInput } from './dto/prompts.input'
+import { Prompts } from './entities/prompts.entity'
+import { PromptsService } from './prompts.service'
 
 @Resolver(() => Prompts)
 export class PromptsResolver {
-    constructor(private promptService: PromptsService) { }
+    constructor(private promptService: PromptsService) {}
 
     @Query(() => [Prompts], {
         description: `To fetch all prompts, pass all or empty string('') as first parameter and empty
@@ -15,22 +15,22 @@ export class PromptsResolver {
     })
     async getPrompts(
         @Args('promptType') promptType: string,
-        @Args('id') id: string,
+        @Args('id') id: string
     ): Promise<Prompts[]> {
-        return await this.promptService.getPrompts(promptType, id);
+        return await this.promptService.getPrompts(promptType, id)
     }
 
     @Mutation(() => Prompts)
     async addNewPrompt(
-        @Args('promptInput') promptInput: PromptsInput,
+        @Args('promptInput') promptInput: PromptsInput
     ): Promise<any> {
-        return await this.promptService.addNewPrompt(promptInput);
+        return await this.promptService.addNewPrompt(promptInput)
     }
 
     @Query(() => String, {
         description: `Always specify the prompt type (prompts and visual_prompts) to upload. Pass the prompt type as parameter.`,
     })
     async uploadPrompts(@Args('promptType') promptType: string) {
-        return await this.promptService.uploadPrompts(promptType);
+        return await this.promptService.uploadPrompts(promptType)
     }
 }

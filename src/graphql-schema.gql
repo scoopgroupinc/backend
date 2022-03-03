@@ -42,11 +42,11 @@ type LocationEntity {
   userId: String!
   latitude: String
   longitude: String
-  address_line_1: String
-  address_line_2: String
-  state_province: String
+  addressLine1: String
+  addressLine2: String
+  stateProvince: String
   country: String
-  zip_postal: Float
+  zipPostal: Float
 }
 
 type UserProfile {
@@ -240,7 +240,6 @@ type Mutation {
   resetPassword(password: String!, email: String!): User!
   saveDeviceDetails(userdeviceInput: UserDeviceInput!): UserDevice!
   saveUserProfile(userProfileInput: UserProfileInput!): UserProfile!
-  uploadFile(file: Upload!, userId: String!): String!
 
   """Use this endpoint to savs and update entity"""
   saveUserPreference(userPreferenceInput: UserPreferenceInput!): UserPreference!
@@ -336,9 +335,6 @@ input UserProfileInput {
   pets: [String!]
   petsVisible: Boolean
 }
-
-"""The `Upload` scalar type represents a file upload."""
-scalar Upload
 
 input UserPreferenceInput {
   userId: ID!

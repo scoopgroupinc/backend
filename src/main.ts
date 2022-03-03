@@ -7,9 +7,7 @@ import { NestExpressApplication } from '@nestjs/platform-express'
 import { WsAdapter } from '@nestjs/platform-ws'
 import { RedisIoAdapter } from './chat/adapters/redis.adapter';
 import { IoAdapter } from '@nestjs/platform-socket.io';
-import { graphqlUploadExpress } from 'graphql-upload'
-import * as multer from 'multer';
-
+import { graphqlUploadExpress } from 'graphql-upload';
 
 
 async function bootstrap() {
