@@ -9,6 +9,7 @@ import { Rating } from 'src/rating/entities/rating.entity';
 import { RatingComment } from 'src/rating-comment/entities/rating-comment.entity';
 import { RatingGroup } from 'src/rating-group/entities/rating-group.entity';
 import { RateCriterias } from 'src/rate-criterias/entities/rate-criterias.entity';
+import { Prompts } from 'src/prompts/entities/prompts.entity';
 
 export const config = () => ({
   port: parseInt(process.env.PORT, 10) || 3000,
@@ -33,7 +34,8 @@ export const config = () => ({
       Rating,
       RatingComment,
       RatingGroup,
-      RateCriterias
+      RateCriterias,
+      Prompts
     ],
     ssl: {
       rejectUnauthorized: false,

@@ -15,6 +15,7 @@ import { RatingModule } from './rating/rating.module';
 import { RatingCommentModule } from './rating-comment/rating-comment.module';
 import { RatingGroupModule } from './rating-group/rating-group.module';
 import { RateCriteriasModule } from './rate-criterias/rate-criterias.module';
+import { PromptsModule } from './prompts/prompts.module';
 
 @Module({
   imports: [
@@ -25,8 +26,8 @@ import { RateCriteriasModule } from './rate-criterias/rate-criterias.module';
 
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/graphql-schema.gql'),
-      playground:true,
-      introspection:true
+      playground: true,
+      introspection: true
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -42,8 +43,9 @@ import { RateCriteriasModule } from './rate-criterias/rate-criterias.module';
     RatingCommentModule,
     RatingGroupModule,
     RateCriteriasModule,
+    PromptsModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }

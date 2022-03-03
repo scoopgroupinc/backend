@@ -145,6 +145,13 @@ type RateCriterias {
   type: String!
 }
 
+type Prompts {
+  id: ID!
+  prompt: String!
+  type: String!
+  sample_answer: String
+}
+
 type RatingOutput {
   Trustworty: Float
   Smart: Float
@@ -174,11 +181,12 @@ type Query {
   getSpecificTag(id: String!): TagsEntity!
 
   """
-  Filter by: all,"", frequency, physical_activity,education,religion etc. 
-      Passing all or an empty string as parameter will fetch all
-         tags. To filter particular tags of type, pass the type as a parameter 
+  Filter by: all,"", frequency, physical_activity,education,religion etc 
   """
   getTags(tagType: String!): [TagsEntity!]!
+
+  """search by: frequency, physical_activity,education,religion etc"""
+  getTagsbyType(tagType: String!): [TagsEntity!]!
   uploadTags: String!
 
   """Fetch rating for specific content"""
@@ -204,6 +212,19 @@ type Query {
   """
   getCriterias(criteriaType: String!): [RateCriterias!]!
   uploadCriterias: String!
+
+  """
+  To fetch all prompts, pass all or empty string('') as first parameter and empty
+      string ('') as second parameter, id. To fetch prompts of a type (prompts and visual_prompts only), specify the prompt type as first parameter and empty
+      string ('') as second parameter, id. Specify or pass id as second paramter whiles the second parameter remains an empty
+      string ('') to fetch a specific prompt.
+  """
+  getPrompts(id: String!, promptType: String!): [Prompts!]!
+
+  """
+  Always specify the prompt type (prompts and visual_prompts) to upload. Pass the prompt type as parameter.
+  """
+  uploadPrompts(promptType: String!): String!
 }
 
 type Mutation {
@@ -211,7 +232,7 @@ type Mutation {
   updateUser(updateUserInput: UpdateUserInput!): User!
   deleteUser(userId: String!): UserType!
   login(loginUserInput: LoginUserInput!): UserToken!
-  activateAccount(email: String!, code: Float!): User!
+  activateAccount(email: String!, code: Float!): UserToken!
   resendActivationCode(email: String!): String!
   forgotPassword(email: String!): String!
   verifyPasswordResetCode(code: Float!, email: String!): String!
@@ -223,7 +244,9 @@ type Mutation {
   """Use this endpoint to savs and update entity"""
   saveUserPreference(userPreferenceInput: UserPreferenceInput!): UserPreference!
   saveUserLocation(createLocationInput: CreateLocationInput!): LocationEntity!
+  saveTag(tagInput: TagsInput!): TagsEntity!
   saveRatingGroup(ratingGroupInput: SaveRatingInput!): String!
+  addNewPrompt(promptInput: PromptsInput!): Prompts!
 }
 
 input CreateUserInput {
@@ -338,6 +361,15 @@ input CreateLocationInput {
   zipPostal: Float!
 }
 
+input TagsInput {
+  id: ID!
+  name: String!
+  type: String!
+  order: Float!
+  visible: Boolean!
+  emoji: String!
+}
+
 input SaveRatingInput {
   id: ID
   raterId: String!
@@ -360,4 +392,11 @@ input saveRatingDto {
   id: ID
   criteriaId: String!
   rating: Float!
+}
+
+input PromptsInput {
+  id: ID!
+  prompt: String!
+  type: String!
+  sample_answer: String
 }
