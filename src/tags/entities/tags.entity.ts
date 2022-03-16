@@ -1,5 +1,5 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { ObjectType, Field } from '@nestjs/graphql';
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from 'typeorm'
+import { ObjectType, Field } from '@nestjs/graphql'
 
 export enum tagType {
     physical_activity = 'physical_activity',
@@ -13,25 +13,25 @@ export enum tagType {
 export class TagsEntity extends BaseEntity {
     @Field()
     @PrimaryGeneratedColumn({ type: 'bigint' })
-    id: string;
+    id: string
 
     @Field(() => String, { nullable: true })
     @Column()
-    name: string;
+    name: string
 
     @Field(() => String, { nullable: true })
     @Column({ enum: tagType })
-    type: string;
+    type: string
 
     @Field(() => Number, { nullable: true })
     @Column({ type: 'decimal', nullable: true })
-    order: number | null;
+    order: number | null
 
     @Field(() => Boolean, { nullable: true })
     @Column({ type: 'boolean', default: false })
-    visible: boolean;
+    visible: boolean
 
     @Field(() => String, { nullable: true })
     @Column({ type: 'text', nullable: true })
-    emoji: string | null;
+    emoji: string | null
 }

@@ -15,7 +15,6 @@ export class UserPrompts extends BaseEntity {
     id: string
 
     @Field(() => String)
-    @Column()
     @CreateDateColumn({ type: 'timestamp' })
     createdAt: string
 

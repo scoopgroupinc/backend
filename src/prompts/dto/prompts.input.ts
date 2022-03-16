@@ -1,19 +1,19 @@
-import { InputType, Field, ID } from '@nestjs/graphql';
-import { IsNotEmpty } from 'class-validator';
+import { InputType, Field, ID } from '@nestjs/graphql'
+import { IsNotEmpty } from 'class-validator'
 
 @InputType()
 export class PromptsInput {
     @Field(() => ID)
-    id: string;
+    id: string
 
     @Field(() => String)
     @IsNotEmpty()
-    prompt: string;
+    prompt: string
 
     @Field(() => String)
     @IsNotEmpty()
-    type: string;
+    type: string
 
     @Field(() => String, { nullable: true })
-    sample_answer?: string;
+    sample_answer?: string
 }

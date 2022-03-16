@@ -43,4 +43,5 @@ export const config = () => ({
             rejectUnauthorized: false,
         },
     },
+    fileServer_Url: process.env.BE_FILE_SERVER_URL,
 })

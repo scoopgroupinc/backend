@@ -1,36 +1,37 @@
-import * as  nodemailer from 'nodemailer';
-import * as  config from 'config';
+import * as nodemailer from 'nodemailer'
+import * as config from 'config'
+import logger from '../utils/logger'
 
-const {user,pass,host,port} = config.get('mail');
+const { user, pass, host, port } = config.get('mail')
 
-export const Mailer= async (data)=>{
+export const Mailer = async (data) => {
     try {
-        var transporter = nodemailer.createTransport({
+        const transporter = nodemailer.createTransport({
             host: host,
             port: port,
             secure: true,
             auth: {
-                user: user,    //Email for sending 
-                pass: pass       //SenderEmail password
-            }
-        });
+                user: user, //Email for sending
+                pass: pass, //SenderEmail password
+            },
+        })
 
-        var mailOptions = {
-            from: user,       //Email for sending 
-            to: data.reciever,          //Recievers Email
-            subject: data.subject,   //Email Subject
-            text: data.message,      //Plain text message
-            html: data.html          //HTML version  of plain text messgae
-        };
+        const mailOptions = {
+            from: user, //Email for sending
+            to: data.reciever, //Recievers Email
+            subject: data.subject, //Email Subject
+            text: data.message, //Plain text message
+            html: data.html, //HTML version  of plain text messgae
+        }
 
-        let feedbak = await transporter.sendMail(mailOptions);
+        const feedbak = await transporter.sendMail(mailOptions)
         if (feedbak.rejected.length === 0) {
             return true
         } else {
             return false
         }
     } catch (error) {
-        console.log(error)
-        return error;
+        logger.debug(error)
+        return error
     }
 }

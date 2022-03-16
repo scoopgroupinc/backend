@@ -9,7 +9,7 @@ type User {
   email: String
   phoneNumber: String
   password: String
-  createdAt: String
+  createdAt: String!
   salt: String
   code: Float
   isVerified: Boolean
@@ -170,7 +170,6 @@ type Query {
   getUser(userId: String!): User!
   getUserDevice(macAddress: String!): UserDevice!
   getUserProfile(userId: String!): UserProfile!
-  getUserProfilePic(userId: String!): String!
 
   """fetch user preference"""
   getUserPreference(userId: String!): UserPreference!
@@ -238,6 +237,7 @@ type Mutation {
   forgotPassword(email: String!): String!
   verifyPasswordResetCode(code: Float!, email: String!): String!
   resetPassword(password: String!, email: String!): User!
+  testNewMailer(code: Float!, email: String!): String!
   saveDeviceDetails(userdeviceInput: UserDeviceInput!): UserDevice!
   saveUserProfile(userProfileInput: UserProfileInput!): UserProfile!
 

@@ -1,4 +1,4 @@
-import { Field, ObjectType, ID } from '@nestjs/graphql';
+import { Field, ObjectType, ID } from '@nestjs/graphql'
 import {
     PrimaryColumn,
     Entity,
@@ -6,38 +6,40 @@ import {
     BaseEntity,
     Column,
     PrimaryGeneratedColumn,
-} from 'typeorm';
-import { IsNumber, IsMACAddress } from 'class-validator';
+    CreateDateColumn,
+    UpdateDateColumn,
+} from 'typeorm'
+import { IsNumber, IsMACAddress } from 'class-validator'
 
 @Entity('user_devices')
 @ObjectType()
 export class UserDevice extends BaseEntity {
     @Field(() => ID)
     @PrimaryGeneratedColumn({ type: 'bigint' })
-    id: string;
+    id: string
 
     @Field(() => ID)
     @PrimaryColumn({ type: 'bigint' })
-    userId: string;
+    userId: string
 
     @Field(() => String)
-    @Column({ type: 'date' })
-    createdAt?: string;
+    @CreateDateColumn({ type: 'timestamp' })
+    createdAt?: string
 
     @Field(() => String, { nullable: true })
     @Column({ nullable: true })
-    osType: string;
+    osType: string
 
     @Field(() => String, { nullable: true })
     @IsMACAddress()
     @Column({ nullable: true })
-    macAddress?: string;
+    macAddress?: string
 
     @Field(() => String, { nullable: true })
     @Column({ nullable: true })
-    version?: string;
+    version?: string
 
     @Field(() => String, { nullable: true })
-    @Column({ nullable: true })
-    lastLogin?: string;
+    @UpdateDateColumn()
+    lastLogin?: string
 }

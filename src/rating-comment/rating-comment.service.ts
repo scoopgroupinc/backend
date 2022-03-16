@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import logger from '../utils/logger'
 import { In, Repository } from 'typeorm'
 import { RatingCommentInput } from './dto/rating-comment.input'
 import { RatingComment } from './entities/rating-comment.entity'
@@ -31,7 +32,7 @@ export class RatingCommentService {
             })
             return comments
         } catch (error) {
-            console.log(error)
+            logger.debug(error)
             return new HttpException(
                 'Something went wrong',
                 HttpStatus.BAD_REQUEST

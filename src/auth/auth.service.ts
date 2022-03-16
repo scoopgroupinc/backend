@@ -1,13 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { User } from "../user/entities/user.entity"
+import { Injectable } from '@nestjs/common'
+import { JwtService } from '@nestjs/jwt'
+import { User } from '../user/entities/user.entity'
 
 @Injectable()
 export class AuthService {
-  constructor(private jwtService: JwtService) { }
+    constructor(private jwtService: JwtService) {}
 
-  generateJwt(email: string): Promise<string> {
-    return this.jwtService.signAsync(email);
-  }
-
+    generateJwt(email: string): Promise<string> {
+        return this.jwtService.signAsync(email)
+    }
 }

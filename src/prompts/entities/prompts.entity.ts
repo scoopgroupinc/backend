@@ -1,5 +1,5 @@
-import { Field, ID, ObjectType } from '@nestjs/graphql';
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Field, ID, ObjectType } from '@nestjs/graphql'
+import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
 export enum promptType {
     prompts = 'prompts',
@@ -11,17 +11,17 @@ export enum promptType {
 export class Prompts extends BaseEntity {
     @Field(() => ID)
     @PrimaryGeneratedColumn({ type: 'bigint' })
-    id: string;
+    id: string
 
     @Field(() => String)
     @Column()
-    prompt: string;
+    prompt: string
 
     @Field(() => String)
     @Column({ enum: promptType })
-    type: string;
+    type: string
 
     @Field(() => String, { nullable: true })
     @Column({ nullable: true })
-    sample_answer: string;
+    sample_answer: string
 }

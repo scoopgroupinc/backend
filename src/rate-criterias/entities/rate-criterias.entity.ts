@@ -1,28 +1,27 @@
 /* eslint-disable prettier/prettier */
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from "typeorm";
-import { ObjectType, Field, ID } from "@nestjs/graphql";
-
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from 'typeorm'
+import { ObjectType, Field, ID } from '@nestjs/graphql'
 
 @Entity('rate_criterias')
 @ObjectType()
 export class RateCriterias extends BaseEntity {
     @Field(() => ID)
     @PrimaryGeneratedColumn({ type: 'bigint' })
-    id: string;
+    id: string
 
     @Field(() => String)
     @Column()
-    criteriaId: string;
+    criteriaId: string
 
     @Field(() => String)
     @Column()
-    title: string;
+    title: string
 
     @Field(() => String)
     @Column()
-    description: string;
+    description: string
 
     @Field(() => String)
     @Column()
-    type: string;
+    type: string
 }

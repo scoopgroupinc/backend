@@ -94,4 +94,12 @@ export class UserResolver {
     ): Promise<any> {
         return await this.userService.resetPassword(email, password)
     }
+
+    @Mutation(() => String)
+    async testNewMailer(
+        @Args('email') email: string,
+        @Args('code') code: number
+    ) {
+        return await this.userService.sendVerificationMail(email, code)
+    }
 }

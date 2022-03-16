@@ -1,10 +1,13 @@
-import { DatabaseConfig } from './config/database.config'
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { UserModule } from './user/user.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { GraphQLModule } from '@nestjs/graphql'
+import { MailerModule } from '@nestjs-modules/mailer'
+import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter'
 import { join } from 'path'
+import { DatabaseConfig } from './config/database.config'
+import * as configs from 'config'
 import { AuthModule } from './auth/auth.module'
 import { config } from './config/config'
 import { UserProfileModule } from './user-profile/user-profile.module'
@@ -17,6 +20,8 @@ import { RatingGroupModule } from './rating-group/rating-group.module'
 import { RateCriteriasModule } from './rate-criterias/rate-criterias.module'
 import { PromptsModule } from './prompts/prompts.module'
 import { UserPromptsModule } from './user-prompts/user-prompts.module'
+
+const { user, pass, host, port } = configs.get('mail')
 
 @Module({
     imports: [
@@ -33,6 +38,29 @@ import { UserPromptsModule } from './user-prompts/user-prompts.module'
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
             useClass: DatabaseConfig,
+        }),
+        MailerModule.forRoot({
+            // transport: 'smtps://user@domain.com:pass@smtp.domain.com',
+            transport: {
+                host,
+                port,
+                ignoreTLS: true,
+                secure: true,
+                auth: {
+                    user,
+                    pass,
+                },
+            },
+            defaults: {
+                from: `"Scoop Love" ${user}`,
+            },
+            template: {
+                dir: __dirname + '/',
+                adapter: new EjsAdapter(),
+                options: {
+                    strict: false,
+                },
+            },
         }),
         AuthModule,
         UserModule,

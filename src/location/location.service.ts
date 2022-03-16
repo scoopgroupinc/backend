@@ -4,6 +4,7 @@ import { locationDTO } from './dto/location.dto'
 import { LocationEntity } from './entities/location.entity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
+import logger from '../utils/logger'
 
 @Injectable()
 export class LocationService {
@@ -19,7 +20,7 @@ export class LocationService {
             if (user) return await this.updateLocation(createLocationInput)
             return await this.createLocation(createLocationInput)
         } catch (error) {
-            console.log(error)
+            logger.debug(error)
             return error
         }
     }

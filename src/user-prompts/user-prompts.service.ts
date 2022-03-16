@@ -4,16 +4,19 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { In, Repository } from 'typeorm'
 import { UserPromptsInput } from './dto/user-prompts.input'
 import { UserPrompts } from './entities/user-prompts.entity'
+import { ConfigService } from '@nestjs/config'
 
 @Injectable()
 export class UserPromptsService {
     constructor(
         @InjectRepository(UserPrompts)
         private userPromptsRepository: Repository<UserPrompts>,
-        private httpService: HttpService
+        private httpService: HttpService,
+        private configService: ConfigService
     ) {}
 
-    clientUrl = 'http://localhost:4040//api/v1/userDisplay/'
+    clientUrl = this.configService.get('fileServer_Url')
+
     async saveUserPrompt(userPromptsInput: UserPromptsInput): Promise<any> {
         try {
             const createdAt = new Date().toISOString().toString()

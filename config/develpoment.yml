@@ -1,13 +1,13 @@
 DB:
-  host: "52.32.202.140"
-  username: 'icpostgresql'
-  password: '189c57fc38e7c02dfb28f7b9f1a1c6f8'
-  synchronize: true
+    host: '52.32.202.140'
+    username: 'icpostgresql'
+    password: '189c57fc38e7c02dfb28f7b9f1a1c6f8'
+    synchronize: true
 
 redis:
-  host: 'localhost'
-  port: 6379
+    host: 'localhost'
+    port: 6379
 
 jwt:
-   secret: 'some secrete her'
-   expiresIn: 7200
+    secret: 'some secrete her'
+    expiresIn: 7200

@@ -7,21 +7,23 @@ import {
     HttpException,
     HttpStatus,
 } from '@nestjs/common'
+import { MailerService } from '@nestjs-modules/mailer'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { User } from './entities/user.entity'
-import { Mailer } from '../common/email.service'
 import { LoginUserInput } from './dto/login-user.input'
 import { AuthService } from '../auth/auth.service'
 import { UserDeviceService } from '../user-devices/user-devices.service'
 import { UpdateUserInput } from './dto/update-user.input'
+import logger from 'src/utils/logger'
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(User) private userRepository: Repository<User>,
         private authService: AuthService,
-        private deviceService: UserDeviceService
+        private deviceService: UserDeviceService,
+        private mailerService: MailerService
     ) {}
 
     async create(data: any) {
@@ -37,19 +39,19 @@ export class UserService {
                 salt,
                 code,
                 isVerified: false,
-                createdAt: new Date().toISOString().toString(),
             })
 
             const result = await this.sendVerificationMail(email, code)
             if (result)
                 return 'Account created successfully. Check email to activate account'
+            await this.userRepository.delete({ email })
 
             throw new HttpException(
                 'Sign Up failed',
                 HttpStatus.EXPECTATION_FAILED
             )
         } catch (error) {
-            console.log(error)
+            logger.debug(error)
             throw new HttpException(
                 'Sign Up failed',
                 HttpStatus.EXPECTATION_FAILED
@@ -124,7 +126,7 @@ export class UserService {
         const code = await this.generateFourDigitCode()
         await this.userRepository.save({ ...user, resetCode: code })
         const result = await this.sendforgotPasswordMail(email, code)
-        if (result) return 'Your password has been changed successfully'
+        if (result) return 'Password reset link sent to your email'
         return 'Password reset failed'
     }
 
@@ -156,30 +158,46 @@ export class UserService {
     }
 
     async sendVerificationMail(email: string, code: number): Promise<boolean> {
-        const mailData = {
-            reciever: email,
-            subject: 'Scoop account Activation',
-            message: `Dear user,`,
-            html:
-                `<h2>Hi ! </h2> <p>Kindly enter the code below to verify your accoount.</p>` +
-                `<h6>${code}</h6>`,
+        try {
+            const response = await this.mailerService.sendMail({
+                to: email,
+                from: 'noreply@scoop.love',
+                subject: 'Scoop account Activation ✔',
+                text: 'welcome',
+                template: 'activation',
+                context: { code },
+            })
+            if (response.rejected.length === 0) {
+                return true
+            } else {
+                return false
+            }
+        } catch (error) {
+            logger.debug(error)
         }
-        return await Mailer(mailData)
     }
 
     async sendforgotPasswordMail(
         email: string,
         code: number
     ): Promise<boolean> {
-        const mailData = {
-            reciever: email,
-            subject: 'Reset password',
-            message: `Hi,`,
-            html:
-                `<h2>Hi ! </h2> <p>Kindly enter the code below to verify your accoount.</p>` +
-                `<h6>${code}</h6>`,
+        try {
+            const response = await this.mailerService.sendMail({
+                to: email,
+                // from: 'noreply@scoop.love',
+                subject: 'Reset password ✔',
+                text: 'welcome',
+                template: 'activation',
+                context: { code },
+            })
+            if (response.rejected.length === 0) {
+                return true
+            } else {
+                return false
+            }
+        } catch (error) {
+            logger.debug(error)
         }
-        return await Mailer(mailData)
     }
 
     async hashPassward(password: string, salt: string): Promise<string> {
