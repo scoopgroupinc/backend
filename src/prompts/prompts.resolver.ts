@@ -1,4 +1,6 @@
+import { UseGuards } from '@nestjs/common'
 import { Mutation, Resolver, Args, Query } from '@nestjs/graphql'
+import { GqlAuthGuard } from 'src/auth/guards/jwt-auth.guard'
 import { PromptsInput } from './dto/prompts.input'
 import { Prompts } from './entities/prompts.entity'
 import { PromptsService } from './prompts.service'
@@ -7,6 +9,7 @@ import { PromptsService } from './prompts.service'
 export class PromptsResolver {
     constructor(private promptService: PromptsService) {}
 
+    @UseGuards(GqlAuthGuard)
     @Query(() => [Prompts], {
         description: `To fetch all prompts, pass all or empty string('') as first parameter and empty
     string ('') as second parameter, id. To fetch prompts of a type (prompts and visual_prompts only), specify the prompt type as first parameter and empty
@@ -20,6 +23,7 @@ export class PromptsResolver {
         return await this.promptService.getPrompts(promptType, id)
     }
 
+    @UseGuards(GqlAuthGuard)
     @Mutation(() => Prompts)
     async addNewPrompt(
         @Args('promptInput') promptInput: PromptsInput
