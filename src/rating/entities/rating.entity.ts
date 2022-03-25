@@ -8,8 +8,8 @@ export class Rating extends BaseEntity {
     @PrimaryGeneratedColumn({ type: 'bigint' })
     id: string;
 
-    @Field(() => String)
-    @Column()
+    @Field(() => String,{nullable: true})
+    @Column({nullable: true})
     createdAt: string;
 
     @Field(() => String)
