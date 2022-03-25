@@ -13,7 +13,7 @@ import { UserDeviceModule } from '../user-devices/user-devices.module';
     TypeOrmModule.forFeature([User]),
     JwtModule.register({
       secret: 'secret',
-      signOptions: { expiresIn: '1d' },
+//       signOptions: { expiresIn: '1d' },
     }),
     AuthModule,
     UserDeviceModule
