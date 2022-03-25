@@ -88,7 +88,12 @@ export class UserService {
     if (result) {
       const payload = {
         token: this.authService.generateJwt(result.email),
-        result,
+        user: {
+                    userId: result.userId,
+                    email: result.email,
+                    firstName: result.firstName,
+                    lastName: result.lastName,
+                },
       }
 
       return payload;
