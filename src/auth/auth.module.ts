@@ -18,7 +18,7 @@ const { secret } = config.get('jwt');
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: secret,
-      signOptions: { expiresIn: 86400 },
+//       signOptions: { expiresIn: 86400 },
     }),
     TypeOrmModule.forFeature([User]),
   ],
