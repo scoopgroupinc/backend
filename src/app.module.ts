@@ -20,6 +20,7 @@ import { RatingGroupModule } from './rating-group/rating-group.module'
 import { RateCriteriasModule } from './rate-criterias/rate-criterias.module'
 import { PromptsModule } from './prompts/prompts.module'
 import { UserPromptsModule } from './user-prompts/user-prompts.module'
+import { ComplaintsModule } from './complaints/complaints.module'
 
 const { user, pass, host, port } = configs.get('mail')
 
@@ -74,6 +75,7 @@ const { user, pass, host, port } = configs.get('mail')
         RateCriteriasModule,
         PromptsModule,
         UserPromptsModule,
+        ComplaintsModule,
     ],
     controllers: [],
     providers: [],

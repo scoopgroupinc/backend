@@ -12,8 +12,8 @@ import { UserDeviceModule } from '../user-devices/user-devices.module'
     imports: [
         TypeOrmModule.forFeature([User]),
         JwtModule.register({
-            secret: 'secret',
-            signOptions: { expiresIn: '1d' },
+            secret: process.env.JWT_SECRET,
+            signOptions: { expiresIn: process.env.JWT_EXPIRATION },
         }),
         AuthModule,
         UserDeviceModule,

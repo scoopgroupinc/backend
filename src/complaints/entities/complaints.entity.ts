@@ -38,15 +38,15 @@ export class Complaints extends BaseEntity {
     accusedId: string
 
     @Field(() => String)
-    @Column({ type: 'string', enum: complaint_reason })
+    @Column({ type: 'varchar', enum: complaint_reason })
     reason: string
 
     @Field(() => String)
-    @Column({ type: 'char varying' })
+    @Column({ type: 'varchar' })
     comment: string
 
     @Field(() => String)
-    @Column({ type: 'string', enum: complaint_type })
+    @Column({ type: 'varchar', enum: complaint_type })
     type: string
 
     @Field(() => String)
@@ -54,7 +54,7 @@ export class Complaints extends BaseEntity {
     contentId: string
 
     @Field(() => String)
-    @Column({ type: 'string', nullable: true })
+    @Column({ type: 'varchar', nullable: true })
     media_file: string | null
 
     @Field(() => Boolean)

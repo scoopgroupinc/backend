@@ -39,4 +39,12 @@ export class ComplaintsResolver {
     ): Promise<ComplaintsOutput> {
         return await this.complaintsService.findOne(complaintId)
     }
+
+    @UseGuards(GqlAuthGuard)
+    @Mutation(() => String)
+    async closeComplaints(
+        @Args('complaintId') complaintId: string
+    ): Promise<string> {
+        return await this.complaintsService.closeComplaint(complaintId)
+    }
 }

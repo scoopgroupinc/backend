@@ -15,7 +15,6 @@ export class ComplaintsService {
     async saveNewCompliants(
         complaintsInput: ComplaintsInput
     ): Promise<ComplaintsOutput> {
-        complaintsInput.createdAt = new Date().toISOString.toString()
         return await this.complaintsRepository.save(complaintsInput)
     }
 
@@ -38,10 +37,11 @@ export class ComplaintsService {
         const complaint = await this.findOne(complaintId)
         if (!complaint)
             throw new HttpException('complaint not found', HttpStatus.NOT_FOUND)
-        return await this.complaintsRepository.save({
+        await this.complaintsRepository.save({
             ...complaint,
             isClosed: true,
         })
+        return 'complaint closed'
     }
 
     async findOne(id: string): Promise<ComplaintsOutput> {

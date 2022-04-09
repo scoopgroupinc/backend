@@ -1,8 +1,8 @@
-import { Field, ID, InputType } from '@nestjs/graphql'
+import { Field, ID, InputType, ObjectType } from '@nestjs/graphql'
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator'
 import { complaint_reason, complaint_type } from '../entities/complaints.entity'
 
-@InputType()
+@ObjectType()
 export class ComplaintsOutput {
     @Field(() => ID)
     id?: string
