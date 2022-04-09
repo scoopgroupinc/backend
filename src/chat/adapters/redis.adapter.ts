@@ -5,18 +5,18 @@ import { createAdapter } from 'socket.io-redis'
 import * as config from 'config'
 
 const { host, port } = config.get('redis')
-const pubClient =
-    createClient()
-    // {                    host,
+const pubClient = createClient()
+{
+    //  host,
     //                   port,
     //                   no_ready_check: true,
-    //                 }
+}
 const subClient = pubClient.duplicate()
 const redisAdapter = createAdapter({ pubClient, subClient })
 
 export class RedisIoAdapter extends IoAdapter {
     createIOServer(port: number, options?: ServerOptions): any {
-        const server = super.createIOServer(port, { ...options, cors: true })
+        const server = super.createIOServer(4000, { ...options, cors: true })
         server.adapter(redisAdapter)
         return server
     }

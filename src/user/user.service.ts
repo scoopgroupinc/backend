@@ -79,7 +79,7 @@ export class UserService {
             throw new BadRequestException('Kindly activate your account')
 
         const payload = {
-            token: this.authService.generateJwt(user.email),
+            token: this.authService.generateJwt(user.email, user.userId),
             user,
         }
 
@@ -91,9 +91,11 @@ export class UserService {
         const user = await this.findOne(email)
         if (!(user && user.code === code)) {
             throw new BadRequestException(
-                'Unable to activate account. Wrong Code'
+                'Unable to activate account. Invalid Code'
             )
         }
+        if (user.isVerified)
+            throw new BadRequestException('Account already activated')
 
         const result = await this.userRepository.save({
             ...user,
@@ -101,8 +103,16 @@ export class UserService {
         })
         if (result) {
             const payload = {
-                token: this.authService.generateJwt(result.email),
-                result,
+                token: this.authService.generateJwt(
+                    result.email,
+                    result.userId
+                ),
+                user: {
+                    userId: result.userId,
+                    email: result.email,
+                    firstName: result.firstName,
+                    lastName: result.lastName,
+                },
             }
 
             return payload
@@ -113,8 +123,9 @@ export class UserService {
         const user = await this.userRepository.findOne({ email })
 
         if (!user) throw new UnauthorizedException('Something went wrong')
-
-        const result = await this.sendVerificationMail(email, user.code)
+        const code = await this.generateFourDigitCode()
+        await this.userRepository.save({ ...user, resetCode: code })
+        const result = await this.sendVerificationMail(email, code)
         if (result) return 'Activation Code sent'
         return 'Failed to send code'
     }

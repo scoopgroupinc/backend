@@ -11,7 +11,7 @@ import { graphqlUploadExpress } from 'graphql-upload'
 
 async function bootstrap() {
     const app = await NestFactory.create<NestExpressApplication>(AppModule)
-    //  app.useWebSocketAdapter(new RedisIoAdapter(app))
+    app.useWebSocketAdapter(new RedisIoAdapter(app))
 
     app.use(graphqlUploadExpress())
     app.enableCors()

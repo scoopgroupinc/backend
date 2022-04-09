@@ -45,7 +45,7 @@ export class UserResolver {
     @UseGuards(GqlAuthGuard)
     @Mutation(() => UserType)
     async deleteUser(@Args('userId') userId: string) {
-        const user = await this.userService.findOne(userId)
+        const user = await this.userService.findOneByID(userId)
         if (!user) {
             throw new BadRequestException('user do not exist')
         }
