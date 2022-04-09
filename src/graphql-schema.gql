@@ -9,7 +9,7 @@ type User {
   email: String
   phoneNumber: String
   password: String
-  createdAt: String
+  createdAt: String!
   salt: String
   code: Float
   isVerified: Boolean
@@ -42,11 +42,11 @@ type LocationEntity {
   userId: String!
   latitude: String
   longitude: String
-  address_line_1: String
-  address_line_2: String
-  state_province: String
+  addressLine1: String
+  addressLine2: String
+  stateProvince: String
   country: String
-  zip_postal: Float
+  zipPostal: Float
 }
 
 type UserProfile {
@@ -166,6 +166,19 @@ type AverageOutput {
   count: Float
 }
 
+type ComplaintsOutput {
+  id: ID!
+  createdAt: String!
+  reporterId: String!
+  accusedId: String!
+  reason: String!
+  comment: String!
+  type: String!
+  contentId: String!
+  media_file: String
+  isClosed: Boolean!
+}
+
 type Query {
   getUser(userId: String!): User!
   getUserDevice(macAddress: String!): UserDevice!
@@ -225,6 +238,8 @@ type Query {
   Always specify the prompt type (prompts and visual_prompts) to upload. Pass the prompt type as parameter.
   """
   uploadPrompts(promptType: String!): String!
+  getAllOpenComplaints: [ComplaintsOutput!]!
+  getAComplaint(complaintId: String!): ComplaintsOutput!
 }
 
 type Mutation {
@@ -237,9 +252,9 @@ type Mutation {
   forgotPassword(email: String!): String!
   verifyPasswordResetCode(code: Float!, email: String!): String!
   resetPassword(password: String!, email: String!): User!
+  testNewMailer(code: Float!, email: String!): String!
   saveDeviceDetails(userdeviceInput: UserDeviceInput!): UserDevice!
   saveUserProfile(userProfileInput: UserProfileInput!): UserProfile!
-  uploadFile(file: Upload!): Boolean!
 
   """Use this endpoint to savs and update entity"""
   saveUserPreference(userPreferenceInput: UserPreferenceInput!): UserPreference!
@@ -247,6 +262,9 @@ type Mutation {
   saveTag(tagInput: TagsInput!): TagsEntity!
   saveRatingGroup(ratingGroupInput: SaveRatingInput!): String!
   addNewPrompt(promptInput: PromptsInput!): Prompts!
+  saveNewCompliants(complaintsInput: ComplaintsInput!): ComplaintsOutput!
+  updateComplaint(complaintsInput: ComplaintsInput!): ComplaintsOutput!
+  closeComplaints(complaintId: String!): String!
 }
 
 input CreateUserInput {
@@ -336,9 +354,6 @@ input UserProfileInput {
   petsVisible: Boolean
 }
 
-"""The `Upload` scalar type represents a file upload."""
-scalar Upload
-
 input UserPreferenceInput {
   userId: ID!
   createdAt: String
@@ -399,4 +414,17 @@ input PromptsInput {
   prompt: String!
   type: String!
   sample_answer: String
+}
+
+input ComplaintsInput {
+  id: ID!
+  createdAt: String!
+  reporterId: String!
+  accusedId: String!
+  reason: String!
+  comment: String!
+  type: String!
+  contentId: String!
+  media_file: String
+  isClosed: Boolean!
 }

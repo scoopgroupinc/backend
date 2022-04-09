@@ -1,24 +1,36 @@
-import { Entity, PrimaryGeneratedColumn, ManyToMany, JoinTable, UpdateDateColumn, OneToMany, Column, BaseEntity } from "typeorm";
-import { MessageEntity } from "./messages.entity";
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    ManyToMany,
+    JoinTable,
+    UpdateDateColumn,
+    OneToMany,
+    Column,
+    BaseEntity,
+} from 'typeorm'
+import { MessageEntity } from './messages.entity'
 
 @Entity('conversation')
-export class ConversationEntity extends BaseEntity{
+export class ConversationEntity extends BaseEntity {
     @PrimaryGeneratedColumn()
-    id:number;
+    id: number
 
     // @ManyToMany(()=>UserEntity)
     // @JoinTable()
     // users:UserEntity();
 
-    @OneToMany(()=>MessageEntity,(messageEntity)=>messageEntity.conversation)
-    messages:MessageEntity;
+    @OneToMany(
+        () => MessageEntity,
+        (messageEntity) => messageEntity.conversation
+    )
+    messages: MessageEntity
 
     @UpdateDateColumn()
-    lastUpdated: Date;
+    lastUpdated: Date
 
     @Column()
-    isDeleted:Boolean
+    isDeleted: Boolean
 
     @Column()
-    socketId:string;
+    socketId: string
 }

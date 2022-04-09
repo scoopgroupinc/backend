@@ -1,37 +1,49 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Timestamp, ManyToOne, ManyToMany, BaseEntity } from "typeorm";
-import { ConversationEntity } from "./conversation.entity";
+import {
+    Entity,
+    PrimaryGeneratedColumn,
+    Column,
+    CreateDateColumn,
+    Timestamp,
+    ManyToOne,
+    ManyToMany,
+    BaseEntity,
+} from 'typeorm'
+import { ConversationEntity } from './conversation.entity'
 
 @Entity('message')
-export class MessageEntity extends BaseEntity{
+export class MessageEntity extends BaseEntity {
     @PrimaryGeneratedColumn()
-    id:number;
+    id: number
 
     @CreateDateColumn()
-    createdAt:Date;
-    
+    createdAt: Date
+
     @Column()
     // @ManyToOne(()=>UserEntity,(userEntity)=>userEntity.id)
-    senderId:number;
- 
+    senderId: number
+
     // @ManyToOne(()=>UserEntity,(userEntity)=>userEntity.id)
     @Column()
-    recieverId:number;
+    recieverId: number
 
     @Column()
-    content:string;
+    content: string
 
     @Column()
-    type:string;
-    
-    @Column()
-    sentAt:string;
-    
-    @Column()
-    mediaFile:string;
+    type: string
 
     @Column()
-    deletedAt:Date;
+    sentAt: string
 
-    @ManyToOne(()=>ConversationEntity,(conversationEntity)=>conversationEntity.messages)
-    conversation:ConversationEntity
+    @Column()
+    mediaFile: string
+
+    @Column()
+    deletedAt: Date
+
+    @ManyToOne(
+        () => ConversationEntity,
+        (conversationEntity) => conversationEntity.messages
+    )
+    conversation: ConversationEntity
 }

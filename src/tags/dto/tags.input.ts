@@ -1,28 +1,28 @@
-import { InputType, ID, Field } from '@nestjs/graphql';
-import { MaxLength, IsDecimal, IsBoolean, IsString } from 'class-validator';
-import { tagType } from '../entities/tags.entity';
+import { InputType, ID, Field } from '@nestjs/graphql'
+import { MaxLength, IsDecimal, IsBoolean, IsString } from 'class-validator'
+import { tagType } from '../entities/tags.entity'
 
 @InputType()
 export class TagsInput {
     @Field(() => ID)
-    id: string;
+    id: string
 
     @Field(() => String)
     @MaxLength(30)
-    name: string;
+    name: string
 
     @Field(() => String)
-    type: tagType;
+    type: tagType
 
     @Field(() => Number)
     @IsDecimal()
-    order: number;
+    order: number
 
     @Field()
     @IsBoolean()
-    visible: boolean;
+    visible: boolean
 
     @Field(() => String)
     @IsString()
-    emoji: string;
+    emoji: string
 }

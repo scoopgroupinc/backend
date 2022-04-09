@@ -1,53 +1,59 @@
-import { InputType, Field, ID } from "@nestjs/graphql";
-import {MinLength, IsLatitude, IsNotEmpty, IsLongitude, IsOptional} from 'class-validator';
+import { InputType, Field, ID } from '@nestjs/graphql'
+import {
+    MinLength,
+    IsLatitude,
+    IsNotEmpty,
+    IsLongitude,
+    IsOptional,
+} from 'class-validator'
 
 @InputType()
-export class CreateLocationInput{
-    @Field(()=>ID)
-    userId:string;
+export class CreateLocationInput {
+    @Field(() => ID)
+    userId: string
 
-    @MinLength(1,{
-    message:'This field must be a valid latitude'
-     })
-     @IsLatitude()
-    @Field()   
-    latitude:string;
-    
-    @MinLength(1,{
-     message:'This field must be a valid longitude'
-     })
+    @MinLength(1, {
+        message: 'This field must be a valid latitude',
+    })
+    @IsLatitude()
+    @Field()
+    latitude: string
+
+    @MinLength(1, {
+        message: 'This field must be a valid longitude',
+    })
     @IsLongitude()
     @Field()
-    longitude:string;
-    
-    @MinLength(5,{
-      message:'Input must be a valid address'  
+    longitude: string
+
+    @MinLength(5, {
+        message: 'Input must be a valid address',
     })
     @Field()
-    addressLine1:string;
+    addressLine1: string
 
-    @MinLength(5,{
-      message:'Input must be a valid address'  
-      })
+    @MinLength(5, {
+        message: 'Input must be a valid address',
+    })
     @Field()
     @IsOptional()
-    addressLine2?:string;
+    addressLine2?: string
 
     @MinLength(1)
     @Field()
     @IsNotEmpty()
-    stateProvince:string;
+    stateProvince: string
 
-    @MinLength(4,{
-        message:'Country must be valid'
+    @MinLength(4, {
+        message: 'Country must be valid',
     })
     @IsNotEmpty()
     @Field()
-    country?:string;
+    country?: string
 
-    @MinLength(5,{
-        message:'Enter a valid zip/postal code'
+    @MinLength(5, {
+        message: 'Enter a valid zip/postal code',
     })
     @Field()
-    zipPostal:number;
+    zipPostal: number
 }

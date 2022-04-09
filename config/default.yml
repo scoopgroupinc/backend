@@ -1,27 +1,27 @@
 server:
-   port: 4000
+    port: 4000
 
 DB:
-   type: 'postgres'
-   port: 5432
-   database: 'postgres'
-   host: "3.17.50.223"
-   username: 'icpostgresql'
-   password: 'a271fd81ec6cdc4fcb8801e2fd571d7d'
-   synchronize: true
+    type: 'postgres'
+    port: 5432
+    database: 'postgres'
+    host: '3.17.50.223'
+    username: 'icpostgresql'
+    password: 'a271fd81ec6cdc4fcb8801e2fd571d7d'
+    synchronize: true
 
 redis:
-  host: '18.218.140.148'
-  port: 6379
-  password: 'b61023583ec444cb'
-  username: 'icredis'
+    host: '18.218.140.148'
+    port: 6379
+    password: 'b61023583ec444cb'
+    username: 'icredis'
 
 jwt:
-   secret: 'jwtsecrethere'
-   expiresIn: 7200
+    secret: 'jwtsecrethere'
+    expiresIn: 7200
 
 mail:
-   user: 'noreply@scoop.love'
-   pass: '9VmV66Z7u5zzfNq'
-   host: 'ecngx264.inmotionhosting.com'
-   port: '465'
+    user: 'noreply@scoop.love'
+    pass: '9VmV66Z7u5zzfNq'
+    host: 'ecngx264.inmotionhosting.com'
+    port: '465'
