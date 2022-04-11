@@ -1,11 +1,11 @@
 server:
-    port: 4000
+    port: 5500
 
 DB:
     type: 'postgres'
     port: 5432
     database: 'postgres'
-    host: '3.17.50.223'
+    host: '3.133.209.250'
     username: 'icpostgresql'
     password: 'a271fd81ec6cdc4fcb8801e2fd571d7d'
     synchronize: true
@@ -18,10 +18,13 @@ redis:
 
 jwt:
     secret: 'jwtsecrethere'
-    expiresIn: 7200
+    expiresIn: 86400
 
 mail:
     user: 'noreply@scoop.love'
     pass: '9VmV66Z7u5zzfNq'
     host: 'ecngx264.inmotionhosting.com'
     port: '465'
+
+file_server:
+    url: 'http://localhost:4040//api/v1/userDisplay/'

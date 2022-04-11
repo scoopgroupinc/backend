@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common'
+import * as configs from 'config'
 import { UserService } from './user.service'
 import { UserResolver } from './user.resolver'
 import { TypeOrmModule } from '@nestjs/typeorm'
@@ -8,12 +9,14 @@ import { AuthService } from 'src/auth/auth.service'
 import { AuthModule } from 'src/auth/auth.module'
 import { UserDeviceModule } from '../user-devices/user-devices.module'
 
+const { secret, expiresIn } = configs.get('jwt')
+
 @Module({
     imports: [
         TypeOrmModule.forFeature([User]),
         JwtModule.register({
-            secret: process.env.JWT_SECRET,
-            signOptions: { expiresIn: process.env.JWT_EXPIRATION },
+            secret: process.env.JWT_SECRET || secret,
+            signOptions: { expiresIn: process.env.JWT_EXPIRATION || expiresIn },
         }),
         AuthModule,
         UserDeviceModule,

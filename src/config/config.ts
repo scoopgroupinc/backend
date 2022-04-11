@@ -1,3 +1,4 @@
+import * as configs from 'config'
 import { Auth } from 'src/auth/entities/auth.entity'
 import { User } from '../user/entities/user.entity'
 import { UserDevice } from '../user-devices/entities/user-devices.entity'
@@ -10,19 +11,23 @@ import { RatingComment } from 'src/rating-comment/entities/rating-comment.entity
 import { RatingGroup } from 'src/rating-group/entities/rating-group.entity'
 import { RateCriterias } from 'src/rate-criterias/entities/rate-criterias.entity'
 import { Prompts } from 'src/prompts/entities/prompts.entity'
-import { UserPrompts } from 'src/user-prompts/entities/user-prompts.entity'
-import { Complaints } from 'src/complaints/entities/complaints.entity'
+import { UserPrompts } from '../user-prompts/entities/user-prompts.entity'
+import { Complaints } from '../complaints/entities/complaints.entity'
+
+const { type, host, port, username, password, database, synchronize } =
+    configs.get('DB')
+const server = configs.get('server')
 
 export const config = () => ({
-    port: parseInt(process.env.PORT, 10) || 3000,
+    port: parseInt(process.env.PORT, 10) || server.port,
     jwtSecret: process.env.JWT_SECRET,
     database: {
-        type: process.env.DB_TYPE,
-        host: process.env.DB_HOST,
-        port: process.env.DB_PORT,
-        username: process.env.DB_USERNAME,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_DATABASE,
+        type: process.env.DB_TYPE || type,
+        host: process.env.DB_HOST || host,
+        port: process.env.DB_PORT || port,
+        username: process.env.DB_USERNAME || username,
+        password: process.env.DB_PASSWORD || password,
+        database: process.env.DB_DATABASE || database,
         synchronize: true,
         logging: false,
         entities: [
@@ -39,7 +44,7 @@ export const config = () => ({
             RateCriterias,
             Prompts,
             UserPrompts,
-            Complaints
+            Complaints,
         ],
         ssl: {
             rejectUnauthorized: false,

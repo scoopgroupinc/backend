@@ -3,6 +3,7 @@ import { GqlAuthGuard } from './guards/jwt-auth.guard'
 import { JwtStrategy } from './strategies/jwt.strategy'
 import { Module } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
+import * as configs from 'config'
 import { JwtAuthService } from './jwt.service'
 import { AuthResolver } from './auth.resolver'
 import { PassportModule } from '@nestjs/passport'
@@ -10,12 +11,14 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { User } from '../user/entities/user.entity'
 import { AuthService } from './auth.service'
 
+const { secret, expiresIn } = configs.get('jwt')
+
 @Module({
     imports: [
         PassportModule.register({ defaultStrategy: 'jwt' }),
         JwtModule.register({
-            secret: process.env.JWT_SECRET,
-            signOptions: { expiresIn: process.env.JWT_EXPIRATION },
+            secret: process.env.JWT_SECRET || secret,
+            signOptions: { expiresIn: process.env.JWT_EXPIRATION || expiresIn },
         }),
         TypeOrmModule.forFeature([User]),
     ],
