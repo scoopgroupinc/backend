@@ -1,4 +1,3 @@
-import * as configs from 'config'
 import { Auth } from 'src/auth/entities/auth.entity'
 import { User } from '../user/entities/user.entity'
 import { UserDevice } from '../user-devices/entities/user-devices.entity'
@@ -14,20 +13,16 @@ import { Prompts } from 'src/prompts/entities/prompts.entity'
 import { UserPrompts } from '../user-prompts/entities/user-prompts.entity'
 import { Complaints } from '../complaints/entities/complaints.entity'
 
-const { type, host, port, username, password, database, synchronize } =
-    configs.get('DB')
-const server = configs.get('server')
-
 export const config = () => ({
-    port: parseInt(process.env.PORT, 10) || server.port,
+    port: parseInt(process.env.PORT, 10),
     jwtSecret: process.env.JWT_SECRET,
     database: {
-        type: process.env.DB_TYPE || type,
-        host: process.env.DB_HOST || host,
-        port: process.env.DB_PORT || port,
-        username: process.env.DB_USERNAME || username,
-        password: process.env.DB_PASSWORD || password,
-        database: process.env.DB_DATABASE || database,
+        type: process.env.DB_TYPE,
+        host: process.env.DB_HOST,
+        port: process.env.DB_PORT,
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE,
         synchronize: true,
         logging: false,
         entities: [
