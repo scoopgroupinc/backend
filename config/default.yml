@@ -27,4 +27,4 @@ mail:
     port: '465'
 
 file_server:
-    url: 'http://localhost:4040//api/v1/userDisplay/'
+    url: 'http://localhost:4040/api/v1/userDisplay/'
