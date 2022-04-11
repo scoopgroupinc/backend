@@ -1,10 +1,13 @@
 import { Field, ID, InputType, ObjectType } from '@nestjs/graphql'
 import { IsNotEmpty, IsString } from 'class-validator'
 
-@InputType()
-export class UserPromptsInput {
+@ObjectType()
+export class UserPromptsOutput {
     @Field(() => ID)
     id?: string
+
+    @Field()
+    createdAt?: string
 
     @Field(() => String)
     @IsNotEmpty()

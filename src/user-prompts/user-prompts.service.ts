@@ -19,8 +19,6 @@ export class UserPromptsService {
 
     async saveUserPrompt(userPromptsInput: UserPromptsInput): Promise<any> {
         try {
-            const createdAt = new Date().toISOString().toString()
-            userPromptsInput.createdAt = createdAt
             return await this.userPromptsRepository.save(userPromptsInput)
         } catch (error) {
             throw new HttpException(error.message, HttpStatus.BAD_REQUEST)

@@ -166,6 +166,14 @@ type AverageOutput {
   count: Float
 }
 
+type UserPromptsOutput {
+  id: ID!
+  createdAt: String!
+  userId: String!
+  promptId: String!
+  answer: String!
+}
+
 type ComplaintsOutput {
   id: ID!
   createdAt: String!
@@ -238,6 +246,7 @@ type Query {
   Always specify the prompt type (prompts and visual_prompts) to upload. Pass the prompt type as parameter.
   """
   uploadPrompts(promptType: String!): String!
+  getUserPrompts(userId: String!): [UserPromptsOutput!]!
   getAllOpenComplaints: [ComplaintsOutput!]!
   getAComplaint(complaintId: String!): ComplaintsOutput!
 }
@@ -262,6 +271,7 @@ type Mutation {
   saveTag(tagInput: TagsInput!): TagsEntity!
   saveRatingGroup(ratingGroupInput: SaveRatingInput!): String!
   addNewPrompt(promptInput: PromptsInput!): Prompts!
+  saveUserPrompt(UserPromptInput: UserPromptsInput!): UserPromptsOutput!
   saveNewCompliants(complaintsInput: ComplaintsInput!): ComplaintsOutput!
   updateComplaint(complaintsInput: ComplaintsInput!): ComplaintsOutput!
   closeComplaints(complaintId: String!): String!
@@ -414,6 +424,13 @@ input PromptsInput {
   prompt: String!
   type: String!
   sample_answer: String
+}
+
+input UserPromptsInput {
+  id: ID!
+  userId: String!
+  promptId: String!
+  answer: String!
 }
 
 input ComplaintsInput {
