@@ -56,7 +56,7 @@ const { user, pass, host, port } = configs.get('mail')
                 from: `"Scoop Love" ${user}`,
             },
             template: {
-                dir: __dirname + '/',
+                dir: __dirname + '/templates/',
                 adapter: new EjsAdapter(),
                 options: {
                     strict: false,
