@@ -17,10 +17,11 @@ export class JwtAuthService {
         return this.jwtService.signAsync({ user })
     }
 
-    async validateUser(payload: JwtPayload): Promise<User> {
-        const { email } = payload
+    async validateUser(token: string): Promise<User> {
+        const { email, userId } = this.jwtService.verify(token, {
+            secret: process.env.JWT_SECRET,
+        })
         const user = await this.userRepository.findOne({ email })
-
         if (!user) throw new UnauthorizedException()
 
         return user

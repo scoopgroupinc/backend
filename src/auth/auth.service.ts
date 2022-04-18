@@ -6,7 +6,7 @@ import { User } from '../user/entities/user.entity'
 export class AuthService {
     constructor(private jwtService: JwtService) {}
 
-    generateJwt(email: string, userId: string): Promise<string> {
-        return this.jwtService.signAsync({ email, userId })
+    generateJwt(email: string, userId: string) {
+        return this.jwtService.sign({ email, userId })
     }
 }

@@ -9,7 +9,7 @@ import { GqlAuthGuard } from '../auth/guards/jwt-auth.guard'
 export class UserPreferenceResolver {
     constructor(private preferenceService: UserPreferenceService) {}
 
-    @UseGuards(GqlAuthGuard)
+    // @UseGuards(GqlAuthGuard)
     @Mutation(() => UserPreference, {
         description: 'Use this endpoint to savs and update entity',
     })
@@ -21,7 +21,7 @@ export class UserPreferenceResolver {
         )
     }
 
-    @UseGuards(GqlAuthGuard)
+    // @UseGuards(GqlAuthGuard)
     @Query(() => UserPreference, {
         name: 'getUserPreference',
         description: 'fetch user preference',

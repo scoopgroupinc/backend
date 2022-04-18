@@ -9,14 +9,14 @@ import { UseGuards } from '@nestjs/common'
 export class LocationResolver {
     constructor(private locationService: LocationService) {}
 
-    @UseGuards(GqlAuthGuard)
+    // @UseGuards(GqlAuthGuard)
     @Mutation(() => LocationEntity)
     async saveUserLocation(
         @Args('createLocationInput') createLocationInput: CreateLocationInput
     ): Promise<any> {
         return await this.locationService.saveUserLocation(createLocationInput)
     }
-    @UseGuards(GqlAuthGuard)
+    // @UseGuards(GqlAuthGuard)
     @Query(() => LocationEntity, {
         name: 'getUserLocation',
         description: 'fetch user location details',

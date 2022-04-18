@@ -9,7 +9,7 @@ import { RateCriteriasService } from './rate-criterias.service'
 export class RateCriteriasResolver {
     constructor(private rateCriteriaService: RateCriteriasService) {}
 
-    @UseGuards(GqlAuthGuard)
+    // @UseGuards(GqlAuthGuard)
     @Query(() => RateCriterias, {
         name: 'getspecificTag',
         description: 'fetch a tag',
@@ -20,7 +20,7 @@ export class RateCriteriasResolver {
         return await this.rateCriteriaService.getRatingCriteriaById(criteriaId)
     }
 
-    @UseGuards(GqlAuthGuard)
+    // @UseGuards(GqlAuthGuard)
     @Query(() => [RateCriterias], {
         description: `Filter by: all,"", user_prompts and visual_prompts. 
     Passing all or an empty string as parameter will fetch all criterias

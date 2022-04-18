@@ -195,7 +195,7 @@ export class UserService {
         try {
             const response = await this.mailerService.sendMail({
                 to: email,
-                // from: 'noreply@scoop.love',
+                from: 'noreply@scoop.love',
                 subject: 'Reset password ✔',
                 text: 'welcome',
                 template: 'activation',
