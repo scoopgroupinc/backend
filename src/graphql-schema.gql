@@ -427,7 +427,6 @@ input PromptsInput {
 }
 
 input UserPromptsInput {
-  id: ID!
   userId: String!
   promptId: String!
   answer: String!

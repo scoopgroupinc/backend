@@ -3,8 +3,8 @@ import { IsNotEmpty, IsString } from 'class-validator'
 
 @InputType()
 export class UserPromptsInput {
-    @Field(() => ID)
-    id?: string
+    // @Field(() => ID)
+    // id?: string
 
     @Field(() => String)
     @IsNotEmpty()
