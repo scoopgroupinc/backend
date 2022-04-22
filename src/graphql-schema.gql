@@ -254,8 +254,14 @@ type Query {
   """
   uploadPrompts(promptType: String!): String!
   getUserPrompts(userId: String!): [UserPromptsOutput!]!
+  saveUserPromptsOrder(userPromptsOrder: UserPromptsOrder!): String!
   getAllOpenComplaints: [ComplaintsOutput!]!
   getAComplaint(complaintId: String!): ComplaintsOutput!
+}
+
+input UserPromptsOrder {
+  userId: String!
+  userPromptIds: [String!]!
 }
 
 type Mutation {

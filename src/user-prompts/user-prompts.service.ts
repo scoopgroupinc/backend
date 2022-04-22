@@ -7,6 +7,7 @@ import { UserPrompts } from './entities/user-prompts.entity'
 import { ConfigService } from '@nestjs/config'
 import { lastValueFrom, map } from 'rxjs'
 import { PromptsService } from 'src/prompts/prompts.service'
+import { UserPromptsOrder } from './dto/user-prompts-order'
 
 @Injectable()
 export class UserPromptsService {
@@ -56,6 +57,14 @@ export class UserPromptsService {
             }
         })
         return results
+    }
+
+    async saveUserPromptOrder(userPromptsOrder: UserPromptsOrder) {
+        return await lastValueFrom(
+            this.httpService
+                .post(this.clientUrl, { userPromptsOrder })
+                .pipe(map((response) => response.data))
+        )
     }
 
     async findOne(id: string): Promise<UserPrompts> {
