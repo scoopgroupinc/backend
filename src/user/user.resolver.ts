@@ -15,11 +15,7 @@ import { UserType } from './types/delete-user.schema'
 
 @Resolver(() => User)
 export class UserResolver {
-    constructor(
-        private userService: UserService,
-        private jwtService: JwtService,
-        private authService: AuthService
-    ) {}
+    constructor(private userService: UserService) {}
 
     @Mutation(() => String)
     async createUser(
@@ -28,7 +24,7 @@ export class UserResolver {
         return await this.userService.create(createUserInput)
     }
 
-    // @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard)
     @Mutation(() => User)
     async updateUser(
         @Args('updateUserInput') updateUserInput: UpdateUserInput
@@ -36,7 +32,7 @@ export class UserResolver {
         return await this.userService.updateAccount(updateUserInput)
     }
 
-    // @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard)
     @Query(() => User)
     async getUser(@Args('userId') userId: string) {
         return await this.userService.findOneByID(userId)
@@ -86,7 +82,7 @@ export class UserResolver {
         return await this.userService.verifyResetCode(email, code)
     }
 
-    // @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard)
     @Mutation(() => User)
     async resetPassword(
         @Args('email') email: string,

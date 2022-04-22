@@ -12,7 +12,7 @@ export class UserProfileResolver {
     constructor(private userProfileService: UserProfileService) {}
 
     @Mutation(() => UserProfile, { name: 'saveUserProfile' })
-    // @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard)
     async saveUserProfile(
         @Args('userProfileInput') userProfileInput: UserProfileInput
         // eslint-disable-next-line prettier/prettier
@@ -20,7 +20,7 @@ export class UserProfileResolver {
         return await this.userProfileService.saveUserProfile(userProfileInput)
     }
 
-    // @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard)
     @Query(() => UserProfile, { name: 'getUserProfile' })
     async getUserProfile(@Args('userId') userId: string): Promise<any> {
         return await this.userProfileService.findOne(userId)

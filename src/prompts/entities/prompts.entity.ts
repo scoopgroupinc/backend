@@ -12,7 +12,7 @@ export class Prompts extends BaseEntity {
     @Field(() => ID)
     @PrimaryGeneratedColumn({ type: 'bigint' })
     id: string
-
+    
     @Field(() => String)
     @Column()
     prompt: string
@@ -23,5 +23,5 @@ export class Prompts extends BaseEntity {
 
     @Field(() => String, { nullable: true })
     @Column({ nullable: true })
-    sample_answer: string
+    sample_answer: string | null
 }

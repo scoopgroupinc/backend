@@ -26,9 +26,15 @@ type UserDevice {
   lastLogin: String
 }
 
+type UserOutput {
+  firstName: String
+  lastName: String
+  email: String
+}
+
 type UserToken {
   token: String!
-  user: User
+  user: UserOutput
   message: String
 }
 
@@ -169,9 +175,10 @@ type AverageOutput {
 type UserPromptsOutput {
   id: ID!
   createdAt: String!
-  userId: String!
-  promptId: String!
-  answer: String!
+  userId: String
+  promptId: String
+  prompt: String!
+  answer: String
 }
 
 type ComplaintsOutput {

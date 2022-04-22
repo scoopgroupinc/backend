@@ -1,5 +1,14 @@
 import { ObjectType, Field } from '@nestjs/graphql'
-import { User } from '../entities/user.entity'
+
+@ObjectType()
+export class UserOutput {
+    @Field({ nullable: true })
+    firstName?: string | null
+    @Field({ nullable: true })
+    lastName?: string | null
+    @Field({ nullable: true })
+    email?: string | null
+}
 
 @ObjectType()
 export class UserToken {
@@ -7,7 +16,7 @@ export class UserToken {
     token: string
 
     @Field({ nullable: true })
-    user: User
+    user: UserOutput
     @Field({ nullable: true })
     message: string
 }

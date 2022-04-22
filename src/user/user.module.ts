@@ -15,8 +15,8 @@ const { secret, expiresIn } = configs.get('jwt')
     imports: [
         TypeOrmModule.forFeature([User]),
         JwtModule.register({
-            secret: process.env.JWT_SECRET || secret,
-            signOptions: { expiresIn: process.env.JWT_EXPIRATION || expiresIn },
+            secret: secret,
+            signOptions: { expiresIn },
         }),
         AuthModule,
         UserDeviceModule,

@@ -5,6 +5,8 @@ import { In, Repository } from 'typeorm'
 import { UserPromptsInput } from './dto/user-prompts.input'
 import { UserPrompts } from './entities/user-prompts.entity'
 import { ConfigService } from '@nestjs/config'
+import { lastValueFrom, map } from 'rxjs'
+import { PromptsService } from 'src/prompts/prompts.service'
 
 @Injectable()
 export class UserPromptsService {
@@ -12,7 +14,8 @@ export class UserPromptsService {
         @InjectRepository(UserPrompts)
         private userPromptsRepository: Repository<UserPrompts>,
         private httpService: HttpService,
-        private configService: ConfigService
+        private configService: ConfigService,
+        private promptService: PromptsService
     ) {}
 
     clientUrl = this.configService.get('fileServer_Url')
@@ -25,37 +28,34 @@ export class UserPromptsService {
         }
     }
 
-    async getUserPrompts(userId: string): Promise<UserPrompts[]> {
-        try {
-            const userPromptIds = await this.httpService.get(
-                this.clientUrl + userId
-            )
-            if (!userPromptIds) {
-                throw new HttpException(
-                    'user has no selected display',
-                    HttpStatus.NOT_FOUND
-                )
-            }
-
-            const userDisplay = await this.userPromptsRepository
-                .createQueryBuilder('userprompts')
-                .where('promptId IN (:...userPromptIds)', {
-                    promptId: userPromptIds,
-                })
-                .orderBy('createdAt', 'DESC')
-                .groupBy('promptId')
-                .getMany()
-            const results = []
-            userDisplay.forEach((display) => {
-                results.push(display[0])
-            })
-            return results
-        } catch (error) {
+    async getUserPrompts(userId: string): Promise<any> {
+        const userPromptIds = await lastValueFrom(
+            this.httpService
+                .get(this.clientUrl + userId)
+                .pipe(map((response) => response.data))
+        )
+        if (!userPromptIds) {
             throw new HttpException(
-                'something went wrong',
-                HttpStatus.EXPECTATION_FAILED
+                'user has no selected display',
+                HttpStatus.NOT_FOUND
             )
         }
+        
+        const userDisplay = await this.userPromptsRepository
+            .createQueryBuilder('userprompts')
+            .where('userprompts.promptId IN (:...userPromptIds)', {
+                userPromptIds,
+            }).getMany()
+
+        const results = userDisplay.map(async (display) => {
+            return {
+                ...display,
+                prompt: await (
+                    await this.promptService.findOne(display.promptId)
+                ).prompt,
+            }
+        })
+        return results
     }
 
     async findOne(id: string): Promise<UserPrompts> {

@@ -9,13 +9,13 @@ import { GqlAuthGuard } from 'src/auth/guards/jwt-auth.guard'
 export class TagsResolver {
     constructor(private tagsService: TagsService) {}
 
-    // @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard)
     @Mutation(() => TagsEntity)
     async saveTag(@Args('tagInput') tagInput: TagsInput) {
         return await this.tagsService.saveTag(tagInput)
     }
 
-    // @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard)
     @Query(() => TagsEntity, {
         name: 'getSpecificTag',
         description: 'fetch a tag',
@@ -24,7 +24,7 @@ export class TagsResolver {
         return await this.tagsService.findOne(id)
     }
 
-    // @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard)
     @Query(() => [TagsEntity], {
         name: 'getTags',
         description:
@@ -34,7 +34,7 @@ export class TagsResolver {
         return await this.tagsService.getTags(tagType)
     }
 
-    // @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard)
     @Query(() => [TagsEntity], {
         description:
             'search by: frequency, physical_activity,education,religion etc',

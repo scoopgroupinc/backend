@@ -17,8 +17,8 @@ redis:
     username: 'icredis'
 
 jwt:
-    secret: 'jwtsecrethere'
-    expiresIn: 86400
+    secret: 'jwtsecret'
+    expiresIn: '1d'
 
 mail:
     user: 'noreply@scoop.love'

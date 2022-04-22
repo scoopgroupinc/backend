@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { In, Repository } from 'typeorm'
 import { PromptsInput } from './dto/prompts.input'
 import { Prompts } from './entities/prompts.entity'
 import readXlsxFile from 'read-excel-file/node'
@@ -29,6 +29,10 @@ export class PromptsService {
         return await this.promptsRepository.findOne({ id })
     }
 
+    async findMany(promptIds: string[]): Promise<Prompts[]>{
+        return await this.promptsRepository.find({ id: In(promptIds)})
+    }
+
     async findAll(): Promise<Prompts[]> {
         return await this.promptsRepository.find({})
     }
@@ -49,11 +53,10 @@ export class PromptsService {
         const filePath = path.resolve('dist/tags.xlsx')
         const sheetNames = {
             prompts: 'prompts',
-            visual_prompts: 'photo prompts',
+            photo_prompts: 'photo_prompts',
         }
-
-        const sheet = sheetNames[promptType]
-
+       
+        for (const sheet in sheetNames ){
         readXlsxFile(filePath, { sheet }).then(async (rows) => {
             rows.shift()
 
@@ -62,7 +65,7 @@ export class PromptsService {
                 const prompt = {
                     prompt: rows[0],
                     sample_answer: rows[1],
-                    type: promptType,
+                    type: sheet==='photo_prompts'?'visual_prompts':sheet,
                 }
                 prompts.push(prompt)
             })
@@ -75,7 +78,7 @@ export class PromptsService {
                     HttpStatus.EXPECTATION_FAILED
                 )
         })
-
+     }
         return 'Upload successful'
     }
 

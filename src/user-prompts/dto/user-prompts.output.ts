@@ -9,17 +9,21 @@ export class UserPromptsOutput {
     @Field()
     createdAt?: string
 
-    @Field(() => String)
+    @Field(() => String, { nullable: true })
     @IsNotEmpty()
     @IsString()
     userId: string
 
-    @Field(() => String)
+    @Field(() => String, { nullable: true })
     @IsNotEmpty()
     @IsString()
     promptId: string
 
-    @Field(() => String)
+    @Field(()=> String)
+    @IsString()
+    prompt: string
+
+    @Field(() => String, { nullable: true })
     @IsNotEmpty()
     answer: string
 }

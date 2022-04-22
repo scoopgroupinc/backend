@@ -16,6 +16,7 @@ import { AuthService } from '../auth/auth.service'
 import { UserDeviceService } from '../user-devices/user-devices.service'
 import { UpdateUserInput } from './dto/update-user.input'
 import logger from 'src/utils/logger'
+import { JwtService } from '@nestjs/jwt'
 
 @Injectable()
 export class UserService {
@@ -23,7 +24,8 @@ export class UserService {
         @InjectRepository(User) private userRepository: Repository<User>,
         private authService: AuthService,
         private deviceService: UserDeviceService,
-        private mailerService: MailerService
+        private mailerService: MailerService,
+        private jwtService: JwtService
     ) {}
 
     async create(data: any) {
@@ -69,7 +71,6 @@ export class UserService {
 
     async login(loginUserInput: LoginUserInput) {
         const { email, password, macAddress } = loginUserInput
-
         const user = await this.findOne(email)
         if (!(user && (await user.validatePassword(password)))) {
             throw new BadRequestException('Invalid credentials')
@@ -83,7 +84,7 @@ export class UserService {
             user,
         }
 
-        this.deviceService.updateLastLogin(macAddress)
+        // this.deviceService.updateLastLogin(macAddress)
         return payload
     }
 
@@ -121,10 +122,9 @@ export class UserService {
 
     async resendActivationCode(email: string) {
         const user = await this.userRepository.findOne({ email })
-
         if (!user) throw new UnauthorizedException('Something went wrong')
         const code = await this.generateFourDigitCode()
-        await this.userRepository.save({ ...user, resetCode: code })
+        await this.userRepository.save({ ...user, code })
         const result = await this.sendVerificationMail(email, code)
         if (result) return 'Activation Code sent'
         return 'Failed to send code'

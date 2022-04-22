@@ -10,18 +10,17 @@ import { GqlAuthGuard } from '../auth/guards/jwt-auth.guard'
 @Resolver(() => UserDevice)
 export class UserDeviceResolver {
     constructor(private userDeviceService: UserDeviceService) {}
-    // @UseGuards(GqlAuthGuard)
+
+    @UseGuards(GqlAuthGuard)
     @Mutation(() => UserDevice)
-    // @UseGuards(AuthGuard())
     async saveDeviceDetails(
         @Args('userdeviceInput') userdeviceInput: UserDeviceInput
     ): Promise<UserDeviceInput> {
         return await this.userDeviceService.saveDeviceDetails(userdeviceInput)
     }
 
-    // @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard)
     @Query(() => UserDevice, { name: 'getUserDevice' })
-    // @UseGuards(AuthGuard())
     async getUserData(
         @Args('macAddress') macAddress: string
         //   @Args('userId') userId?:string,

@@ -10,7 +10,7 @@ import { Complaints } from './entities/complaints.entity'
 export class ComplaintsResolver {
     constructor(private complaintsService: ComplaintsService) {}
 
-    // @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard)
     @Mutation(() => ComplaintsOutput)
     async saveNewCompliants(
         @Args('complaintsInput') complaintsInput: ComplaintsInput
@@ -18,7 +18,7 @@ export class ComplaintsResolver {
         return await this.complaintsService.saveNewCompliants(complaintsInput)
     }
 
-    // @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard)
     @Mutation(() => ComplaintsOutput)
     async updateComplaint(
         @Args('complaintsInput') complaintsInput: ComplaintsInput
@@ -26,13 +26,13 @@ export class ComplaintsResolver {
         return await this.complaintsService.updateComplaint(complaintsInput)
     }
 
-    // @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard)
     @Query(() => [ComplaintsOutput])
     async getAllOpenComplaints(): Promise<ComplaintsOutput[]> {
         return await this.complaintsService.getAllOpenComplaints()
     }
 
-    // @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard)
     @Query(() => ComplaintsOutput)
     async getAComplaint(
         @Args('complaintId') complaintId: string
@@ -40,7 +40,7 @@ export class ComplaintsResolver {
         return await this.complaintsService.findOne(complaintId)
     }
 
-    // @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard)
     @Mutation(() => String)
     async closeComplaints(
         @Args('complaintId') complaintId: string

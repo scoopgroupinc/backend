@@ -10,7 +10,7 @@ import { UserPromptsService } from './user-prompts.service'
 export class UserPromptsResolver {
     constructor(private userPromptsService: UserPromptsService) {}
 
-    // @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard)
     @Mutation(() => UserPromptsOutput)
     async saveUserPrompt(
         @Args('UserPromptInput') userPromptInput: UserPromptsInput
@@ -18,7 +18,7 @@ export class UserPromptsResolver {
         return await this.userPromptsService.saveUserPrompt(userPromptInput)
     }
 
-    // @UseGuards(GqlAuthGuard)
+    @UseGuards(GqlAuthGuard)
     @Query(() => [UserPromptsOutput])
     async getUserPrompts(
         @Args('userId') userId: string
