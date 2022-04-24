@@ -41,12 +41,13 @@ export class UserPromptsService {
                 HttpStatus.NOT_FOUND
             )
         }
-        
+
         const userDisplay = await this.userPromptsRepository
             .createQueryBuilder('userprompts')
             .where('userprompts.promptId IN (:...userPromptIds)', {
                 userPromptIds,
-            }).getMany()
+            })
+            .getMany()
 
         const results = userDisplay.map(async (display) => {
             return {
@@ -59,7 +60,7 @@ export class UserPromptsService {
         return results
     }
 
-    async saveUserPromptOrder(userPromptsOrder: UserPromptsOrder) {
+    async saveUserPromptsOrder(userPromptsOrder: UserPromptsOrder) {
         return await lastValueFrom(
             this.httpService
                 .post(this.clientUrl, { userPromptsOrder })

@@ -32,7 +32,7 @@ export class UserPromptsResolver {
     async saveUserPromptsOrder(
         @Args('userPromptsOrder') userPromptsOrder: UserPromptsOrder
     ): Promise<string> {
-        return await this.userPromptsService.saveUserPromptOrder(
+        return await this.userPromptsService.saveUserPromptsOrder(
             userPromptsOrder
         )
     }
