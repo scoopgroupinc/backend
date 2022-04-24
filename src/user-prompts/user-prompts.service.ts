@@ -7,6 +7,7 @@ import { UserPrompts } from './entities/user-prompts.entity'
 import { ConfigService } from '@nestjs/config'
 import { lastValueFrom, map } from 'rxjs'
 import { PromptsService } from 'src/prompts/prompts.service'
+import { UserPromptsOrder } from './dto/user-prompts-order'
 
 @Injectable()
 export class UserPromptsService {
@@ -40,12 +41,13 @@ export class UserPromptsService {
                 HttpStatus.NOT_FOUND
             )
         }
-        
+
         const userDisplay = await this.userPromptsRepository
             .createQueryBuilder('userprompts')
             .where('userprompts.promptId IN (:...userPromptIds)', {
                 userPromptIds,
-            }).getMany()
+            })
+            .getMany()
 
         const results = userDisplay.map(async (display) => {
             return {
@@ -56,6 +58,14 @@ export class UserPromptsService {
             }
         })
         return results
+    }
+
+    async saveUserPromptsOrder(userPromptsOrder: UserPromptsOrder) {
+        return await lastValueFrom(
+            this.httpService
+                .post(this.clientUrl, { userPromptsOrder })
+                .pipe(map((response) => response.data))
+        )
     }
 
     async findOne(id: string): Promise<UserPrompts> {
