@@ -44,7 +44,7 @@ export class UserPromptsService {
 
         const userDisplay = await this.userPromptsRepository
             .createQueryBuilder('userprompts')
-            .where('userprompts.promptId IN (:...userPromptIds)', {
+            .where('userprompts.id IN (:...userPromptIds)', {
                 userPromptIds,
             })
             .getMany()
