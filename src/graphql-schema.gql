@@ -27,6 +27,7 @@ type UserDevice {
 }
 
 type UserOutput {
+  userId: ID!
   firstName: String
   lastName: String
   email: String
