@@ -19,9 +19,9 @@ export class UserPromptsOutput {
     @IsString()
     promptId: string
 
-    @Field(()=> String)
+    @Field(() => String, { nullable: true })
     @IsString()
-    prompt: string
+    prompt?: string
 
     @Field(() => String, { nullable: true })
     @IsNotEmpty()

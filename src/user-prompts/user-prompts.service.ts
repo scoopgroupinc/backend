@@ -29,7 +29,7 @@ export class UserPromptsService {
         }
     }
 
-    async getUserPrompts(userId: string): Promise<any> {
+    async getUserPromptsOrder(userId: string): Promise<any> {
         const userPromptIds = await lastValueFrom(
             this.httpService
                 .get(this.clientUrl + userId)
@@ -66,6 +66,10 @@ export class UserPromptsService {
                 .post(this.clientUrl, { userPromptsOrder })
                 .pipe(map((response) => response.data))
         )
+    }
+
+    async getAllUserPrompts(userId: string) {
+        return await this.userPromptsRepository.find({ userId })
     }
 
     async findOne(id: string): Promise<UserPrompts> {
