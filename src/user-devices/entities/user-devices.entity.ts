@@ -10,6 +10,7 @@ import {
     UpdateDateColumn,
 } from 'typeorm'
 import { IsNumber, IsMACAddress } from 'class-validator'
+import { ColumnMetadata } from 'typeorm/metadata/ColumnMetadata'
 
 @Entity('user_devices')
 @ObjectType()
@@ -42,4 +43,8 @@ export class UserDevice extends BaseEntity {
     @Field(() => String, { nullable: true })
     @UpdateDateColumn()
     lastLogin?: string
+
+    @Field(() => String, { nullable: true })
+    @Column({ type: 'varchar', nullable: true })
+    notificationToken: string
 }
