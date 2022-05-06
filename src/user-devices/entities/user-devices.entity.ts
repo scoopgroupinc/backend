@@ -2,15 +2,13 @@ import { Field, ObjectType, ID } from '@nestjs/graphql'
 import {
     PrimaryColumn,
     Entity,
-    Unique,
     BaseEntity,
     Column,
     PrimaryGeneratedColumn,
     CreateDateColumn,
     UpdateDateColumn,
 } from 'typeorm'
-import { IsNumber, IsMACAddress } from 'class-validator'
-import { ColumnMetadata } from 'typeorm/metadata/ColumnMetadata'
+import { IsMACAddress } from 'class-validator'
 
 @Entity('user_devices')
 @ObjectType()
