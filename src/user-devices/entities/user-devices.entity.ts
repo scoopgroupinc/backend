@@ -2,14 +2,13 @@ import { Field, ObjectType, ID } from '@nestjs/graphql'
 import {
     PrimaryColumn,
     Entity,
-    Unique,
     BaseEntity,
     Column,
     PrimaryGeneratedColumn,
     CreateDateColumn,
     UpdateDateColumn,
 } from 'typeorm'
-import { IsNumber, IsMACAddress } from 'class-validator'
+import { IsMACAddress } from 'class-validator'
 
 @Entity('user_devices')
 @ObjectType()
@@ -42,4 +41,8 @@ export class UserDevice extends BaseEntity {
     @Field(() => String, { nullable: true })
     @UpdateDateColumn()
     lastLogin?: string
+
+    @Field(() => String, { nullable: true })
+    @Column({ type: 'varchar', nullable: true })
+    notificationToken: string
 }
