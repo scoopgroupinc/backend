@@ -36,10 +36,7 @@ export class UserPromptsService {
                 .pipe(map((response) => response.data))
         )
         if (!userPromptIds) {
-            throw new HttpException(
-                'user has no selected display',
-                HttpStatus.NOT_FOUND
-            )
+            return []
         }
 
         const userDisplay = await this.userPromptsRepository
