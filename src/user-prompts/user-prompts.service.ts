@@ -35,7 +35,7 @@ export class UserPromptsService {
                 .get(this.clientUrl + userId)
                 .pipe(map((response) => response.data))
         )
-        if (!userPromptIds) {
+        if (!userPromptIds || !userPromptIds.length) {
             return []
         }
 
