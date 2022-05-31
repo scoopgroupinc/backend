@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 import { UserModule } from './user/user.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { GraphQLModule } from '@nestjs/graphql'
@@ -23,7 +23,6 @@ import { UserPromptsModule } from './user-prompts/user-prompts.module'
 import { ComplaintsModule } from './complaints/complaints.module'
 
 const { user, pass, host, port } = configs.get('mail')
-
 @Module({
     imports: [
         ConfigModule.forRoot({
@@ -38,7 +37,27 @@ const { user, pass, host, port } = configs.get('mail')
         }),
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
-            useClass: DatabaseConfig,
+            inject: [ConfigService],
+            useFactory: (database: ConfigService) => ({
+                ...database.get('database'),
+                host: process.env.DB_HOST1,
+            }),
+        }),
+        TypeOrmModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (database: ConfigService) => ({
+                ...database.get('database'),
+                host: process.env.DB_HOST2,
+            }),
+        }),
+        TypeOrmModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (database: ConfigService) => ({
+                ...database.get('database'),
+                host: process.env.DB_HOST3,
+            }),
         }),
         MailerModule.forRoot({
             // transport: 'smtps://user@domain.com:pass@smtp.domain.com',
