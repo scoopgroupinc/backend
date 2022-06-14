@@ -62,7 +62,7 @@ export class UserPromptsService {
 
     async saveUserPromptsOrder(userPromptsOrder: UserPromptsOrder) {
         if (userPromptsOrder.userPromptIds.length > 6)
-            return new BadRequestException('select a maximum of six(6) visuals');
+            return new BadRequestException('Select a maximum of six(6) propmts');
         return await lastValueFrom(
             this.httpService
                 .post(this.clientUrl, { userPromptsOrder })
