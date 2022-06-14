@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios'
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { In, Repository } from 'typeorm'
 import { UserPromptsInput } from './dto/user-prompts.input'
@@ -38,26 +38,31 @@ export class UserPromptsService {
         if (!userPromptIds || !userPromptIds.length) {
             return []
         }
-
         const userDisplay = await this.userPromptsRepository
             .createQueryBuilder('userprompts')
             .where('userprompts.id IN (:...userPromptIds)', {
                 userPromptIds,
             })
             .getMany()
-
-        const results = userDisplay.map(async (display) => {
-            return {
-                ...display,
-                prompt: await (
-                    await this.promptService.findOne(display.promptId)
-                ).prompt,
-            }
-        })
-        return results
+        const results = []
+        await Promise.all(
+            userDisplay.map(async (display) => {
+                results.push({
+                    ...display,
+                    prompt: await (
+                        await this.promptService.findOne(display.promptId)
+                    ).prompt,
+                })
+            })
+        )
+        return results.sort(
+            (a, b) => userPromptIds.indexOf(a.id) - userPromptIds.indexOf(b.id)
+        )
     }
 
     async saveUserPromptsOrder(userPromptsOrder: UserPromptsOrder) {
+        if (userPromptsOrder.userPromptIds.length > 6)
+            return new BadRequestException('Select a maximum of six(6) prompts');
         return await lastValueFrom(
             this.httpService
                 .post(this.clientUrl, { userPromptsOrder })
