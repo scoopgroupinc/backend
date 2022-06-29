@@ -161,6 +161,7 @@ export class UserService {
     }
 
     async findOne(email: any): Promise<User> {
+        email = email.toLowerCase()
         const user = await this.userRepository.findOne({ where: { email } })
         return user
     }
