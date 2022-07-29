@@ -38,9 +38,9 @@ export class User extends BaseEntity {
     @Column({ nullable: false })
     password: string
 
-    @Field(() => String)
-    @CreateDateColumn({ type: 'timestamp' })
-    createdAt: string
+    @Field(() => Date)
+    @CreateDateColumn()
+    createdAt: Date
 
     @Field({ nullable: true })
     @Column({ nullable: true })
