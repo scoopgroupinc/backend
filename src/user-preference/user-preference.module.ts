@@ -7,6 +7,6 @@ import { UserPreferenceService } from './user-preference.service'
 @Module({
     imports: [TypeOrmModule.forFeature([UserPreference])],
     providers: [UserPreferenceResolver, UserPreferenceService],
-    exports: [],
+    exports: [UserPreferenceService],
 })
 export class UserPreferenceModule {}

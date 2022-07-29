@@ -12,6 +12,8 @@ import { RateCriterias } from 'src/rate-criterias/entities/rate-criterias.entity
 import { Prompts } from 'src/prompts/entities/prompts.entity'
 import { UserPrompts } from '../user-prompts/entities/user-prompts.entity'
 import { Complaints } from '../complaints/entities/complaints.entity'
+import { Matches } from 'src/matches/entities/matches.entity'
+import { UserChoice } from 'src/user-choice/entities/user-choice.entity'
 
 export const config = () => ({
     port: parseInt(process.env.PORT, 10),
@@ -40,6 +42,8 @@ export const config = () => ({
             Prompts,
             UserPrompts,
             Complaints,
+            Matches,
+            UserChoice
         ],
         ssl: {
             rejectUnauthorized: false,

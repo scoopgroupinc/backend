@@ -21,6 +21,8 @@ import { RateCriteriasModule } from './rate-criterias/rate-criterias.module'
 import { PromptsModule } from './prompts/prompts.module'
 import { UserPromptsModule } from './user-prompts/user-prompts.module'
 import { ComplaintsModule } from './complaints/complaints.module'
+import { MatchesModule } from './matches/matches.modules.'
+import { UserChoiceModule } from './user-choice/user-choice.module'
 
 const { user, pass, host, port } = configs.get('mail')
 @Module({
@@ -95,6 +97,8 @@ const { user, pass, host, port } = configs.get('mail')
         PromptsModule,
         UserPromptsModule,
         ComplaintsModule,
+        MatchesModule,
+        UserChoiceModule,
     ],
     controllers: [],
     providers: [],
