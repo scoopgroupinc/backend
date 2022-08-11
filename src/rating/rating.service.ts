@@ -114,8 +114,8 @@ export class RatingService {
             contentId
         )
         const allcommmentIds = []
-        ratingGroup.forEach((groups) => {
-            allcommmentIds.push(groups.commentIds.pop())
+        ratingGroup.forEach((group) => {
+            allcommmentIds.push(group.id)
         })
         return await this.ratingCommentService.getRatingComment(allcommmentIds)
     }

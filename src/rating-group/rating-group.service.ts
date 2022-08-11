@@ -46,10 +46,7 @@ export class RatingGroupService {
                 )
             }
 
-            const comment: RatingCommentInput[] =
-                await this.ratingCommentService.saveRatingComment(
-                    saveRatingInput.comment
-                )
+           
 
             const taggedRatings = await this.assignFinalTagToRatings(
                 saveRatingInput.ratingDetails
@@ -62,11 +59,11 @@ export class RatingGroupService {
                 final: ratings?.final ?? false,
             }))
 
-            const rates = await this.ratingService.saveRatings(ratingEntries)
-            const ratingIds: string[] = await rates.map((rate) => rate.id)
-            const commentIds: string[] = await comment.map(
-                (comment) => comment.id
-            )
+            await this.ratingService.saveRatings(ratingEntries)
+            // const ratingIds: string[] = await rates.map((rate) => rate.id)
+            // const commentIds: string[] = await comment.map(
+            //     (comment) => comment.id
+            // )
 
             const ratingGroup: RatingGroupInput = {
                 raterId,
@@ -74,11 +71,16 @@ export class RatingGroupService {
                 type,
                 startTime,
                 endTime,
-                ratingIds,
-                commentIds,
             }
 
-            await this.ratingGroupRepository.save(ratingGroup)
+           const response = await this.ratingGroupRepository.save(ratingGroup)
+           
+           for(const comment of saveRatingInput.comment){
+            comment.ratingGroupId=response.id;
+           }
+           await this.ratingCommentService.saveRatingComment(
+               saveRatingInput.comment
+           )
 
             return true
         } catch (error) {
@@ -98,7 +100,9 @@ export class RatingGroupService {
             }),
             {}
         )
-
+        /**
+         * are we still going with the module where we keep all the users previous input data before final submit?
+         */
         const criteriaKeys = Object.keys(groups)
         const newRatings = []
         for (let i = 0; i < criteriaKeys.length; i++) {

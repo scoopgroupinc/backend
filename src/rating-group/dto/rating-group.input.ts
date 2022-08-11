@@ -21,16 +21,6 @@ export class RatingGroupInput {
     @IsString()
     contentId: string
 
-    @Field(() => [String], { nullable: true })
-    @IsNotEmpty()
-    @IsString()
-    ratingIds: string[]
-
-    @Field(() => [String], { nullable: true })
-    @IsNotEmpty()
-    @IsString()
-    commentIds: string[]
-
     @Field()
     @IsOptional()
     @IsString()
@@ -40,4 +30,5 @@ export class RatingGroupInput {
     @IsOptional()
     @IsString()
     endTime?: string
+
 }
