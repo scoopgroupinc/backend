@@ -15,6 +15,10 @@ export class RatingGroup extends BaseEntity {
 
     @Field()
     @Column({ type: 'bigint', nullable: true })
+    ratingGroupId: string
+
+    @Field()
+    @Column({ type: 'bigint', nullable: true })
     raterId: string
 
     @Field()
@@ -24,14 +28,6 @@ export class RatingGroup extends BaseEntity {
     @Field()
     @Column({ type: 'bigint', nullable: true })
     contentId: string
-
-    @Field(() => [String], { nullable: true })
-    @Column('simple-array', { nullable: true, default: [] })
-    ratingIds: string[]
-
-    @Field(() => [String], { nullable: true })
-    @Column('simple-array', { nullable: true, default: [] })
-    commentIds: string[]
 
     @Field(() => String)
     @Column()

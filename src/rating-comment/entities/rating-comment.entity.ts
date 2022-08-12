@@ -10,6 +10,10 @@ export class RatingComment extends BaseEntity {
     id: string
 
     @Field()
+    @Column({type: 'bigint', nullable: true})
+    ratingGroupId: string
+
+    @Field()
     @Column({ nullable: true })
     startTime: string
 

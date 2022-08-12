@@ -11,10 +11,6 @@ export class RateCriterias extends BaseEntity {
 
     @Field(() => String)
     @Column()
-    criteriaId: string
-
-    @Field(() => String)
-    @Column()
     title: string
 
     @Field(() => String)

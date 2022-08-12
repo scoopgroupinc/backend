@@ -10,25 +10,25 @@ import { RatingComment } from './entities/rating-comment.entity'
 export class RatingCommentService {
     constructor(
         @InjectRepository(RatingComment)
-        private ratingCommentRepositry: Repository<RatingComment>
+        private ratingCommentRepository: Repository<RatingComment>
     ) {}
 
     async saveRatingComment(
         ratingCommentInput: RatingCommentInput[]
     ): Promise<RatingCommentInput[]> {
-        const lastIndex = RatingCommentInput.length - 1
-        RatingCommentInput[lastIndex].final = true
-        const ratingCommentEntries = await this.ratingCommentRepositry.create(
+        const lastIndex = ratingCommentInput.length - 1
+        ratingCommentInput[lastIndex].final = true
+        const ratingCommentEntries = await this.ratingCommentRepository.create(
             ratingCommentInput
         )
-        return await this.ratingCommentRepositry.save(ratingCommentEntries)
+        return await this.ratingCommentRepository.save(ratingCommentEntries)
     }
 
-    async getRatingComment(commentIds: string[]): Promise<any> {
+    async getRatingComment(ratingGroupIds: string[]): Promise<any> {
         try {
             // const id = commentIds.pop();
-            const comments = await this.ratingCommentRepositry.find({
-                id: In(commentIds),
+            const comments = await this.ratingCommentRepository.find({
+                ratingGroupId: In(ratingGroupIds),
             })
             return comments
         } catch (error) {
@@ -46,7 +46,7 @@ export class RatingCommentService {
         const comment = await this.getRatingComment([id])
         if (!comment) return await this.saveRatingComment([comment])
 
-        return await this.ratingCommentRepositry.save({
+        return await this.ratingCommentRepository.save({
             ...commentUpdate,
             ...comment,
         })

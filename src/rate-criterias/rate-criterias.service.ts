@@ -14,7 +14,7 @@ export class RateCriteriasService {
     ) {}
 
     async getRatingCriteriaById(criteriaId: string): Promise<RateCriterias> {
-        return await this.rateCiteriasRepository.findOne({ criteriaId })
+        return await this.rateCiteriasRepository.findOne({id: criteriaId })
     }
 
     async getRatingCriteriaByType(

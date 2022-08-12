@@ -9,15 +9,12 @@ import {
 import { InjectRepository } from '@nestjs/typeorm'
 import {
     SaveRatingInput,
-    UpdateRatingInput,
 } from '../rating/dto/save-rating.input'
 import { Repository } from 'typeorm'
 import { RatingGroupInput } from './dto/rating-group.input'
 import { RatingGroup } from './entities/rating-group.entity'
 import { RatingCommentService } from '../rating-comment/rating-comment.service'
-import { RatingCommentInput } from '../rating-comment/dto/rating-comment.input'
 import { RatingService } from '../rating/rating.service'
-import { RatingInput } from '../rating/dto/rating.input'
 import logger from '../utils/logger'
 
 @Injectable()
@@ -46,10 +43,7 @@ export class RatingGroupService {
                 )
             }
 
-            const comment: RatingCommentInput[] =
-                await this.ratingCommentService.saveRatingComment(
-                    saveRatingInput.comment
-                )
+           
 
             const taggedRatings = await this.assignFinalTagToRatings(
                 saveRatingInput.ratingDetails
@@ -62,23 +56,24 @@ export class RatingGroupService {
                 final: ratings?.final ?? false,
             }))
 
-            const rates = await this.ratingService.saveRatings(ratingEntries)
-            const ratingIds: string[] = await rates.map((rate) => rate.id)
-            const commentIds: string[] = await comment.map(
-                (comment) => comment.id
-            )
-
+            await this.ratingService.saveRatings(ratingEntries)
+           
             const ratingGroup: RatingGroupInput = {
                 raterId,
                 contentId,
                 type,
                 startTime,
                 endTime,
-                ratingIds,
-                commentIds,
             }
 
-            await this.ratingGroupRepository.save(ratingGroup)
+           const response = await this.ratingGroupRepository.save(ratingGroup)
+           
+           for(const comment of saveRatingInput.comment){
+            comment.ratingGroupId=response.id;
+           }
+           await this.ratingCommentService.saveRatingComment(
+               saveRatingInput.comment
+           )
 
             return true
         } catch (error) {
@@ -98,7 +93,9 @@ export class RatingGroupService {
             }),
             {}
         )
-
+        /**
+         * are we still going with the module where we keep all the users previous input data before final submit?
+         */
         const criteriaKeys = Object.keys(groups)
         const newRatings = []
         for (let i = 0; i < criteriaKeys.length; i++) {
