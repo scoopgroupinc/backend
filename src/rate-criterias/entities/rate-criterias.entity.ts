@@ -9,10 +9,6 @@ export class RateCriterias extends BaseEntity {
     @PrimaryGeneratedColumn({ type: 'bigint' })
     id: string
 
-    // @Field(() => String)
-    // @Column()
-    // criteriaId: string
-
     @Field(() => String)
     @Column()
     title: string

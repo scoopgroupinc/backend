@@ -9,15 +9,12 @@ import {
 import { InjectRepository } from '@nestjs/typeorm'
 import {
     SaveRatingInput,
-    UpdateRatingInput,
 } from '../rating/dto/save-rating.input'
 import { Repository } from 'typeorm'
 import { RatingGroupInput } from './dto/rating-group.input'
 import { RatingGroup } from './entities/rating-group.entity'
 import { RatingCommentService } from '../rating-comment/rating-comment.service'
-import { RatingCommentInput } from '../rating-comment/dto/rating-comment.input'
 import { RatingService } from '../rating/rating.service'
-import { RatingInput } from '../rating/dto/rating.input'
 import logger from '../utils/logger'
 
 @Injectable()
@@ -60,11 +57,7 @@ export class RatingGroupService {
             }))
 
             await this.ratingService.saveRatings(ratingEntries)
-            // const ratingIds: string[] = await rates.map((rate) => rate.id)
-            // const commentIds: string[] = await comment.map(
-            //     (comment) => comment.id
-            // )
-
+           
             const ratingGroup: RatingGroupInput = {
                 raterId,
                 contentId,
