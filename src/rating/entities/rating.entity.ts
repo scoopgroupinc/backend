@@ -16,7 +16,7 @@ export class Rating extends BaseEntity {
     id: string
 
     @Field(() => String)
-    @CreateDateColumn({ type: 'timestamp' })
+    @CreateDateColumn()
     createdAt: string
 
     @Field(() => String)

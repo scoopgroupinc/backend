@@ -31,7 +31,7 @@ export class UserProfile extends BaseEntity {
     userId: string
 
     @Field(() => String, { nullable: true })
-    @CreateDateColumn({ type: 'timestamp' })
+    @CreateDateColumn()
     createdAt: string
 
     @Field(() => String, { nullable: true })

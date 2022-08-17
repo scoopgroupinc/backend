@@ -1,5 +1,10 @@
 import { HttpService } from '@nestjs/axios'
-import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import {
+    BadRequestException,
+    HttpException,
+    HttpStatus,
+    Injectable,
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { In, Repository } from 'typeorm'
 import { UserPromptsInput } from './dto/user-prompts.input'
@@ -19,8 +24,6 @@ export class UserPromptsService {
         private promptService: PromptsService
     ) {}
 
-    clientUrl = this.configService.get('fileServer_Url')
-
     async saveUserPrompt(userPromptsInput: UserPromptsInput): Promise<any> {
         try {
             return await this.userPromptsRepository.save(userPromptsInput)
@@ -31,9 +34,7 @@ export class UserPromptsService {
 
     async getUserPromptsOrder(userId: string): Promise<any> {
         const userPromptIds = await lastValueFrom(
-            this.httpService
-                .get(this.clientUrl + userId)
-                .pipe(map((response) => response.data))
+            this.httpService.get(userId).pipe(map((response) => response.data))
         )
         if (!userPromptIds || !userPromptIds.length) {
             return []
@@ -62,10 +63,10 @@ export class UserPromptsService {
 
     async saveUserPromptsOrder(userPromptsOrder: UserPromptsOrder) {
         if (userPromptsOrder.userPromptIds.length > 6)
-            return new BadRequestException('Select a maximum of six(6) prompts');
+            return new BadRequestException('Select a maximum of six(6) prompts')
         return await lastValueFrom(
             this.httpService
-                .post(this.clientUrl, { userPromptsOrder })
+                .post('', { userPromptsOrder })
                 .pipe(map((response) => response.data))
         )
     }

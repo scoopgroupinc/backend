@@ -23,7 +23,7 @@ export class UserPreference extends BaseEntity {
     userId: string
 
     @Field({ nullable: true })
-    @CreateDateColumn({ type: 'timestamp' })
+    @CreateDateColumn()
     createdAt?: string
 
     @Field(() => [String], { nullable: true })

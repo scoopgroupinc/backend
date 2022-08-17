@@ -22,7 +22,7 @@ export class UserDevice extends BaseEntity {
     userId: string
 
     @Field(() => String)
-    @CreateDateColumn({ type: 'timestamp' })
+    @CreateDateColumn()
     createdAt?: string
 
     @Field(() => String, { nullable: true })
