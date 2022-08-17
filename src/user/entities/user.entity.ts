@@ -40,7 +40,7 @@ export class User extends BaseEntity {
 
     @Field(() => String)
     @CreateDateColumn()
-    createdAt: string
+    createdAt: Date
 
     @Field({ nullable: true })
     @Column({ nullable: true })

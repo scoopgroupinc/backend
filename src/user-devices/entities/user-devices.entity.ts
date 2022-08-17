@@ -23,7 +23,7 @@ export class UserDevice extends BaseEntity {
 
     @Field(() => String)
     @CreateDateColumn()
-    createdAt?: string
+    createdAt?: Date
 
     @Field(() => String, { nullable: true })
     @Column({ nullable: true })

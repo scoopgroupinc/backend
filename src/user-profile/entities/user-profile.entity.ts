@@ -32,7 +32,7 @@ export class UserProfile extends BaseEntity {
 
     @Field(() => String, { nullable: true })
     @CreateDateColumn()
-    createdAt: string
+    createdAt: Date
 
     @Field(() => String, { nullable: true })
     @Column({ nullable: true })

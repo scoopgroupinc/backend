@@ -17,7 +17,7 @@ export class Rating extends BaseEntity {
 
     @Field(() => String)
     @CreateDateColumn()
-    createdAt: string
+    createdAt: Date
 
     @Field(() => String)
     @Column({ type: 'bigint', nullable: true })
