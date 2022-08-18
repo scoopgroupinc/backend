@@ -16,7 +16,7 @@ export class UserPrompts extends BaseEntity {
 
     @Field(() => String)
     @CreateDateColumn()
-    createdAt: Date
+    createdAt: string
 
     @Field(() => String)
     @Column({ type: 'bigint' })
