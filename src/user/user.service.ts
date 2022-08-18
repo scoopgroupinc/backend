@@ -122,7 +122,8 @@ export class UserService {
 
     async resendActivationCode(email: string) {
         const user = await this.userRepository.findOne({ email })
-        if (!user) throw new UnauthorizedException('Something went wrong')
+        if (!user)
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND)
         const code = await this.generateFourDigitCode()
         await this.userRepository.save({ ...user, code })
         const result = await this.sendVerificationMail(email, code)
@@ -220,12 +221,11 @@ export class UserService {
         return await Math.floor(1000 + Math.random() * 9000)
     }
 
-    async remove(userId: string): Promise<User> {
-        try {
-            const user = await this.findOne(userId)
-            return await this.userRepository.remove(user)
-        } catch (e) {
-            return null
-        }
+    async remove(userId: string): Promise<any> {
+        const user = await this.findOneByID(userId)
+        if (!user)
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+        await this.userRepository.delete({ userId })
+        return 'user deleted'
     }
 }

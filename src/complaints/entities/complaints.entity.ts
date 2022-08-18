@@ -26,7 +26,7 @@ export class Complaints extends BaseEntity {
 
     @Field(() => String)
     @Column()
-    @CreateDateColumn({ type: 'timestamp' })
+    @CreateDateColumn()
     createdAt: string
 
     @Field(() => String)
