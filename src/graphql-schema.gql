@@ -259,7 +259,7 @@ type Query {
 type Mutation {
   createUser(createUserInput: CreateUserInput!): String!
   updateUser(updateUserInput: UpdateUserInput!): User!
-  deleteUser(userId: String!): String!
+  deleteUser(email: String!, userId: String!): String!
   login(loginUserInput: LoginUserInput!): UserToken!
   activateAccount(email: String!, code: Float!): UserToken!
   resendActivationCode(email: String!): String!
