@@ -221,11 +221,13 @@ export class UserService {
         return await Math.floor(1000 + Math.random() * 9000)
     }
 
-    async remove(userId: string): Promise<any> {
-        const user = await this.findOneByID(userId)
+    async remove(userId: string, email: string): Promise<any> {
+        let user: any = null
+        if (userId) user = await this.findOneByID(userId)
+        if (email) user = await this.findOne(email)
         if (!user)
             throw new HttpException('User not found', HttpStatus.NOT_FOUND)
-        await this.userRepository.delete({ userId })
+        await this.userRepository.delete({ userId: user.userId })
         return 'user deleted'
     }
 }

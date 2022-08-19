@@ -40,8 +40,11 @@ export class UserResolver {
 
     @UseGuards(GqlAuthGuard)
     @Mutation(() => String)
-    async deleteUser(@Args('userId') userId: string) {
-        return await this.userService.remove(userId);
+    async deleteUser(
+        @Args('userId') userId: string,
+        @Args('email') email: string
+    ) {
+        return await this.userService.remove(userId, email)
     }
 
     @Mutation(() => UserToken)
