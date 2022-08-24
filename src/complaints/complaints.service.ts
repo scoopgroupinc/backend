@@ -1,5 +1,7 @@
+import { HttpService } from '@nestjs/axios'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { lastValueFrom, map } from 'rxjs'
 import { Repository } from 'typeorm'
 import { ComplaintsInput } from './dto/complaints.input'
 import { ComplaintsOutput } from './dto/complaints.output'
@@ -9,7 +11,8 @@ import { Complaints } from './entities/complaints.entity'
 export class ComplaintsService {
     constructor(
         @InjectRepository(Complaints)
-        private complaintsRepository: Repository<Complaints>
+        private complaintsRepository: Repository<Complaints>,
+        private httpService: HttpService
     ) {}
 
     async saveNewCompliants(
@@ -30,7 +33,20 @@ export class ComplaintsService {
     }
 
     async getAllOpenComplaints(): Promise<ComplaintsOutput[]> {
-        return await this.complaintsRepository.find({ isClosed: false })
+        const complaints = await this.complaintsRepository.find({
+            isClosed: false,
+        })
+        const response: ComplaintsOutput[] = []
+        for (const comps of complaints) {
+            comps.media_file = await lastValueFrom(
+                this.httpService
+                    .get(comps.media_file)
+                    .pipe(map((response) => response.data))
+            )
+
+            response.push(comps);
+        }
+        return response;
     }
 
     async closeComplaint(complaintId: string): Promise<any> {
