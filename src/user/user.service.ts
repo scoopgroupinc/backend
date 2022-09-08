@@ -17,6 +17,7 @@ import { UserDeviceService } from '../user-devices/user-devices.service'
 import { UpdateUserInput } from './dto/update-user.input'
 import logger from 'src/utils/logger'
 import { JwtService } from '@nestjs/jwt'
+import * as moment from 'moment'
 
 @Injectable()
 export class UserService {
@@ -33,7 +34,7 @@ export class UserService {
         const salt = await bcrypt.genSalt()
         const hashedPassword = await this.hashPassward(password, salt)
         const code = await this.generateFourDigitCode()
-
+        console.log(code)
         try {
             await this.userRepository.save({
                 email: email.toLowerCase(),
@@ -90,7 +91,10 @@ export class UserService {
 
     async activateAccount(code: number, email: string) {
         const user = await this.findOne(email)
-        if (!(user && user.code === code)) {
+        const minutesAgo = moment(Date.now()).diff(user.updatedAt, 'minutes')
+        const isInvalid = minutesAgo > 15
+
+        if (!(user && user.code === code) || isInvalid) {
             throw new BadRequestException(
                 'Unable to activate account. Invalid Code'
             )

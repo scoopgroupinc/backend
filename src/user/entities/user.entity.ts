@@ -6,6 +6,7 @@ import {
     BaseEntity,
     Unique,
     CreateDateColumn,
+    UpdateDateColumn,
 } from 'typeorm'
 import * as bcrypt from 'bcrypt'
 import { ObjectType, Field } from '@nestjs/graphql'
@@ -57,6 +58,10 @@ export class User extends BaseEntity {
     @Field({ nullable: true })
     @Column({ nullable: true })
     resetCode: number
+
+    @Field(() => String)
+    @UpdateDateColumn()
+    updatedAt: Date
 
     async validatePassword(password: string): Promise<boolean> {
         const hash = await bcrypt.hash(password, this.salt)
