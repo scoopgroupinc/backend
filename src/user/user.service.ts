@@ -34,7 +34,7 @@ export class UserService {
         const salt = await bcrypt.genSalt()
         const hashedPassword = await this.hashPassward(password, salt)
         const code = await this.generateFourDigitCode()
-        console.log(code)
+
         try {
             await this.userRepository.save({
                 email: email.toLowerCase(),
