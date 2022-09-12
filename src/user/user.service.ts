@@ -17,6 +17,7 @@ import { UserDeviceService } from '../user-devices/user-devices.service'
 import { UpdateUserInput } from './dto/update-user.input'
 import logger from 'src/utils/logger'
 import { JwtService } from '@nestjs/jwt'
+import * as moment from 'moment'
 
 @Injectable()
 export class UserService {
@@ -90,7 +91,10 @@ export class UserService {
 
     async activateAccount(code: number, email: string) {
         const user = await this.findOne(email)
-        if (!(user && user.code === code)) {
+        const minutesAgo = moment(Date.now()).diff(user.updatedAt, 'minutes')
+        const isInvalid = minutesAgo > 15
+
+        if (!(user && user.code === code) || isInvalid) {
             throw new BadRequestException(
                 'Unable to activate account. Invalid Code'
             )
