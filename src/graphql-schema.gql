@@ -9,13 +9,18 @@ type User {
   email: String
   phoneNumber: String
   password: String
-  createdAt: String!
+  createdAt: DateTime!
   salt: String
   code: Float
   isVerified: Boolean
   resetCode: Float
   updatedAt: String!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type UserDevice {
   id: ID!
@@ -192,6 +197,15 @@ type ComplaintsOutput {
   isClosed: Boolean!
 }
 
+type MatchesOutput {
+  userId: String!
+  matchedTo: String!
+  username: String!
+  gender: String!
+  age: String!
+  createdAt: DateTime!
+}
+
 type Query {
   getUser(userId: String!): User!
   getUserDevice(macAddress: String!): UserDevice!
@@ -255,6 +269,7 @@ type Query {
   getAllUserPrompts(userId: String!): [UserPromptsOutput!]!
   getAllOpenComplaints: [ComplaintsOutput!]!
   getAComplaint(complaintId: String!): ComplaintsOutput!
+  getUserMatches(userId: String!): [MatchesOutput!]!
 }
 
 type Mutation {

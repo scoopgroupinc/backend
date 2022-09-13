@@ -1,5 +1,5 @@
 import { Injectable, BadRequestException } from '@nestjs/common'
-import { Repository } from 'typeorm'
+import { In, Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { UserPreference } from './entities/user-preference.entity'
 import { UserPreferenceInput } from './dto/user-preference.input'
@@ -31,6 +31,13 @@ export class UserPreferenceService {
             ...preference,
             ...userPreferenceInput,
         })
+    }
+
+    async findManyByGender(gender: string[]): Promise<UserPreference[]> {
+        return await this.userPreferenceRepository
+            .createQueryBuilder('user_preference')
+            .andWhere('user_preference.gender IN(:...gender)')
+            .getMany()
     }
 
     async createOne(userPreferenceInput: UserPreferenceInput): Promise<any> {
