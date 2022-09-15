@@ -78,7 +78,10 @@ export class UserService {
         }
 
         if (!user.isVerified)
-            throw new BadRequestException('Kindly activate your account')
+            throw new HttpException(
+                'ACCOUNT_ACTIVATION_NEEDED ',
+                HttpStatus.FORBIDDEN
+            )
 
         const payload = {
             token: this.authService.generateJwt(user.email, user.userId),
