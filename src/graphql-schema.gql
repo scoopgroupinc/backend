@@ -9,18 +9,13 @@ type User {
   email: String
   phoneNumber: String
   password: String
-  createdAt: DateTime!
+  createdAt: String!
   salt: String
   code: Float
   isVerified: Boolean
   resetCode: Float
   updatedAt: String!
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type UserDevice {
   id: ID!
@@ -47,8 +42,7 @@ type UserToken {
 }
 
 type LocationEntity {
-  id: ID!
-  userId: String!
+  userId: ID!
   latitude: String
   longitude: String
   addressLine1: String
@@ -198,12 +192,29 @@ type ComplaintsOutput {
 }
 
 type MatchesOutput {
+  id: ID!
   userId: String!
-  matchedTo: String!
-  username: String!
+  matchedUserId: String!
+  matchName: String!
   gender: String!
   age: String!
   createdAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type UserChoiceOutput {
+  Id: String!
+  swiperId: String!
+  shownUserId: String!
+  swiperChoice: String!
+  age: String!
+  createdAt: DateTime!
+  gender: String!
+  choiceName: String!
 }
 
 type Query {
@@ -269,7 +280,7 @@ type Query {
   getAllUserPrompts(userId: String!): [UserPromptsOutput!]!
   getAllOpenComplaints: [ComplaintsOutput!]!
   getAComplaint(complaintId: String!): ComplaintsOutput!
-  getUserMatches(userId: String!): [MatchesOutput!]!
+  getUserMatches(userId: String!): [UserChoiceOutput!]!
 }
 
 type Mutation {
@@ -297,6 +308,7 @@ type Mutation {
   saveNewCompliants(complaintsInput: ComplaintsInput!): ComplaintsOutput!
   updateComplaint(complaintsInput: ComplaintsInput!): ComplaintsOutput!
   closeComplaints(complaintId: String!): String!
+  deActivateMatch(id: String!): String!
 }
 
 input CreateUserInput {
@@ -308,13 +320,12 @@ input UpdateUserInput {
   email: String!
   firstName: String!
   lastName: String!
-  phoneNumber: String!
+  phoneNumber: String
 }
 
 input LoginUserInput {
   email: String!
   password: String!
-  macAddress: String!
 }
 
 input UserDeviceInput {
@@ -399,13 +410,13 @@ input UserPreferenceInput {
 
 input CreateLocationInput {
   userId: ID!
-  latitude: String!
-  longitude: String!
-  addressLine1: String!
-  addressLine2: String!
-  stateProvince: String!
-  country: String!
-  zipPostal: Float!
+  latitude: String
+  longitude: String
+  addressLine1: String
+  addressLine2: String
+  stateProvince: String
+  country: String
+  zipPostal: String
 }
 
 input TagsInput {
