@@ -71,7 +71,7 @@ export class UserService {
     }
 
     async login(loginUserInput: LoginUserInput) {
-        const { email, password, macAddress } = loginUserInput
+        const { email, password } = loginUserInput
         const user = await this.findOne(email)
         if (!(user && (await user.validatePassword(password)))) {
             throw new BadRequestException('Invalid credentials')
