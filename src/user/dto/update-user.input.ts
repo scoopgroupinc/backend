@@ -16,6 +16,6 @@ export class UpdateUserInput extends PartialType(UserInput) {
     @Field()
     lastName?: string
 
-    @Field()
+    @Field(()=> String, {nullable: true})
     phoneNumber?: string
 }

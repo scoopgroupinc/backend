@@ -1,3 +1,4 @@
+import { Optional } from '@nestjs/common'
 import { InputType, Field, ID } from '@nestjs/graphql'
 import {
     MinLength,
@@ -12,48 +13,31 @@ export class CreateLocationInput {
     @Field(() => ID)
     userId: string
 
-    @MinLength(1, {
-        message: 'This field must be a valid latitude',
-    })
+    @Field(() => String, { nullable: true })
     @IsLatitude()
-    @Field()
     latitude: string
 
-    @MinLength(1, {
-        message: 'This field must be a valid longitude',
-    })
+    @Field(() => String, { nullable: true })
     @IsLongitude()
-    @Field()
     longitude: string
 
-    @MinLength(5, {
-        message: 'Input must be a valid address',
-    })
-    @Field()
-    addressLine1: string
+    @Field(() => String, { nullable: true })
+    @IsOptional()
+    addressLine1?: string
 
-    @MinLength(5, {
-        message: 'Input must be a valid address',
-    })
-    @Field()
+    @Field(() => String, { nullable: true })
     @IsOptional()
     addressLine2?: string
 
-    @MinLength(1)
-    @Field()
-    @IsNotEmpty()
-    stateProvince: string
+    @Field(() => String, { nullable: true })
+    @IsOptional()
+    stateProvince?: string
 
-    @MinLength(4, {
-        message: 'Country must be valid',
-    })
-    @IsNotEmpty()
-    @Field()
+    @Field(() => String, { nullable: true })
+    @IsOptional()
     country?: string
 
-    @MinLength(5, {
-        message: 'Enter a valid zip/postal code',
-    })
-    @Field()
-    zipPostal: number
+    @Field(() => String, { nullable: true })
+    @IsOptional()
+    zipPostal?: number
 }
