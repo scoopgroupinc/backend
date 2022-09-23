@@ -12,30 +12,27 @@ import { ObjectType, ID, Field } from '@nestjs/graphql'
 @Unique(['userId'])
 export class LocationEntity extends BaseEntity {
     @Field(() => ID)
-    @PrimaryGeneratedColumn({ type: 'bigint' })
-    id: string
-    @Field(() => String)
-    @Column({ type: 'bigint' })
+    @PrimaryColumn({ type: 'bigint' })
     userId: string
     @Field(() => String, { nullable: true })
-    @Column()
+    @Column({ nullable: true })
     latitude: string
     @Field(() => String, { nullable: true })
-    @Column()
+    @Column({ nullable: true })
     longitude: string
     @Field(() => String, { nullable: true })
-    @Column()
+    @Column({ nullable: true })
     addressLine1: string
     @Field(() => String, { nullable: true })
-    @Column()
+    @Column({ nullable: true })
     addressLine2: string
     @Field(() => String, { nullable: true })
-    @Column()
+    @Column({ nullable: true })
     stateProvince: string
     @Field(() => String, { nullable: true })
-    @Column()
+    @Column({ nullable: true })
     country: string
     @Field(() => Number, { nullable: true })
-    @Column()
+    @Column({ nullable: true })
     zipPostal: number
 }

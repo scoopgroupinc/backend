@@ -11,6 +11,6 @@ export class LoginUserInput {
     @Field({ nullable: false })
     password: string
 
-    @Field({ nullable: false })
-    macAddress: string
+    // @Field({ nullable: false })
+    // macAddress: string
 }
