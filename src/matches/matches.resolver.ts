@@ -19,7 +19,7 @@ export class MatchesResolver {
 
     @UseGuards(GqlAuthGuard)
     @Mutation(() => String)
-    async deActivateMatch(@Args('id') id: string): Promise<string> {
+    async deactivateMatch(@Args('id') id: string): Promise<string> {
         return await this.matchesService.deleteMatch(id);
     }
 }
