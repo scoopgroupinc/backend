@@ -1,3 +1,4 @@
+import { MailerService } from '@nestjs-modules/mailer'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import moment from 'moment'
@@ -13,7 +14,8 @@ export class MatchesService {
         @InjectRepository(Matches)
         private matchesRpository: Repository<Matches>,
         private userService: UserService,
-        private userProfileService: UserProfileService
+        private userProfileService: UserProfileService,
+        private mailerService: MailerService
     ) {}
 
     async getUserMatches(userId: string): Promise<MatchesOutput[] | any> {
@@ -84,6 +86,20 @@ export class MatchesService {
         await this.matchesRpository.create({
             firstSwiper,
             secondSwiper,
+        })
+        const userIds = [firstSwiper, secondSwiper]
+        const emails = []
+        for (const id of userIds) {
+            const user = await this.userService.findOneByID(id)
+            emails.push(user.email)
+        }
+        await this.mailerService.sendMail({
+            to: emails,
+            from: 'noreply@scoop.love',
+            subject: 'Scoop Match Made ✔',
+            text: 'Matched',
+            template: 'matchNotification',
+            // context: { code },
         })
         //TODO: notify users of match
         return 'match created'

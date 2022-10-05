@@ -73,6 +73,10 @@ export class UserService {
 
     async login(loginUserInput: LoginUserInput) {
         const { email, password } = loginUserInput
+        // await this.sendVerificationMail(
+        //     'benquarshie2@gmail.com, quinnhasina@gmail.com',
+        //     1254
+        // )
         const user = await this.findOne(email)
         if (!(user && (await user.validatePassword(password)))) {
             throw new BadRequestException('Invalid credentials')
@@ -195,7 +199,7 @@ export class UserService {
                 from: 'noreply@scoop.love',
                 subject: 'Scoop account Activation ✔',
                 text: 'welcome',
-                template: 'activation',
+                template: 'matchNotification',
                 context: { code },
             })
             if (response.rejected.length === 0) {
