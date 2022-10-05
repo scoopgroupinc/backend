@@ -5,6 +5,7 @@ import {
     Logger,
     HttpException,
     HttpStatus,
+    NotFoundException,
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { UserProfile } from './entities/user-profile.entity'
@@ -36,7 +37,9 @@ export class UserProfileService {
     }
 
     async findOne(userId: string): Promise<UserProfile> {
-        return await this.userProfileRespository.findOne({ userId })
+        const profile = await this.userProfileRespository.findOne({ userId })
+        if(!profile) throw new NotFoundException("Profile not found")
+        return profile
     }
 
     async updateOne(userProfileInput: UserProfileInput): Promise<any> {
