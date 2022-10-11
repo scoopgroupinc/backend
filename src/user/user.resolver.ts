@@ -12,6 +12,7 @@ import { AuthService } from '../auth/auth.service'
 import { JwtService } from '@nestjs/jwt'
 import { GqlAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { UserType } from './types/delete-user.schema'
+import { VerifyRestPasswordCode } from './dto/verify-Code-output'
 
 @Resolver(() => User)
 export class UserResolver {
@@ -70,7 +71,7 @@ export class UserResolver {
         return await this.userService.forgotPassword(email)
     }
 
-    @Mutation(() => String)
+    @Mutation(() => VerifyRestPasswordCode)
     async verifyPasswordResetCode(
         @Args('email') email: string,
         @Args('code') code: number

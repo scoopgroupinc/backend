@@ -18,6 +18,7 @@ import { UpdateUserInput } from './dto/update-user.input'
 import logger from 'src/utils/logger'
 import { JwtService } from '@nestjs/jwt'
 import * as moment from 'moment'
+import { VerifyRestPasswordCode } from './dto/verify-Code-output'
 
 @Injectable()
 export class UserService {
@@ -146,12 +147,25 @@ export class UserService {
         return 'Password reset failed'
     }
 
-    async verifyResetCode(email: string, code: number): Promise<string> {
+    async verifyResetCode(
+        email: string,
+        code: number
+    ): Promise<VerifyRestPasswordCode> {
         const user = await this.findOne(email)
+        const minutesAgo = moment(Date.now()).diff(user.updatedAt, 'minutes')
+        const isInvalid = minutesAgo > 15
         if (!user)
             throw new HttpException('User not found', HttpStatus.NOT_FOUND)
-        if (user && user.resetCode === code) return 'Code verified'
-        throw new HttpException('Invnalid code', HttpStatus.EXPECTATION_FAILED)
+        if (!(user && user.resetCode === code) || isInvalid) {
+            throw new HttpException(
+                'Invalid code',
+                HttpStatus.EXPECTATION_FAILED
+            )
+        }
+        return {
+            message: 'Code verified',
+            token: this.authService.generateJwt(user.email, user.userId),
+        }
     }
 
     async resetPassword(email: string, password: string) {

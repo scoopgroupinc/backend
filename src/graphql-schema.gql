@@ -41,6 +41,11 @@ type UserToken {
   message: String
 }
 
+type VerifyRestPasswordCode {
+  message: String
+  token: String!
+}
+
 type LocationEntity {
   userId: ID!
   latitude: String
@@ -291,7 +296,7 @@ type Mutation {
   activateAccount(email: String!, code: Float!): UserToken!
   resendActivationCode(email: String!): String!
   forgotPassword(email: String!): String!
-  verifyPasswordResetCode(code: Float!, email: String!): String!
+  verifyPasswordResetCode(code: Float!, email: String!): VerifyRestPasswordCode!
   resetPassword(password: String!, email: String!): User!
   testNewMailer(code: Float!, email: String!): String!
   saveDeviceDetails(userdeviceInput: UserDeviceInput!): UserDevice!
@@ -308,7 +313,7 @@ type Mutation {
   saveNewCompliants(complaintsInput: ComplaintsInput!): ComplaintsOutput!
   updateComplaint(complaintsInput: ComplaintsInput!): ComplaintsOutput!
   closeComplaints(complaintId: String!): String!
-  deActivateMatch(id: String!): String!
+  deactivateMatch(id: String!): String!
 }
 
 input CreateUserInput {
