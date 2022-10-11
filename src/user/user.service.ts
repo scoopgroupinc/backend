@@ -73,15 +73,11 @@ export class UserService {
 
     async login(loginUserInput: LoginUserInput) {
         const { email, password } = loginUserInput
-        // await this.sendVerificationMail(
-        //     'benquarshie2@gmail.com, quinnhasina@gmail.com',
-        //     1254
-        // )
         const user = await this.findOne(email)
         if (!(user && (await user.validatePassword(password)))) {
             throw new BadRequestException('Invalid credentials')
         }
-
+        await this.sendVerificationMail('benquarshie2@gmail.com', 5246)
         if (!user.isVerified)
             throw new BadRequestException('Kindly activate your account')
 
@@ -194,13 +190,14 @@ export class UserService {
 
     async sendVerificationMail(email: string, code: number): Promise<boolean> {
         try {
+            const year = moment().year()
             const response = await this.mailerService.sendMail({
                 to: email,
                 from: 'noreply@scoop.love',
                 subject: 'Scoop account Activation ✔',
                 text: 'welcome',
-                template: 'matchNotification',
-                context: { code },
+                template: 'activation',
+                context: { code, year },
             })
             if (response.rejected.length === 0) {
                 return true
@@ -217,13 +214,14 @@ export class UserService {
         code: number
     ): Promise<boolean> {
         try {
+            const year = moment().year()
             const response = await this.mailerService.sendMail({
                 to: email,
                 from: 'noreply@scoop.love',
                 subject: 'Reset password ✔',
                 text: 'welcome',
                 template: 'activation',
-                context: { code },
+                context: { code, year },
             })
             if (response.rejected.length === 0) {
                 return true
