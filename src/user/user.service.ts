@@ -77,7 +77,7 @@ export class UserService {
         if (!(user && (await user.validatePassword(password)))) {
             throw new BadRequestException('Invalid credentials')
         }
-        await this.sendVerificationMail('benquarshie2@gmail.com', 5246)
+
         if (!user.isVerified)
             throw new BadRequestException('Kindly activate your account')
 
@@ -196,7 +196,7 @@ export class UserService {
                 from: 'noreply@scoop.love',
                 subject: 'Scoop account Activation ✔',
                 text: 'welcome',
-                template: 'activation',
+                template: 'matchNotification',
                 context: { code, year },
             })
             if (response.rejected.length === 0) {

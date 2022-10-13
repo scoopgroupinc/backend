@@ -98,16 +98,13 @@ export class MatchesService {
         for (const id of userIds) {
             const matchName =
                 id === swiper1.userId ? swiper2.firstName : swiper1.firstName
-            let profilePic = await lastValueFrom(
+            const profilePic = await lastValueFrom(
                 this.httpService
                     .get(
                         id === swiper1.userId ? swiper2.userId : swiper1.userId
                     )
                     .pipe(map((response) => response.data))
             )
-            profilePic = profilePic
-                ? profilePic
-                : 'https://ca.slack-edge.com/T02NTLCBXS7-U02ND0PMHHD-4674a58f2254-512'
             await this.mailerService.sendMail({
                 to: id === swiper1.userId ? swiper1.email : swiper2.email,
                 from: 'noreply@scoop.love',
