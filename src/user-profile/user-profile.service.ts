@@ -44,7 +44,7 @@ export class UserProfileService {
 
     async updateOne(userProfileInput: UserProfileInput): Promise<any> {
         const { userId } = userProfileInput
-        const profile = await await this.userProfileRespository.findOne({ userId })
+        const profile = await this.userProfileRespository.findOne({ userId })
         if (!profile)
             return new BadRequestException('User profile does not exist')
         return await this.userProfileRespository.save({
