@@ -126,7 +126,7 @@ export class UserService {
     }
 
     async resendActivationCode(email: string) {
-        const user = await this.userRepository.findOne({ email })
+        const user = await this.findOne({ email })
         if (!user)
             throw new HttpException('User not found', HttpStatus.NOT_FOUND)
         const code = await this.generateFourDigitCode()
