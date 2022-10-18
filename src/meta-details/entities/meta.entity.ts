@@ -1,7 +1,14 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql'
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import {
+    BaseEntity,
+    Column,
+    CreateDateColumn,
+    Entity,
+    PrimaryGeneratedColumn,
+    UpdateDateColumn,
+} from 'typeorm'
 
-@Entity('meta-details')
+@Entity('meta_details')
 @ObjectType()
 export class MetaDetails extends BaseEntity {
     @Field(() => ID)
@@ -9,46 +16,58 @@ export class MetaDetails extends BaseEntity {
     id: string
 
     @Field(() => String)
-    @Column({ default: '0.0.0' })
+    @Column()
     forceUpdateAndroid: string
 
     @Field(() => String)
-    @Column({ default: '0.0.0' })
+    @Column()
     forceUpdateIOS: string
 
     @Field(() => String)
-    @Column({ default: '0.0.0' })
+    @Column()
     updateAndroid: string
 
     @Field(() => String)
-    @Column({ default: "It's time to update" })
+    @Column()
+    updateIOS: string
+
+    @Field(() => String)
+    @Column()
     updateTitleAndroid: string
 
     @Field(() => String)
-    @Column({ default: "It's time to update" })
+    @Column()
     updateTitleIOS: string
 
     @Field(() => String)
-    @Column({ default: 'update now' })
+    @Column()
     updateButtonAndroid: string
 
     @Field(() => String)
-    @Column({ default: 'update now' })
+    @Column()
     updateButtonIOS: string
 
     @Field(() => String)
-    @Column({ default: 'we are constantly trying to make Scoop better' })
+    @Column()
     updateTextAndroid: string
 
     @Field(() => String)
-    @Column({ default: 'we are constantly trying to make Scoop better' })
+    @Column()
     updateTextIOS: string
 
     @Field(() => String)
-    @Column({ default: 'update later' })
+    @Column()
     closeUpdateButtonAndroid: string
 
     @Field(() => String, { nullable: true })
-    @Column({ default: 'update later' })
-    closeUpdateButtonIOS: string | null
+    @Column()
+    closeUpdateButtonIOS: string
+
+    @Field(() => String)
+    @CreateDateColumn()
+    createdAt: Date
+
+    @Field(() => String)
+    @UpdateDateColumn()
+    updateAt: Date
 }

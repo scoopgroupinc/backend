@@ -160,6 +160,24 @@ type Prompts {
   sample_answer: String
 }
 
+type MetaDetails {
+  id: ID!
+  forceUpdateAndroid: String!
+  forceUpdateIOS: String!
+  updateAndroid: String!
+  updateIOS: String!
+  updateTitleAndroid: String!
+  updateTitleIOS: String!
+  updateButtonAndroid: String!
+  updateButtonIOS: String!
+  updateTextAndroid: String!
+  updateTextIOS: String!
+  closeUpdateButtonAndroid: String!
+  closeUpdateButtonIOS: String
+  createdAt: String!
+  updateAt: String!
+}
+
 type RatingOutput {
   Trustworty: Float
   Smart: Float
@@ -286,6 +304,7 @@ type Query {
   getAllOpenComplaints: [ComplaintsOutput!]!
   getAComplaint(complaintId: String!): ComplaintsOutput!
   getUserMatches(userId: String!): [UserChoiceOutput!]!
+  getMetaDetails: MetaDetails!
 }
 
 type Mutation {
@@ -314,6 +333,8 @@ type Mutation {
   updateComplaint(complaintsInput: ComplaintsInput!): ComplaintsOutput!
   closeComplaints(complaintId: String!): String!
   deactivateMatch(id: String!): String!
+  createMetaDetails(metaDetailsInput: MetaDetailsInput!): MetaDetails!
+  updateDetials(metaDetailsInput: MetaDetailsInput!): MetaDetails!
 }
 
 input CreateUserInput {
@@ -488,4 +509,19 @@ input ComplaintsInput {
   contentId: String!
   media_file: String
   isClosed: Boolean!
+}
+
+input MetaDetailsInput {
+  forceUpdateAndroid: String!
+  forceUpdateIOS: String!
+  updateAndroid: String!
+  updateIOS: String!
+  updateTitleAndroid: String
+  updateTitleIOS: String
+  updateButtonAndroid: String
+  updateButtonIOS: String
+  updateTextAndroid: String
+  updateTextIOS: String
+  closeUpdateButtonAndroid: String
+  closeUpdateButtonIOS: String
 }
