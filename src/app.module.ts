@@ -38,22 +38,22 @@ const { user, pass, host, port } = configs.get('mail')
             playground: true,
             introspection: true,
         }),
-        // TypeOrmModule.forRootAsync({
-        //     imports: [ConfigModule],
-        //     inject: [ConfigService],
-        //     useFactory: (database: ConfigService) => ({
-        //         ...database.get('database'),
-        //         host: process.env.DB_HOST1,
-        //     }),
-        // }),
-        // TypeOrmModule.forRootAsync({
-        //     imports: [ConfigModule],
-        //     inject: [ConfigService],
-        //     useFactory: (database: ConfigService) => ({
-        //         ...database.get('database'),
-        //         host: process.env.DB_HOST2,
-        //     }),
-        // }),
+        TypeOrmModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (database: ConfigService) => ({
+                ...database.get('database'),
+                host: process.env.DB_HOST1,
+            }),
+        }),
+        TypeOrmModule.forRootAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: (database: ConfigService) => ({
+                ...database.get('database'),
+                host: process.env.DB_HOST2,
+            }),
+        }),
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
