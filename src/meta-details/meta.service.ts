@@ -18,7 +18,7 @@ export class MetaDetailsService {
         return await this.metaDetailsRepository.findOne({})
     }
 
-    async updateDetials(metaDetailsInput: MetaDetailsInput) {
+    async updateDetails(metaDetailsInput: MetaDetailsInput) {
         const result = await this.metaDetailsRepository.findOne({})
         return await this.metaDetailsRepository.save({
             ...result,
