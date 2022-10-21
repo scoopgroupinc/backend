@@ -59,7 +59,7 @@ const { user, pass, host, port } = configs.get('mail')
             inject: [ConfigService],
             useFactory: (database: ConfigService) => ({
                 ...database.get('database'),
-                host: process.env.DB_HOST1,
+                host: process.env.DB_HOST3,
             }),
         }),
         MailerModule.forRoot({
