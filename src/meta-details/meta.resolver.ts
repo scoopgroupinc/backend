@@ -21,6 +21,6 @@ export class MetaDetailsResolver {
     async updateDetials(
         @Args('metaDetailsInput') metaDetailsInput: MetaDetailsInput
     ) {
-        return await this.metaDetailsService.updateDetials(metaDetailsInput)
+        return await this.metaDetailsService.updateDetails(metaDetailsInput)
     }
 }
