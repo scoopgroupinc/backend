@@ -23,6 +23,7 @@ import { UserPromptsModule } from './user-prompts/user-prompts.module'
 import { ComplaintsModule } from './complaints/complaints.module'
 import { MatchesModule } from './matches/matches.modules.'
 import { UserChoiceModule } from './user-choice/user-choice.module'
+import { MetaDetailsModule } from './meta-details/meta.module'
 
 const { user, pass, host, port } = configs.get('mail')
 @Module({
@@ -99,6 +100,7 @@ const { user, pass, host, port } = configs.get('mail')
         ComplaintsModule,
         MatchesModule,
         UserChoiceModule,
+        MetaDetailsModule,
     ],
     controllers: [],
     providers: [],
