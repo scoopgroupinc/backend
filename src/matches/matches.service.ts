@@ -1,6 +1,9 @@
+import { MailerService } from '@nestjs-modules/mailer'
+import { HttpService } from '@nestjs/axios'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import moment from 'moment'
+import { lastValueFrom, map } from 'rxjs'
 import { UserProfileService } from 'src/user-profile/user-profile.service'
 import { UserService } from 'src/user/user.service'
 import { Between, Repository } from 'typeorm'
@@ -13,7 +16,9 @@ export class MatchesService {
         @InjectRepository(Matches)
         private matchesRpository: Repository<Matches>,
         private userService: UserService,
-        private userProfileService: UserProfileService
+        private userProfileService: UserProfileService,
+        private mailerService: MailerService,
+        private httpService: HttpService
     ) {}
 
     async getUserMatches(userId: string): Promise<MatchesOutput[] | any> {
@@ -85,7 +90,31 @@ export class MatchesService {
             firstSwiper,
             secondSwiper,
         })
-        //TODO: notify users of match
+        const userIds = [firstSwiper, secondSwiper]
+        const year = moment().year()
+        const swiper1 = await this.userService.findOneByID(firstSwiper)
+        const swiper2 = await this.userService.findOneByID(secondSwiper)
+
+        for (const id of userIds) {
+            const matchName =
+                id === swiper1.userId ? swiper2.firstName : swiper1.firstName
+            const profilePic = await lastValueFrom(
+                this.httpService
+                    .get(
+                        id === swiper1.userId ? swiper2.userId : swiper1.userId
+                    )
+                    .pipe(map((response) => response.data))
+            )
+            await this.mailerService.sendMail({
+                to: id === swiper1.userId ? swiper1.email : swiper2.email,
+                from: 'noreply@scoop.love',
+                subject: 'Scoop Match Made ✔',
+                text: 'Matched',
+                template: 'matchNotification',
+                context: { year, matchName, profilePic },
+            })
+        }
+        //TODO: add user profile pic
         return 'match created'
     }
 }

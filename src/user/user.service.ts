@@ -190,13 +190,14 @@ export class UserService {
 
     async sendVerificationMail(email: string, code: number): Promise<boolean> {
         try {
+            const year = moment().year()
             const response = await this.mailerService.sendMail({
                 to: email,
                 from: 'noreply@scoop.love',
                 subject: 'Scoop account Activation ✔',
                 text: 'welcome',
-                template: 'activation',
-                context: { code },
+                template: 'matchNotification',
+                context: { code, year },
             })
             if (response.rejected.length === 0) {
                 return true
@@ -213,13 +214,14 @@ export class UserService {
         code: number
     ): Promise<boolean> {
         try {
+            const year = moment().year()
             const response = await this.mailerService.sendMail({
                 to: email,
                 from: 'noreply@scoop.love',
                 subject: 'Reset password ✔',
                 text: 'welcome',
                 template: 'activation',
-                context: { code },
+                context: { code, year },
             })
             if (response.rejected.length === 0) {
                 return true
