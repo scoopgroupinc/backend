@@ -24,6 +24,7 @@ import { ComplaintsModule } from './complaints/complaints.module'
 import { MatchesModule } from './matches/matches.modules.'
 import { UserChoiceModule } from './user-choice/user-choice.module'
 import { MetaDetailsModule } from './meta-details/meta.module'
+import { FeedBackModule } from './feedback/feedback.module'
 
 const { user, pass, host, port } = configs.get('mail')
 @Module({
@@ -101,6 +102,7 @@ const { user, pass, host, port } = configs.get('mail')
         MatchesModule,
         UserChoiceModule,
         MetaDetailsModule,
+        FeedBackModule,
     ],
     controllers: [],
     providers: [],
