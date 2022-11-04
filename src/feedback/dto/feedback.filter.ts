@@ -1,4 +1,4 @@
-import { Field, InputType, Int } from '@nestjs/graphql'
+import { Field, Float, InputType, Int } from '@nestjs/graphql'
 import { IsNumber, IsOptional, IsString } from 'class-validator'
 
 @InputType()
@@ -32,4 +32,13 @@ export class FeedBackFilter {
     @IsOptional()
     @Field(() => Int)
     page: number
+
+    @IsString()
+    @IsOptional()
+    @Field(() => String, { nullable: true })
+    userId: string
+
+    @IsOptional()
+    @Field(() => Float, { nullable: true })
+    rating?: number
 }

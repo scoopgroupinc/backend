@@ -176,6 +176,8 @@ type MetaDetails {
   closeUpdateButtonIOS: String
   createdAt: String!
   updateAt: String!
+}
+
 type FeedBack {
   id: ID!
   userId: String!
@@ -545,6 +547,8 @@ input MetaDetailsInput {
   updateTextIOS: String
   closeUpdateButtonAndroid: String
   closeUpdateButtonIOS: String
+}
+
 input FeedBackInput {
   userId: String!
   deviceOS: String!

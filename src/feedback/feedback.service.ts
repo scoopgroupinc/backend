@@ -28,14 +28,24 @@ export class FeedBackService {
     }
 
     async getFeedBacks(feedbackfilter: FeedBackFilter) {
-        const { fromDate, toDate, page, deviceOS, appVersion, issue } =
-            feedbackfilter
+        const {
+            fromDate,
+            toDate,
+            page,
+            deviceOS,
+            appVersion,
+            issue,
+            userId,
+            rating,
+        } = feedbackfilter
 
         const query: {
             createdAt?: object
             deviceOS?: string
             appVersion?: string
             issue?: string
+            userId?: string
+            rating?: number
         } = {}
 
         if (toDate && fromDate) {
@@ -55,6 +65,8 @@ export class FeedBackService {
         if (deviceOS) query.deviceOS = deviceOS
         if (appVersion) query.appVersion = appVersion
         if (issue) query.issue = issue
+        if (userId) query.userId = userId
+        if (rating) query.rating = rating
 
         const results = await this.feedbackRespository.find({
             where: query,
