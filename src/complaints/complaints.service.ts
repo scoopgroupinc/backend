@@ -38,15 +38,17 @@ export class ComplaintsService {
         })
         const response: ComplaintsOutput[] = []
         for (const comps of complaints) {
-            comps.media_file = await lastValueFrom(
-                this.httpService
-                    .get(comps.media_file)
-                    .pipe(map((response) => response.data))
-            )
+            if (comps.media_file) {
+                comps.media_file = await lastValueFrom(
+                    this.httpService
+                        .get(comps.media_file)
+                        .pipe(map((response) => response.data))
+                )
+            }
 
-            response.push(comps);
+            response.push(comps)
         }
-        return response;
+        return response
     }
 
     async closeComplaint(complaintId: string): Promise<any> {

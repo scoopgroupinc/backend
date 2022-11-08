@@ -178,6 +178,18 @@ type MetaDetails {
   updateAt: String!
 }
 
+type FeedBack {
+  id: ID!
+  userId: String!
+  deviceOS: String!
+  appVersion: String!
+  rating: Float!
+  issue: String!
+  text: String!
+  image: String
+  createdAt: String!
+}
+
 type RatingOutput {
   Trustworty: Float
   Smart: Float
@@ -305,6 +317,16 @@ type Query {
   getAComplaint(complaintId: String!): ComplaintsOutput!
   getUserMatches(userId: String!): [UserChoiceOutput!]!
   getMetaDetails: MetaDetails!
+  getFeedBacks(feedbackfilter: FeedBackFilter!): [FeedBack!]!
+}
+
+input FeedBackFilter {
+  deviceOS: String
+  appVersion: String
+  issue: String
+  fromDate: String
+  toDate: String
+  page: Int!
 }
 
 type Mutation {
@@ -335,6 +357,7 @@ type Mutation {
   deactivateMatch(id: String!): String!
   createMetaDetails(metaDetailsInput: MetaDetailsInput!): MetaDetails!
   updateDetials(metaDetailsInput: MetaDetailsInput!): MetaDetails!
+  saveUserFeedBack(feedbackInput: FeedBackInput!): String!
 }
 
 input CreateUserInput {
@@ -524,4 +547,14 @@ input MetaDetailsInput {
   updateTextIOS: String
   closeUpdateButtonAndroid: String
   closeUpdateButtonIOS: String
+}
+
+input FeedBackInput {
+  userId: String!
+  deviceOS: String!
+  appVersion: String!
+  rating: Float!
+  issue: String!
+  text: String!
+  image: String
 }
