@@ -11,18 +11,18 @@ export class ComplaintsResolver {
     constructor(private complaintsService: ComplaintsService) {}
 
     @UseGuards(GqlAuthGuard)
-    @Mutation(() => ComplaintsOutput)
+    @Mutation(() => String)
     async saveNewCompliants(
         @Args('complaintsInput') complaintsInput: ComplaintsInput
-    ): Promise<ComplaintsOutput> {
+    ): Promise<string> {
         return await this.complaintsService.saveNewCompliants(complaintsInput)
     }
 
     @UseGuards(GqlAuthGuard)
-    @Mutation(() => ComplaintsOutput)
+    @Mutation(() => String)
     async updateComplaint(
         @Args('complaintsInput') complaintsInput: ComplaintsInput
-    ): Promise<ComplaintsOutput> {
+    ): Promise<string> {
         return await this.complaintsService.updateComplaint(complaintsInput)
     }
 

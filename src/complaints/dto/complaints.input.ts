@@ -1,13 +1,14 @@
 import { Field, ID, InputType } from '@nestjs/graphql'
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator'
-import { complaint_reason, complaint_type } from '../entities/complaints.entity'
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator'
+import { complaint_type } from '../entities/complaints.entity'
 
 @InputType()
 export class ComplaintsInput {
-    @Field(() => ID)
+    @Field(() => ID, { nullable: true })
+    @IsOptional()
     id?: string
 
-    @Field(() => String)
+    @Field(() => String, { nullable: true })
     createdAt: string
 
     @Field(() => String)
@@ -23,8 +24,7 @@ export class ComplaintsInput {
     @Field(() => String)
     @IsNotEmpty()
     @IsString()
-    @IsEnum({ enum: complaint_reason })
-    reason: complaint_reason
+    reason: string
 
     @Field(() => String)
     @IsNotEmpty()
@@ -33,16 +33,16 @@ export class ComplaintsInput {
 
     @Field(() => String)
     @IsString()
-    @IsEnum({ enum: complaint_type })
     type: complaint_type
 
-    @Field(() => String)
-    @IsString()
-    contentId: string
+    @Field(() => String, { nullable: true })
+    @IsOptional()
+    contentId?: string | null
 
     @Field(() => String, { nullable: true })
     media_file: string | null
 
-    @Field()
+    @Field(() => Boolean, { nullable: true })
+    @IsOptional()
     isClosed?: boolean
 }
