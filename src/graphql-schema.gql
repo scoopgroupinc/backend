@@ -327,6 +327,8 @@ input FeedBackFilter {
   fromDate: String
   toDate: String
   page: Int!
+  userId: String
+  rating: Float
 }
 
 type Mutation {
