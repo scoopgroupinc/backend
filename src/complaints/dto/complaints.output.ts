@@ -1,6 +1,4 @@
 import { Field, ID, InputType, ObjectType } from '@nestjs/graphql'
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator'
-import { complaint_reason, complaint_type } from '../entities/complaints.entity'
 
 @ObjectType()
 export class ComplaintsOutput {
@@ -25,8 +23,8 @@ export class ComplaintsOutput {
     @Field(() => String)
     type: string
 
-    @Field(() => String)
-    contentId: string
+    @Field(() => String, { nullable: true })
+    contentId?: string
 
     @Field(() => String, { nullable: true })
     media_file: string | null

@@ -16,6 +16,7 @@ import { Matches } from 'src/matches/entities/matches.entity'
 import { UserChoice } from 'src/user-choice/entities/user-choice.entity'
 import { MetaDetails } from 'src/meta-details/entities/meta.entity'
 import { FeedBack } from 'src/feedback/entities/feedback.entity'
+import { BlockedUsers } from 'src/blocked-users/entities/blocked-users.entity'
 
 export const config = () => ({
     port: parseInt(process.env.PORT, 10),
@@ -48,6 +49,7 @@ export const config = () => ({
             UserChoice,
             MetaDetails,
             FeedBack,
+            BlockedUsers,
         ],
         ssl: {
             rejectUnauthorized: false,

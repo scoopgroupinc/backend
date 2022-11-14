@@ -221,7 +221,7 @@ type ComplaintsOutput {
   reason: String!
   comment: String!
   type: String!
-  contentId: String!
+  contentId: String
   media_file: String
   isClosed: Boolean!
 }
@@ -313,11 +313,21 @@ type Query {
   uploadPrompts(promptType: String!): String!
   getUserPromptsOrder(userId: String!): [UserPromptsOutput!]!
   getAllUserPrompts(userId: String!): [UserPromptsOutput!]!
-  getAllOpenComplaints: [ComplaintsOutput!]!
+  getAllOpenComplaints(complaintsFilter: ComplaintsFilter!): [ComplaintsOutput!]!
   getAComplaint(complaintId: String!): ComplaintsOutput!
   getUserMatches(userId: String!): [UserChoiceOutput!]!
   getMetaDetails: MetaDetails!
   getFeedBacks(feedbackfilter: FeedBackFilter!): [FeedBack!]!
+}
+
+input ComplaintsFilter {
+  page: Int!
+  reporterId: String
+  accusedId: String
+  type: String
+  isClosed: Boolean
+  fromDate: String
+  toDate: String
 }
 
 input FeedBackFilter {
@@ -353,8 +363,8 @@ type Mutation {
   addNewPrompt(promptInput: PromptsInput!): Prompts!
   saveUserPrompt(UserPromptInput: UserPromptsInput!): UserPromptsOutput!
   saveUserPromptsOrder(userPromptsOrder: UserPromptsOrder!): String!
-  saveNewCompliants(complaintsInput: ComplaintsInput!): ComplaintsOutput!
-  updateComplaint(complaintsInput: ComplaintsInput!): ComplaintsOutput!
+  saveNewCompliants(complaintsInput: ComplaintsInput!): String!
+  updateComplaint(complaintsInput: ComplaintsInput!): String!
   closeComplaints(complaintId: String!): String!
   deactivateMatch(id: String!): String!
   createMetaDetails(metaDetailsInput: MetaDetailsInput!): MetaDetails!
@@ -524,16 +534,16 @@ input UserPromptsOrder {
 }
 
 input ComplaintsInput {
-  id: ID!
-  createdAt: String!
+  id: ID
+  createdAt: String
   reporterId: String!
   accusedId: String!
   reason: String!
   comment: String!
   type: String!
-  contentId: String!
+  contentId: String
   media_file: String
-  isClosed: Boolean!
+  isClosed: Boolean
 }
 
 input MetaDetailsInput {

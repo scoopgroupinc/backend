@@ -30,38 +30,50 @@
                                                     height="40" border="0" alt="" class="CToWUd" data-bit="iit"></a>
                                               </td>
                                             </tr>
-                                                                              </tbody>
-                                                                              </table>
-                                                                              </td>
-                                                                              </tr>
-                                                                              <tr>
-                                                                                <td
-                                                                                  style="border-left-width:1px;border-left-color:#929796;border-left-style:solid;border-right-width:1px;border-right-color:#929796;border-right-style:solid;color:#5A6571;font-family:Times,'Times New Roman',serif;font-size:26px;line-height:42px;font-weight:normal;min-width:auto!important;padding:0 30px"
-                                                                                  align="center">
-                                                                                  <strong>
-                                                                                    <%= code %>
-                                                                                  </strong>
-                                                                                </td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                <td
-                                                                                  style="border-left-width:1px;border-left-color:#929796;border-left-style:solid;border-right-width:1px;border-right-color:#929796;border-right-style:solid;color:#5A6571;font-family:Times,'Times New Roman',serif;font-size:22px;line-height:42px;font-weight:normal;min-width:auto!important;padding:30px 30px;"
-                                                                                  align="left"><strong>Enter the verfication<br />
-                                                                                    code on your device to signin.<br>
-                                                                                  </strong></td>
-                                                                                
-                                                                                </tr>
-                                                                                <tr>
-                                                                        <td
-                                                                          style="border-left-width:1px;border-left-color:#929796;border-left-style:solid;border-right-width:1px;border-right-color:#929796;border-right-style:solid;color:#5A6571;font-family:Times,'Times New Roman',serif;font-size:22px;line-height:42px;font-weight:normal;min-width:auto!important;padding:20px 30px;"
-                                                                          align="left">
-                                                                          <strong>Code expires in 15<br />
-                                                                            minutes.<br>
-                                                                        </td>
-                                                                        </tr>
-          <tr>
-            <td style="border-left-width:1px;border-left-color:#929796;border-left-style:solid;padding:30px 30px 0">
-              <tr>
+                                            </tbody>
+                                            </table>
+                                            </td>
+                                            </tr>
+                                            <tr>
+                                              <td
+                                                style="border-left-width:1px;border-left-color:#929796;border-left-style:solid;border-right-width:1px;border-right-color:#929796;border-right-style:solid;color:#5A6571;font-family:Times,'Times New Roman',serif;font-size:26px;line-height:42px;font-weight:normal;min-width:auto!important;padding:0 30px"
+                                                align="center">
+                                                <strong>
+                                                  <%= warning?'Warning!': code %>
+                                                    </strong>
+                                                    </td>
+                                                    </tr>
+                                                    <tr>
+                                                      <td
+                                                        style="border-left-width:1px;border-left-color:#929796;border-left-style:solid;border-right-width:1px;border-right-color:#929796;border-right-style:solid;color:#5A6571;font-family:Times,'Times New Roman',serif;font-size:22px;line-height:42px;font-weight:normal;min-width:auto!important;padding:30px 30px;"
+                                                align="left">
+                                                <% if (code) { %>
+                                                <strong>Enter the verfication<br />
+                                                  code on your device to signin.<br>
+                                                </strong>
+                                                <% } %>
+                                                  <% if (warning) { %>
+                                                    <strong>Multiple complaints<br />
+                                                      have been made <br />against your account.<br>
+                                                      It may be deactivated<br /> if the it
+                                                      continous to<br /> violate our policies.
+                                                    </strong>
+                                                    <% } %>
+                                                      </td>
+                                                
+                                                      </tr>
+                                                      <tr>
+                                                        <td
+                                                          style="border-left-width:1px;border-left-color:#929796;border-left-style:solid;border-right-width:1px;border-right-color:#929796;border-right-style:solid;color:#5A6571;font-family:Times,'Times New Roman',serif;font-size:22px;line-height:42px;font-weight:normal;min-width:auto!important;padding:20px 30px;"
+                                                          align="left">
+                                                          <% if (code) { %>
+                                                            <strong>Code expires in 15 minutes.<br>
+                                                              <% } %>
+                                                                </td>
+                                                                </tr>
+                                                                <tr>
+                                                                  <td style="border-left-width:1px;border-left-color:#929796;border-left-style:solid;padding:30px 30px 0">
+                                                                <tr>
                                                                                   <td style="padding:28px 30px">
                                                                                     <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                                                                       <tbody>

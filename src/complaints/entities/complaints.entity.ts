@@ -7,17 +7,19 @@ import {
     PrimaryGeneratedColumn,
 } from 'typeorm'
 
-export enum complaint_reason {
-    inappropriate = 'inappropriate',
-}
+// export enum complaint_reason {
+//     inappropriate = 'inappropriate',
+// }
 
 export enum complaint_type {
     user_prompts = 'user_prompts',
     visual_prompts = 'visual_prompts',
     message = 'messages',
+    block_user = 'block_user',
+    report_user = 'report_user',
 }
 
-@Entity()
+@Entity('user_complaints')
 @ObjectType()
 export class Complaints extends BaseEntity {
     @Field(() => ID)
@@ -25,8 +27,7 @@ export class Complaints extends BaseEntity {
     id: string
 
     @Field(() => String)
-    @Column()
-    @CreateDateColumn()
+    @CreateDateColumn({ type: 'date' })
     createdAt: string
 
     @Field(() => String)
@@ -38,23 +39,23 @@ export class Complaints extends BaseEntity {
     accusedId: string
 
     @Field(() => String)
-    @Column({ type: 'varchar', enum: complaint_reason })
+    @Column()
     reason: string
 
     @Field(() => String)
-    @Column({ type: 'varchar' })
+    @Column()
     comment: string
 
     @Field(() => String)
-    @Column({ type: 'varchar', enum: complaint_type })
+    @Column({ type: 'enum', enum: complaint_type })
     type: string
 
-    @Field(() => String)
-    @Column({ type: 'bigint' })
-    contentId: string
+    @Field(() => String, { nullable: true })
+    @Column({ nullable: true })
+    contentId: string | null
 
-    @Field(() => String)
-    @Column({ type: 'varchar', nullable: true })
+    @Field(() => String, { nullable: true })
+    @Column({ nullable: true })
     media_file: string | null
 
     @Field(() => Boolean)

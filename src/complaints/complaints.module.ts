@@ -2,6 +2,8 @@ import { HttpModule } from '@nestjs/axios'
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { BlockedUserModule } from 'src/blocked-users/blocked-users.module'
+import { UserModule } from 'src/user/user.module'
 import { ComplaintsResolver } from './complaints.resolver'
 import { ComplaintsService } from './complaints.service'
 import { Complaints } from './entities/complaints.entity'
@@ -20,6 +22,8 @@ import { Complaints } from './entities/complaints.entity'
                 },
             }),
         }),
+        BlockedUserModule,
+        UserModule,
     ],
     providers: [ComplaintsResolver, ComplaintsService],
     exports: [],
