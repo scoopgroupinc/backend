@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { BlockUserInput } from './dto/bocked-users.input'
+import { BlockUserInput } from './dto/blocked-users.input'
 import { BlockedUsers } from './entities/blocked-users.entity'
 
 @Injectable()
