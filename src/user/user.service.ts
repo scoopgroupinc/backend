@@ -126,7 +126,7 @@ export class UserService {
     }
 
     async resendActivationCode(email: string) {
-        const user = await this.findOne({ email })
+        const user = await this.findOne(email)
         if (!user)
             throw new HttpException('User not found', HttpStatus.NOT_FOUND)
         const code = await this.generateFourDigitCode()
@@ -179,7 +179,7 @@ export class UserService {
         })
     }
 
-    async findOne(email: any): Promise<User> {
+    async findOne(email: string): Promise<User> {
         email = email.toLowerCase()
         const user = await this.userRepository.findOne({ where: { email } })
         return user
@@ -196,7 +196,7 @@ export class UserService {
                 from: 'noreply@scoop.love',
                 subject: 'Scoop account Activation ✔',
                 text: 'welcome',
-                template: 'matchNotification',
+                template: 'activation',
                 context: { code, year },
             })
             if (response.rejected.length === 0) {
