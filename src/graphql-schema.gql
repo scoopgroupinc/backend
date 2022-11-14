@@ -313,11 +313,21 @@ type Query {
   uploadPrompts(promptType: String!): String!
   getUserPromptsOrder(userId: String!): [UserPromptsOutput!]!
   getAllUserPrompts(userId: String!): [UserPromptsOutput!]!
-  getAllOpenComplaints: [ComplaintsOutput!]!
+  getAllOpenComplaints(complaintsFilter: ComplaintsFilter!): [ComplaintsOutput!]!
   getAComplaint(complaintId: String!): ComplaintsOutput!
   getUserMatches(userId: String!): [UserChoiceOutput!]!
   getMetaDetails: MetaDetails!
   getFeedBacks(feedbackfilter: FeedBackFilter!): [FeedBack!]!
+}
+
+input ComplaintsFilter {
+  page: Int!
+  reporterId: String
+  accusedId: String
+  type: String
+  isClosed: Boolean
+  fromDate: String
+  toDate: String
 }
 
 input FeedBackFilter {

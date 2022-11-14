@@ -7,7 +7,7 @@ import {
     PrimaryGeneratedColumn,
 } from 'typeorm'
 
-@Entity('blocked-users')
+@Entity('blocked_users')
 @ObjectType()
 export class BlockedUsers extends BaseEntity {
     @Field(() => ID)

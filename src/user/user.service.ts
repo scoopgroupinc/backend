@@ -197,7 +197,7 @@ export class UserService {
                 subject: 'Scoop account Activation ✔',
                 text: 'welcome',
                 template: 'activation',
-                context: { code, year },
+                context: { code, year, warning: false },
             })
             if (response.rejected.length === 0) {
                 return true
