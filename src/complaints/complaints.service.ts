@@ -130,7 +130,7 @@ export class ComplaintsService {
             .distinctOn(['user_complaints.reporterId'])
             .getMany()
 
-        if (results.length >= 3) {
+        if (results.length > 0 && results.length % 3 === 0) {
             const { email } = await this.userService.findOneByID(accusedId)
             const year = moment().year()
             await this.mailerService.sendMail({
