@@ -44,6 +44,7 @@ export class UserChoiceService {
                 age: moment().diff(profile.birthday, 'years', false),
             })
         }
+        if (allChoices.length <= 5) return allChoices
         return allChoices.slice(0, 5)
     }
 
@@ -69,8 +70,12 @@ export class UserChoiceService {
                     blockedUserId: match.userId,
                     blockerId: userId,
                 })
+                const isBlocker = await this.blockUserService.findOne({
+                    blockedUserId: userId,
+                    blockerId: match.userId,
+                })
 
-                if (isMatch || isBlocked) continue
+                if (isMatch || isBlocked || isBlocker) continue
 
                 await this.userChoiceRepository.create({
                     swiperId: userId,
