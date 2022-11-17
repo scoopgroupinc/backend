@@ -22,4 +22,30 @@ export class BlockUserService {
             blockerId,
         })
     }
+
+    async checkUserBlocked(userId: string, userIds: string[]) {
+        const result = []
+        for (const id of userIds) {
+            const isBlocked = await this.blockedUserRepository.find({
+                where: [
+                    {
+                        blockerId: userId,
+                        blockedUserId: id,
+                    },
+                    {
+                        blockerId: id,
+                        blockedUserId: userId,
+                    },
+                ],
+            })
+
+            if (isBlocked.length === 0) {
+                result.push({
+                    userId: id,
+                    blocked: false,
+                })
+            }
+        }
+        return result
+    }
 }

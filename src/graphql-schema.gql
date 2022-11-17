@@ -213,6 +213,11 @@ type UserPromptsOutput {
   answer: String
 }
 
+type BlockUserOutput {
+  userId: String!
+  blocked: Boolean!
+}
+
 type ComplaintsOutput {
   id: ID!
   createdAt: String!
@@ -315,6 +320,7 @@ type Query {
   getAllUserPrompts(userId: String!): [UserPromptsOutput!]!
   getAllOpenComplaints(complaintsFilter: ComplaintsFilter!): [ComplaintsOutput!]!
   getAComplaint(complaintId: String!): ComplaintsOutput!
+  isUserBlocked(userIds: [String!]!, userId: String!): [BlockUserOutput!]!
   getUserMatches(userId: String!): [UserChoiceOutput!]!
   getMetaDetails: MetaDetails!
   getFeedBacks(feedbackfilter: FeedBackFilter!): [FeedBack!]!
