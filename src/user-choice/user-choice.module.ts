@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { BlockedUserModule } from 'src/blocked-users/blocked-users.module'
 import { MatchesModule } from 'src/matches/matches.modules.'
 import { UserPreferenceModule } from 'src/user-preference/user-preference.module'
 import { UserProfileModule } from 'src/user-profile/user-profile.module'
@@ -14,7 +15,8 @@ import { UserChoiceService } from './user-choice.service'
         UserPreferenceModule,
         UserProfileModule,
         UserModule,
-        MatchesModule
+        MatchesModule,
+        BlockedUserModule,
     ],
     providers: [UserChoiceResolver, UserChoiceService],
     exports: [],

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import moment from 'moment'
+import { BlockUserService } from 'src/blocked-users/blocked-users.service'
 import { MatchesService } from 'src/matches/matches.service'
 import { UserPreferenceService } from 'src/user-preference/user-preference.service'
 import { UserProfileService } from 'src/user-profile/user-profile.service'
@@ -16,7 +17,8 @@ export class UserChoiceService {
         private userPreferenceService: UserPreferenceService,
         private userProfileService: UserProfileService,
         private userService: UserService,
-        private matcheService: MatchesService
+        private matcheService: MatchesService,
+        private blockUserService: BlockUserService
     ) {}
 
     async getUserChoices(userId: string) {
@@ -42,6 +44,7 @@ export class UserChoiceService {
                 age: moment().diff(profile.birthday, 'years', false),
             })
         }
+        if (allChoices.length <= 5) return allChoices
         return allChoices.slice(0, 5)
     }
 
@@ -62,8 +65,17 @@ export class UserChoiceService {
                     userId,
                     match.userId
                 )
+                //check if match has been blocked by user
+                const isBlocked = await this.blockUserService.findOne({
+                    blockedUserId: match.userId,
+                    blockerId: userId,
+                })
+                const isBlocker = await this.blockUserService.findOne({
+                    blockedUserId: userId,
+                    blockerId: match.userId,
+                })
 
-                if (isMatch) continue
+                if (isMatch || isBlocked || isBlocker) continue
 
                 await this.userChoiceRepository.create({
                     swiperId: userId,
