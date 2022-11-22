@@ -72,7 +72,19 @@ export class UserPromptsService {
     }
 
     async getAllUserPrompts(userId: string) {
-        return await this.userPromptsRepository.find({ userId })
+        const response = await this.userPromptsRepository.find({ userId })
+        const results = []
+        await Promise.all(
+            response.map(async (pmpt) => {
+                results.push({
+                    ...pmpt,
+                    prompt: await (
+                        await this.promptService.findOne(pmpt.promptId)
+                    ).prompt,
+                })
+            })
+        )
+        return results
     }
 
     async findOne(id: string): Promise<UserPrompts> {
