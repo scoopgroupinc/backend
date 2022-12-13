@@ -115,6 +115,16 @@ type UserProfile {
   relationshipTypesVisible: Boolean
   pets: [String!]
   petsVisible: Boolean
+  booksGenre: [String!]
+  booksGenreVisible: Boolean
+  stayingIn: [String!]
+  stayingInVisible: Boolean
+  goingOut: [String!]
+  goingOutVisible: Boolean
+  beverages: [String!]
+  beveragesVisible: Boolean
+  food: [String!]
+  foodVisible: Boolean
 }
 
 type UserPreference {
@@ -462,6 +472,16 @@ input UserProfileInput {
   relationshipTypesVisible: Boolean
   pets: [String!]
   petsVisible: Boolean
+  booksGenre: [String!]
+  booksGenreVisible: Boolean
+  stayingIn: [String!]
+  stayingInVisible: Boolean
+  goingOut: [String!]
+  goingOutVisible: Boolean
+  beverages: [String!]
+  beveragesVisible: Boolean
+  food: [String!]
+  foodVisible: Boolean
 }
 
 input UserPreferenceInput {

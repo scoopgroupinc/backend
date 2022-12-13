@@ -182,4 +182,34 @@ export class UserProfileInput {
 
     @Field({ nullable: true })
     petsVisible?: boolean
+
+    @Field(() => [String], { nullable: true })
+    booksGenre?: string[]
+
+    @Field({ nullable: true })
+    booksGenreVisible?: boolean
+
+    @Field(() => [String], { nullable: true })
+    stayingIn?: string[]
+
+    @Field({ nullable: true })
+    stayingInVisible?: boolean
+
+    @Field(() => [String], { nullable: true })
+    goingOut?: string[]
+
+    @Field({ nullable: true })
+    goingOutVisible?: boolean
+
+    @Field(() => [String], { nullable: true })
+    beverages?: string[]
+
+    @Field({ nullable: true })
+    beveragesVisible?: boolean
+
+    @Field(() => [String], { nullable: true })
+    food?: string[]
+
+    @Field({ nullable: true })
+    foodVisible?: boolean
 }

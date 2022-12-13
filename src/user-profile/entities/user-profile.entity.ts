@@ -254,4 +254,44 @@ export class UserProfile extends BaseEntity {
     @Field({ nullable: true })
     @Column({ type: 'boolean', default: true })
     petsVisible?: boolean
+
+    @Field(() => [String],{ nullable:true})
+    @Column('simple-array', { nullable: true, default: []})
+    booksGenre?: string[]
+
+    @Field({ nullable: true })
+    @Column({ type: 'boolean', default: true })
+    booksGenreVisible?: boolean
+
+    @Field(() => [String],{ nullable:true})
+    @Column('simple-array', { nullable: true, default: []})
+    stayingIn?: string[]
+
+    @Field({ nullable: true })
+    @Column({ type: 'boolean', default: true })
+    stayingInVisible?: boolean
+
+    @Field(() => [String],{ nullable:true})
+    @Column('simple-array', { nullable: true, default: []})
+    goingOut?: string[]
+
+    @Field({ nullable: true })
+    @Column({ type: 'boolean', default: true })
+    goingOutVisible?: boolean
+
+    @Field(() => [String],{ nullable:true})
+    @Column('simple-array', { nullable: true, default: []})
+    beverages?: string[]
+
+    @Field({ nullable: true })
+    @Column({ type: 'boolean', default: true })
+    beveragesVisible?: boolean
+
+    @Field(() => [String],{ nullable:true})
+    @Column('simple-array', { nullable: true, default: []})
+    food?: string[]
+
+    @Field({ nullable: true })
+    @Column({ type: 'boolean', default: true })
+    foodVisible?: boolean
 }
