@@ -89,7 +89,7 @@ type UserProfile {
   drugsVisible: Boolean
   diet: [String!]
   dietVisible: Boolean
-  languages: String
+  languages: [String!]
   languagesVisible: Boolean
   musicGenre: [String!]
   musicGenreVisible: Boolean
@@ -446,7 +446,7 @@ input UserProfileInput {
   drugsVisible: Boolean
   diet: [String!]
   dietVisible: Boolean
-  languages: String
+  languages: [String!]
   languagesVisible: Boolean
   musicGenre: [String!]
   musicGenreVisible: Boolean
