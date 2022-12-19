@@ -151,9 +151,9 @@ export class UserProfile extends BaseEntity {
     @Column({ type: 'boolean', default: true })
     dietVisible?: boolean
 
-    @Field(() => String, { nullable: true })
-    @Column({ nullable: true })
-    languages?: string
+    @Field(() => [String], { nullable: true })
+    @Column('simple-array',{ nullable: true, default: []  })
+    languages?: string[]
 
     @Field(() => Boolean, { nullable: true })
     @Column({ type: 'boolean', default: true })

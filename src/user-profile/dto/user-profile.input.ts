@@ -105,8 +105,8 @@ export class UserProfileInput {
     @Field({ nullable: true })
     dietVisible?: boolean
 
-    @Field({ nullable: true })
-    languages?: string
+    @Field(() => [String],{ nullable: true })
+    languages?: string[]
 
     @Field({ nullable: true })
     languagesVisible?: boolean
