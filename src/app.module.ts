@@ -43,27 +43,9 @@ const { user, pass, host, port } = configs.get('mail')
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
-            useFactory: (database: ConfigService) => ({
-                ...database.get('database'),
-                host: process.env.DB_HOST1,
-            }),
+            useFactory: (database: ConfigService) => database.get('database'),
         }),
-        TypeOrmModule.forRootAsync({
-            imports: [ConfigModule],
-            inject: [ConfigService],
-            useFactory: (database: ConfigService) => ({
-                ...database.get('database'),
-                host: process.env.DB_HOST2,
-            }),
-        }),
-        TypeOrmModule.forRootAsync({
-            imports: [ConfigModule],
-            inject: [ConfigService],
-            useFactory: (database: ConfigService) => ({
-                ...database.get('database'),
-                host: process.env.DB_HOST3,
-            }),
-        }),
+
         MailerModule.forRoot({
             // transport: 'smtps://user@domain.com:pass@smtp.domain.com',
             transport: {
