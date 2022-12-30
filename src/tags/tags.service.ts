@@ -45,7 +45,7 @@ export class TagsService {
         const result = await this.tagsRepository.find({})
 
         result.forEach((tag) => {
-            if (tag.emoji !== '') {
+            if (tag.emoji) {
                 tag.emoji = this.convertFromHexaToEmoji(tag.emoji)
             }
         })
