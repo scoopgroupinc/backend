@@ -1,6 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { InputType, Field, ID } from '@nestjs/graphql'
 import { IsOptional } from 'class-validator'
+import { UserTagsTypeVisibleInput } from 'src/user-tags-type-visible/dto/create-user-tag-type-visible.input'
 
 @InputType()
 export class UserProfileInput {
@@ -36,180 +37,13 @@ export class UserProfileInput {
     jobTitle?: string
 
     @Field({ nullable: true })
-    @IsOptional()
-    jobTitleVisible: boolean
-
-    @Field({ nullable: true })
     company: string
-
-    @Field({ nullable: true })
-    companyVisible: boolean
 
     @Field({ nullable: true })
     homeTown: string
 
     @Field({ nullable: true })
-    homeTownVisible: boolean
-
-    @Field({ nullable: true })
     school: string
 
-    @Field({ nullable: true })
-    schoolVisible: boolean
-
-    @Field({ nullable: true })
-    educationLevel: string
-
-    @Field({ nullable: true })
-    educationLevelVisible: boolean
-
-    @Field(() => [String], { nullable: true })
-    ethinicity: string[]
-
-    @Field({ nullable: true })
-    ethinicityVisible: boolean
-
-    @Field(() => [String], { nullable: true })
-    sports: string[]
-
-    @Field({ nullable: true })
-    sportsVisible: boolean
-
-    @Field({ nullable: true })
-    smoking?: string
-
-    @Field({ nullable: true })
-    smokingVisible?: boolean
-
-    @Field({ nullable: true })
-    cannabis?: string
-
-    @Field({ nullable: true })
-    cannabisVisible?: boolean
-
-    @Field({ nullable: true })
-    alcohol?: string
-
-    @Field({ nullable: true })
-    alcoholVisible?: boolean
-
-    @Field({ nullable: true })
-    drugs?: string
-
-    @Field({ nullable: true })
-    drugsVisible?: boolean
-
-    @Field(() => [String], { nullable: true })
-    diet?: string[]
-
-    @Field({ nullable: true })
-    dietVisible?: boolean
-
-    @Field(() => [String],{ nullable: true })
-    languages?: string[]
-
-    @Field({ nullable: true })
-    languagesVisible?: boolean
-
-    @Field(() => [String], { nullable: true })
-    musicGenre?: string[]
-
-    @Field({ nullable: true })
-    musicGenreVisible?: boolean
-
-    @Field(() => [String], { nullable: true })
-    creativeOulet?: string[]
-
-    @Field({ nullable: true })
-    creativeOuletVisible?: boolean
-
-    @Field(() => [String], { nullable: true })
-    religions?: string[]
-
-    @Field({ nullable: true })
-    religionsVisible?: boolean
-
-    @Field(() => [String], { nullable: true })
-    religiousPractice?: string[]
-
-    @Field({ nullable: true })
-    religiousPracticeVisible?: boolean
-
-    @Field({ nullable: true })
-    zodiac?: string
-
-    @Field({ nullable: true })
-    zodiacVisible?: boolean
-
-    @Field({ nullable: true })
-    meyerBriggs?: string
-
-    @Field({ nullable: true })
-    meyerBriggsVisible?: boolean
-
-    @Field(() => [String], { nullable: true })
-    characteristics?: string[]
-
-    @Field({ nullable: true })
-    characteristicsVisible?: boolean
-
-    @Field({ nullable: true })
-    politics?: string
-
-    @Field({ nullable: true })
-    politicsVisible?: boolean
-
-    @Field({ nullable: true })
-    parentingGoal?: string
-
-    @Field({ nullable: true })
-    parentingGoalVisible?: boolean
-
-    @Field(() => [String], { nullable: true })
-    relationshipGoals?: string[]
-
-    @Field({ nullable: true })
-    relationshipGoalsVisible?: boolean
-
-    @Field(() => [String], { nullable: true })
-    relationshipTypes?: string[]
-
-    @Field({ nullable: true })
-    relationshipTypesVisible?: boolean
-
-    @Field(() => [String], { nullable: true })
-    pets?: string[]
-
-    @Field({ nullable: true })
-    petsVisible?: boolean
-
-    @Field(() => [String], { nullable: true })
-    booksGenre?: string[]
-
-    @Field({ nullable: true })
-    booksGenreVisible?: boolean
-
-    @Field(() => [String], { nullable: true })
-    stayingIn?: string[]
-
-    @Field({ nullable: true })
-    stayingInVisible?: boolean
-
-    @Field(() => [String], { nullable: true })
-    goingOut?: string[]
-
-    @Field({ nullable: true })
-    goingOutVisible?: boolean
-
-    @Field(() => [String], { nullable: true })
-    beverages?: string[]
-
-    @Field({ nullable: true })
-    beveragesVisible?: boolean
-
-    @Field(() => [String], { nullable: true })
-    food?: string[]
-
-    @Field({ nullable: true })
-    foodVisible?: boolean
+    userTagsTypeVisibleInput: UserTagsTypeVisibleInput
 }
