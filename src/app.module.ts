@@ -26,6 +26,7 @@ import { UserChoiceModule } from './user-choice/user-choice.module'
 import { MetaDetailsModule } from './meta-details/meta.module'
 import { FeedBackModule } from './feedback/feedback.module'
 import { BlockedUserModule } from './blocked-users/blocked-users.module'
+import { UserTagsTypeVisibleModule } from './user-tags-type-visible/user-tags-type-visible.module'
 
 const { user, pass, host, port } = configs.get('mail')
 @Module({
@@ -87,6 +88,7 @@ const { user, pass, host, port } = configs.get('mail')
         MetaDetailsModule,
         FeedBackModule,
         BlockedUserModule,
+        UserTagsTypeVisibleModule,
     ],
     controllers: [],
     providers: [],

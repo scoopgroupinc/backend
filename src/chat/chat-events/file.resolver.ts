@@ -1,5 +1,5 @@
 import { Resolver, Mutation, Args } from '@nestjs/graphql'
-import { GraphQLUpload, FileUpload } from 'graphql-upload'
+// import { GraphQLUpload, FileUpload } from 'graphql-upload'
 import { createReadStream, createWriteStream } from 'fs'
 import { MessageDTO } from './dto/message.dto'
 import { ChatService } from './chat.service'

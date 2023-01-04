@@ -17,6 +17,8 @@ import { UserChoice } from 'src/user-choice/entities/user-choice.entity'
 import { MetaDetails } from 'src/meta-details/entities/meta.entity'
 import { FeedBack } from 'src/feedback/entities/feedback.entity'
 import { BlockedUsers } from 'src/blocked-users/entities/blocked-users.entity'
+import { UserTagsTypeVisibleEnity } from 'src/user-tags-type-visible/entities/user-tags-type-visible.entity'
+import { UserTagsEntity } from 'src/user-tags/entities/user-tags.entity'
 
 export const config = () => ({
     port: parseInt(process.env.PORT, 10),
@@ -50,6 +52,8 @@ export const config = () => ({
             MetaDetails,
             FeedBack,
             BlockedUsers,
+            UserTagsTypeVisibleEnity,
+            UserTagsEntity,
         ],
         ssl: {
             rejectUnauthorized: false,
