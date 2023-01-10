@@ -19,6 +19,8 @@ import logger from 'src/utils/logger'
 import { JwtService } from '@nestjs/jwt'
 import * as moment from 'moment'
 import { VerifyRestPasswordCode } from './dto/verify-Code-output'
+import { UserTagsTypeVisibleService } from 'src/user-tags-type-visible/user-tags-type-visible.service'
+import { tag_type } from 'src/common/enums'
 
 @Injectable()
 export class UserService {
@@ -27,7 +29,8 @@ export class UserService {
         private authService: AuthService,
         private deviceService: UserDeviceService,
         private mailerService: MailerService,
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        private userTagsTypeVisibleService: UserTagsTypeVisibleService
     ) {}
 
     async create(data: any) {
@@ -108,6 +111,219 @@ export class UserService {
             isVerified: true,
         })
         if (result) {
+            await this.userTagsTypeVisibleService.saveUserTagsTypeVisible([
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['job'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['company'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['homeTown'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['alcohol_usage'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['book_genre'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['cannibis_usage'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['creative'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['diet'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['drink'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['drug_usage'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['education'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['ethnicity'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['film_genre'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['going_out'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['language'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['meyer_briggs'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['music_genre'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['parenting_goal'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['pet'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['physical_activity'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['politics'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['relationship_goal'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['relationship_type'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['religion'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['school'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['staying_in'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['travel_goals'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['zodiac'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['smoking'],
+                    userTags: [],
+                },
+                {
+                    userId: result.userId,
+                    visible: false,
+                    emoji: '',
+                    tagType: tag_type['religious_practice'],
+                    userTags: [],
+                },
+            ])
+
             const payload = {
                 token: this.authService.generateJwt(
                     result.email,

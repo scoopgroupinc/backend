@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt'
 import { AuthService } from 'src/auth/auth.service'
 import { AuthModule } from 'src/auth/auth.module'
 import { UserDeviceModule } from '../user-devices/user-devices.module'
+import { UserTagsTypeVisibleModule } from 'src/user-tags-type-visible/user-tags-type-visible.module'
 
 const { secret, expiresIn } = configs.get('jwt')
 
@@ -20,6 +21,7 @@ const { secret, expiresIn } = configs.get('jwt')
         }),
         AuthModule,
         UserDeviceModule,
+        UserTagsTypeVisibleModule,
     ],
     providers: [UserResolver, UserService, AuthService],
     exports: [UserService],

@@ -1,9 +1,4 @@
-import {
-    HttpException,
-    HttpStatus,
-    Injectable,
-    NotFoundException,
-} from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { tagEmoji, tag_type } from 'src/common/enums'
 import { UserTagsService } from 'src/user-tags/user-tags.service'

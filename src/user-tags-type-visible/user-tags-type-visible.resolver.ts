@@ -53,7 +53,7 @@ export class UserTagsTypeVisibleResolver {
 
     @ResolveField('userTags', () => [UserTagsEntity])
     async userTags(@Parent() userTagsTypeVisible: UserTagsTypeVisibleEnity) {
-        const { userId } = userTagsTypeVisible
-        return await this.userTagsService.getUserTags(userId)
+        const { userId, tagType } = userTagsTypeVisible
+        return await this.userTagsService.getUserTags(userId, tagType)
     }
 }

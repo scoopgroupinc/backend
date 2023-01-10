@@ -35,9 +35,10 @@ export class UserTagsService {
         return await this.userTagsRespository.save(userTagsToSave)
     }
 
-    async getUserTags(userId: string) {
+    async getUserTags(userId: string, tagType: string) {
         const dbUserTags = await this.userTagsRespository.find({
             userId,
+            tagType,
         })
         return dbUserTags
     }
