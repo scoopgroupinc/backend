@@ -6,13 +6,14 @@ import {
     Injectable,
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { In, Repository } from 'typeorm'
+import { Repository } from 'typeorm'
 import { UserPromptsInput } from './dto/user-prompts.input'
 import { UserPrompts } from './entities/user-prompts.entity'
 import { ConfigService } from '@nestjs/config'
 import { lastValueFrom, map } from 'rxjs'
 import { PromptsService } from 'src/prompts/prompts.service'
 import { UserPromptsOrder } from './dto/user-prompts-order'
+import { UserPromptsOutput } from './dto/user-prompts.output'
 
 @Injectable()
 export class UserPromptsService {
@@ -30,6 +31,67 @@ export class UserPromptsService {
         } catch (error) {
             throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
         }
+    }
+
+    async saveUserPrompts(
+        userPromptsInput: UserPromptsInput[]
+    ): Promise<UserPromptsOutput[]> {
+        try {
+            await Promise.all(
+                userPromptsInput.map(async (userPrompt) => {
+                    const userPromptExists =
+                        await this.userPromptsRepository.findOne({
+                            userId: userPrompt.userId,
+                            order: userPrompt.order,
+                        })
+                    if (userPromptExists) {
+                        const newData = {
+                            ...userPromptExists,
+                            ...userPrompt,
+                        }
+                        // console.log(newData)
+                        await this.userPromptsRepository.save(newData)
+                    } else {
+                        await this.userPromptsRepository.save(userPrompt)
+                    }
+                })
+            )
+            const userPrompts = await this.userPromptsRepository.find({
+                userId: userPromptsInput[0].userId,
+            })
+            const results = []
+            await Promise.all(
+                userPrompts.map(async (userPrompt) => {
+                    results.push({
+                        ...userPrompt,
+                        prompt: await (
+                            await this.promptService.findOne(
+                                userPrompt.promptId
+                            )
+                        ).prompt,
+                    })
+                })
+            )
+            return results
+        } catch (error) {
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    async getUserPrompts(userId: string): Promise<UserPromptsOutput[]> {
+        const userPrompts = await this.userPromptsRepository.find({ userId })
+        const results = []
+        await Promise.all(
+            userPrompts.map(async (userPrompt) => {
+                results.push({
+                    ...userPrompt,
+                    prompt: await (
+                        await this.promptService.findOne(userPrompt.promptId)
+                    ).prompt,
+                })
+            })
+        )
+        return results
     }
 
     async getUserPromptsOrder(userId: string): Promise<any> {

@@ -20,6 +20,15 @@ export class UserPromptsResolver {
     }
 
     @UseGuards(GqlAuthGuard)
+    @Mutation(() => [UserPromptsOutput], { name: 'saveUserPrompts' })
+    async saveUserPrompts(
+        @Args('UserPromptInput', { type: () => [UserPromptsInput] })
+        userPromptInput: UserPromptsInput[]
+    ): Promise<UserPromptsOutput[]> {
+        return await this.userPromptsService.saveUserPrompts(userPromptInput)
+    }
+
+    @UseGuards(GqlAuthGuard)
     @Query(() => [UserPromptsOutput])
     async getUserPromptsOrder(
         @Args('userId') userId: string

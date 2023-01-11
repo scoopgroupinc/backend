@@ -1,11 +1,8 @@
-import { Field, ID, InputType, ObjectType } from '@nestjs/graphql'
+import { Field, InputType } from '@nestjs/graphql'
 import { IsNotEmpty, IsString } from 'class-validator'
 
 @InputType()
 export class UserPromptsInput {
-    // @Field(() => ID)
-    // id?: string
-
     @Field(() => String)
     @IsNotEmpty()
     @IsString()
@@ -19,4 +16,8 @@ export class UserPromptsInput {
     @Field(() => String)
     @IsNotEmpty()
     answer: string
+
+    @Field(() => Number)
+    @IsNotEmpty()
+    order: number
 }

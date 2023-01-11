@@ -28,6 +28,24 @@ type UserDevice {
   notificationToken: String
 }
 
+"""User tags type visible"""
+type UserTagsTypeVisibleEnity {
+  id: ID!
+  userId: ID!
+  emoji: String
+  tagType: String!
+  visible: Boolean!
+  userTags: [UserTagsEntity!]!
+}
+
+"""Entity for user tags"""
+type UserTagsEntity {
+  id: ID!
+  userId: ID!
+  tagName: String!
+  tagType: String!
+}
+
 type UserOutput {
   userId: ID!
   firstName: String
@@ -144,24 +162,6 @@ type FeedBack {
   createdAt: String!
 }
 
-"""Entity for user tags"""
-type UserTagsEntity {
-  id: ID!
-  userId: ID!
-  tagName: String!
-  tagType: String!
-}
-
-"""User tags type visible"""
-type UserTagsTypeVisibleEnity {
-  id: ID!
-  userId: ID!
-  emoji: String
-  tagType: String!
-  visible: Boolean!
-  userTags: [UserTagsEntity!]!
-}
-
 type RatingOutput {
   Trustworty: Float
   Smart: Float
@@ -183,6 +183,7 @@ type UserPromptsOutput {
   promptId: String
   prompt: String
   answer: String
+  order: String
 }
 
 type BlockUserOutput {
@@ -232,6 +233,7 @@ type UserChoiceOutput {
 type Query {
   getUser(userId: String!): User!
   getUserDevice(macAddress: String!): UserDevice!
+  getAllUserTagsTypeVisible(userId: String!): [UserTagsTypeVisibleEnity!]!
   getUserProfile(userId: String!): UserProfile!
 
   """fetch user preference"""
@@ -296,7 +298,6 @@ type Query {
   getUserMatches(userId: String!): [UserChoiceOutput!]!
   getMetaDetails: MetaDetails!
   getFeedBacks(feedbackfilter: FeedBackFilter!): [FeedBack!]!
-  getAllUserTagsTypeVisible(userId: String!): [UserTagsTypeVisibleEnity!]!
 }
 
 input ComplaintsFilter {
@@ -332,6 +333,7 @@ type Mutation {
   resetPassword(password: String!, email: String!): User!
   testNewMailer(code: Float!, email: String!): String!
   saveDeviceDetails(userdeviceInput: UserDeviceInput!): UserDevice!
+  saveUserTagsTypeVisible(userTagsTypeVisibleInput: [UserTagsTypeVisibleInput!]!): [UserTagsTypeVisibleEnity!]!
   saveUserProfile(userProfileInput: UserProfileInput!): UserProfile!
 
   """Use this endpoint to savs and update entity"""
@@ -341,6 +343,7 @@ type Mutation {
   saveRatingGroup(ratingGroupInput: SaveRatingInput!): String!
   addNewPrompt(promptInput: PromptsInput!): Prompts!
   saveUserPrompt(UserPromptInput: UserPromptsInput!): UserPromptsOutput!
+  saveUserPrompts(UserPromptInput: [UserPromptsInput!]!): [UserPromptsOutput!]!
   saveUserPromptsOrder(userPromptsOrder: UserPromptsOrder!): String!
   saveNewCompliants(complaintsInput: ComplaintsInput!): String!
   updateComplaint(complaintsInput: ComplaintsInput!): String!
@@ -349,7 +352,6 @@ type Mutation {
   createMetaDetails(metaDetailsInput: MetaDetailsInput!): MetaDetails!
   updateDetials(metaDetailsInput: MetaDetailsInput!): MetaDetails!
   saveUserFeedBack(feedbackInput: FeedBackInput!): String!
-  saveUserTagsTypeVisible(userTagsTypeVisibleInput: [UserTagsTypeVisibleInput!]!): [UserTagsTypeVisibleEnity!]!
 }
 
 input CreateUserInput {
@@ -376,6 +378,59 @@ input UserDeviceInput {
   macAddress: String
   version: String
   lastLogin: String
+}
+
+"""Input type for user tags type visible"""
+input UserTagsTypeVisibleInput {
+  userId: ID!
+  visible: Boolean!
+  emoji: String!
+  tagType: tag_type!
+  userTags: [UserTagsInput!]
+}
+
+enum tag_type {
+  alcohol_usage
+  book_genre
+  cannibis_usage
+  company
+  creative
+  date_options
+  diet
+  drink
+  drug_usage
+  education
+  ethnicity
+  film_genre
+  gender
+  going_out
+  homeTown
+  job
+  language
+  meyer_briggs
+  music_genre
+  parenting_goal
+  parenting_type
+  peronsality
+  pets
+  physical_activity
+  politics
+  relationship_goal
+  relationship_type
+  religion
+  religious_practice
+  school
+  staying_in
+  smoking
+  travel_goals
+  zodiac
+}
+
+"""Input type for user tags"""
+input UserTagsInput {
+  userId: ID!
+  tagName: String!
+  tagType: tag_type!
 }
 
 input UserProfileInput {
@@ -460,6 +515,7 @@ input UserPromptsInput {
   userId: String!
   promptId: String!
   answer: String!
+  order: Float!
 }
 
 input UserPromptsOrder {
@@ -503,54 +559,4 @@ input FeedBackInput {
   issue: String!
   text: String!
   image: String
-}
-
-"""Input type for user tags type visible"""
-input UserTagsTypeVisibleInput {
-  userId: ID!
-  visible: Boolean!
-  emoji: String!
-  tagType: tag_type!
-  userTags: [UserTagsInput!]
-}
-
-enum tag_type {
-  alcohol_usage
-  book_genre
-  cannibis_usage
-  company
-  creative
-  date_options
-  diet
-  drink
-  drug_usage
-  education
-  ethnicity
-  film_genre
-  gender
-  going_out
-  homeTown
-  job
-  language
-  meyer_briggs
-  music_genre
-  parenting_goal
-  peronsality
-  pet
-  physical_activity
-  politics
-  relationship_goal
-  relationship_type
-  religion
-  school
-  staying_in
-  travel_goals
-  zodiac
-}
-
-"""Input type for user tags"""
-input UserTagsInput {
-  userId: ID!
-  tagName: String!
-  tagType: tag_type!
 }
