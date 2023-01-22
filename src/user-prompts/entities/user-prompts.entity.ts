@@ -29,8 +29,4 @@ export class UserPrompts extends BaseEntity {
     @Field(() => String)
     @Column({ nullable: true })
     answer: string
-
-    @Field(() => Number)
-    @Column({ default: '99' })
-    order: number
 }

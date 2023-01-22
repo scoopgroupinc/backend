@@ -16,8 +16,4 @@ export class UserPromptsInput {
     @Field(() => String)
     @IsNotEmpty()
     answer: string
-
-    @Field(() => Number)
-    @IsNotEmpty()
-    order: number
 }

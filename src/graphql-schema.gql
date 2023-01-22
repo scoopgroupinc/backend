@@ -183,7 +183,6 @@ type UserPromptsOutput {
   promptId: String
   prompt: String
   answer: String
-  order: String
 }
 
 type BlockUserOutput {
@@ -291,7 +290,6 @@ type Query {
   """
   uploadPrompts(promptType: String!): String!
   getUserPromptsOrder(userId: String!): [UserPromptsOutput!]!
-  getAllUserPrompts(userId: String!): [UserPromptsOutput!]!
   getAllOpenComplaints(complaintsFilter: ComplaintsFilter!): [ComplaintsOutput!]!
   getAComplaint(complaintId: String!): ComplaintsOutput!
   isUserBlocked(userIds: [String!]!, userId: String!): [BlockUserOutput!]!
@@ -515,7 +513,6 @@ input UserPromptsInput {
   userId: String!
   promptId: String!
   answer: String!
-  order: Float!
 }
 
 input UserPromptsOrder {

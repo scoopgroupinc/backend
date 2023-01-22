@@ -45,12 +45,4 @@ export class UserPromptsResolver {
             userPromptsOrder
         )
     }
-
-    @UseGuards(GqlAuthGuard)
-    @Query(() => [UserPromptsOutput])
-    async getAllUserPrompts(
-        @Args('userId') userId: string
-    ): Promise<UserPromptsOutput[]> {
-        return await this.userPromptsService.getAllUserPrompts(userId)
-    }
 }
