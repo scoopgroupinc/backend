@@ -110,14 +110,15 @@ export class UserService {
             isVerified: true,
         })
         if (result) {
+            const userTagsTypeVisible = tags.map((tag) => ({
+                userId: result.userId,
+                visible: false,
+                emoji: '',
+                tagType: tag_type[tag],
+                userTags: [],
+            }))
             await this.userTagsTypeVisibleService.saveUserTagsTypeVisible(
-                tags.map((tag) => ({
-                    userId: result.userId,
-                    visible: false,
-                    emoji: '',
-                    tagType: tag_type[tag],
-                    userTags: [],
-                }))
+                userTagsTypeVisible
             )
 
             const payload = {
