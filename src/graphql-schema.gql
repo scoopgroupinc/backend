@@ -28,6 +28,24 @@ type UserDevice {
   notificationToken: String
 }
 
+"""User tags type visible"""
+type UserTagsTypeVisibleEnity {
+  id: ID!
+  userId: ID!
+  emoji: String
+  tagType: String!
+  visible: Boolean!
+  userTags: [UserTagsEntity!]!
+}
+
+"""Entity for user tags"""
+type UserTagsEntity {
+  id: ID!
+  userId: ID!
+  tagName: String!
+  tagType: String!
+}
+
 type UserOutput {
   userId: ID!
   firstName: String
@@ -66,65 +84,9 @@ type UserProfile {
   gender: String
   locationId: String
   jobTitle: String
-  jobTitleVisible: Boolean
   company: String
-  companyVisible: Boolean
   homeTown: String
-  homeTownVisible: Boolean
   school: String
-  schoolVisible: Boolean
-  educationLevel: String
-  educationLevelVisible: Boolean
-  ethinicity: [String!]
-  ethinicityVisible: Boolean
-  sports: [String!]
-  sportsVisible: Boolean
-  smoking: String
-  smokingVisible: Boolean
-  cannabis: String
-  cannabisVisible: Boolean
-  alcohol: String
-  alcoholVisible: Boolean
-  drugs: String
-  drugsVisible: Boolean
-  diet: [String!]
-  dietVisible: Boolean
-  languages: [String!]
-  languagesVisible: Boolean
-  musicGenre: [String!]
-  musicGenreVisible: Boolean
-  creativeOulet: [String!]
-  creativeOuletVisible: Boolean
-  religions: [String!]
-  religionsVisible: Boolean
-  religiousPractice: [String!]
-  religiousPracticeVisible: String
-  zodiac: String
-  zodiacVisible: Boolean
-  meyerBriggs: String
-  meyerBriggsVisible: Boolean
-  characteristics: [String!]
-  characteristicsVisible: Boolean
-  politics: String
-  politicsVisible: Boolean
-  parentingGoal: String
-  parentingGoalVisible: Boolean
-  relationshipGoals: [String!]
-  relationshipGoalsVisible: Boolean
-  relationshipTypes: [String!]
-  relationshipTypesVisible: Boolean
-  pets: [String!]
-  petsVisible: Boolean
-  booksGenre: [String!]
-  booksGenreVisible: Boolean
-  stayingIn: [String!]
-  stayingInVisible: Boolean
-  goingOut: [String!]
-  goingOutVisible: Boolean
-  beverages: [String!]
-  beveragesVisible: Boolean
-  food: [String!]
-  foodVisible: Boolean
 }
 
 type UserPreference {
@@ -270,6 +232,7 @@ type UserChoiceOutput {
 type Query {
   getUser(userId: String!): User!
   getUserDevice(macAddress: String!): UserDevice!
+  getAllUserTagsTypeVisible(userId: String!): [UserTagsTypeVisibleEnity!]!
   getUserProfile(userId: String!): UserProfile!
 
   """fetch user preference"""
@@ -327,7 +290,6 @@ type Query {
   """
   uploadPrompts(promptType: String!): String!
   getUserPromptsOrder(userId: String!): [UserPromptsOutput!]!
-  getAllUserPrompts(userId: String!): [UserPromptsOutput!]!
   getAllOpenComplaints(complaintsFilter: ComplaintsFilter!): [ComplaintsOutput!]!
   getAComplaint(complaintId: String!): ComplaintsOutput!
   isUserBlocked(userIds: [String!]!, userId: String!): [BlockUserOutput!]!
@@ -369,6 +331,7 @@ type Mutation {
   resetPassword(password: String!, email: String!): User!
   testNewMailer(code: Float!, email: String!): String!
   saveDeviceDetails(userdeviceInput: UserDeviceInput!): UserDevice!
+  saveUserTagsTypeVisible(userTagsTypeVisibleInput: [UserTagsTypeVisibleInput!]!): [UserTagsTypeVisibleEnity!]!
   saveUserProfile(userProfileInput: UserProfileInput!): UserProfile!
 
   """Use this endpoint to savs and update entity"""
@@ -378,6 +341,7 @@ type Mutation {
   saveRatingGroup(ratingGroupInput: SaveRatingInput!): String!
   addNewPrompt(promptInput: PromptsInput!): Prompts!
   saveUserPrompt(UserPromptInput: UserPromptsInput!): UserPromptsOutput!
+  saveUserPrompts(UserPromptInput: [UserPromptsInput!]!): [UserPromptsOutput!]!
   saveUserPromptsOrder(userPromptsOrder: UserPromptsOrder!): String!
   saveNewCompliants(complaintsInput: ComplaintsInput!): String!
   updateComplaint(complaintsInput: ComplaintsInput!): String!
@@ -414,6 +378,59 @@ input UserDeviceInput {
   lastLogin: String
 }
 
+"""Input type for user tags type visible"""
+input UserTagsTypeVisibleInput {
+  userId: ID!
+  visible: Boolean!
+  emoji: String!
+  tagType: tag_type!
+  userTags: [UserTagsInput!]
+}
+
+enum tag_type {
+  alcohol_usage
+  book_genre
+  cannibis_usage
+  company
+  creative
+  date_options
+  diet
+  drink
+  drug_usage
+  education
+  ethnicity
+  film_genre
+  gender
+  going_out
+  homeTown
+  job
+  language
+  meyer_briggs
+  music_genre
+  parenting_goal
+  parenting_type
+  peronsality
+  pets
+  physical_activity
+  politics
+  relationship_goal
+  relationship_type
+  religion
+  religious_practice
+  school
+  staying_in
+  smoking
+  travel_goals
+  zodiac
+}
+
+"""Input type for user tags"""
+input UserTagsInput {
+  userId: ID!
+  tagName: String!
+  tagType: tag_type!
+}
+
 input UserProfileInput {
   userId: ID!
   createdAt: String
@@ -423,65 +440,9 @@ input UserProfileInput {
   gender: String
   locationId: String
   jobTitle: String
-  jobTitleVisible: Boolean
   company: String
-  companyVisible: Boolean
   homeTown: String
-  homeTownVisible: Boolean
   school: String
-  schoolVisible: Boolean
-  educationLevel: String
-  educationLevelVisible: Boolean
-  ethinicity: [String!]
-  ethinicityVisible: Boolean
-  sports: [String!]
-  sportsVisible: Boolean
-  smoking: String
-  smokingVisible: Boolean
-  cannabis: String
-  cannabisVisible: Boolean
-  alcohol: String
-  alcoholVisible: Boolean
-  drugs: String
-  drugsVisible: Boolean
-  diet: [String!]
-  dietVisible: Boolean
-  languages: [String!]
-  languagesVisible: Boolean
-  musicGenre: [String!]
-  musicGenreVisible: Boolean
-  creativeOulet: [String!]
-  creativeOuletVisible: Boolean
-  religions: [String!]
-  religionsVisible: Boolean
-  religiousPractice: [String!]
-  religiousPracticeVisible: Boolean
-  zodiac: String
-  zodiacVisible: Boolean
-  meyerBriggs: String
-  meyerBriggsVisible: Boolean
-  characteristics: [String!]
-  characteristicsVisible: Boolean
-  politics: String
-  politicsVisible: Boolean
-  parentingGoal: String
-  parentingGoalVisible: Boolean
-  relationshipGoals: [String!]
-  relationshipGoalsVisible: Boolean
-  relationshipTypes: [String!]
-  relationshipTypesVisible: Boolean
-  pets: [String!]
-  petsVisible: Boolean
-  booksGenre: [String!]
-  booksGenreVisible: Boolean
-  stayingIn: [String!]
-  stayingInVisible: Boolean
-  goingOut: [String!]
-  goingOutVisible: Boolean
-  beverages: [String!]
-  beveragesVisible: Boolean
-  food: [String!]
-  foodVisible: Boolean
 }
 
 input UserPreferenceInput {

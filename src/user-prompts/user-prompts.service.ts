@@ -6,13 +6,14 @@ import {
     Injectable,
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { In, Repository } from 'typeorm'
+import { Not, Repository } from 'typeorm'
 import { UserPromptsInput } from './dto/user-prompts.input'
 import { UserPrompts } from './entities/user-prompts.entity'
 import { ConfigService } from '@nestjs/config'
 import { lastValueFrom, map } from 'rxjs'
 import { PromptsService } from 'src/prompts/prompts.service'
 import { UserPromptsOrder } from './dto/user-prompts-order'
+import { UserPromptsOutput } from './dto/user-prompts.output'
 
 @Injectable()
 export class UserPromptsService {
@@ -32,10 +33,41 @@ export class UserPromptsService {
         }
     }
 
+    async saveUserPrompts(userPromptsInput: UserPromptsInput[]): Promise<any> {
+        try {
+            const results = []
+            await Promise.all(
+                userPromptsInput.map(async (userPrompt) => {
+                    const existingUserPrompt =
+                        await this.userPromptsRepository.findOne({
+                            userId: userPrompt.userId,
+                            promptId: userPrompt.promptId,
+                        })
+                    if (existingUserPrompt) {
+                        existingUserPrompt.answer = userPrompt.answer
+                        results.push(
+                            await this.userPromptsRepository.save(
+                                existingUserPrompt
+                            )
+                        )
+                    } else {
+                        results.push(
+                            await this.userPromptsRepository.save(userPrompt)
+                        )
+                    }
+                })
+            )
+            return results
+        } catch (error) {
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+        }
+    }
+
     async getUserPromptsOrder(userId: string): Promise<any> {
         const userPromptIds = await lastValueFrom(
             this.httpService.get(userId).pipe(map((response) => response.data))
         )
+        console.log(userPromptIds)
         if (!userPromptIds || !userPromptIds.length) {
             return []
         }
@@ -45,6 +77,7 @@ export class UserPromptsService {
                 userPromptIds,
             })
             .getMany()
+        console.log(userDisplay)
         const results = []
         await Promise.all(
             userDisplay.map(async (display) => {
@@ -69,22 +102,6 @@ export class UserPromptsService {
                 .post('', { userPromptsOrder })
                 .pipe(map((response) => response.data))
         )
-    }
-
-    async getAllUserPrompts(userId: string) {
-        const response = await this.userPromptsRepository.find({ userId })
-        const results = []
-        await Promise.all(
-            response.map(async (pmpt) => {
-                results.push({
-                    ...pmpt,
-                    prompt: await (
-                        await this.promptService.findOne(pmpt.promptId)
-                    ).prompt,
-                })
-            })
-        )
-        return results
     }
 
     async findOne(id: string): Promise<UserPrompts> {

@@ -2,7 +2,6 @@ import * as bcrypt from 'bcrypt'
 import {
     Injectable,
     BadRequestException,
-    UnauthorizedException,
     NotFoundException,
     HttpException,
     HttpStatus,
@@ -19,6 +18,8 @@ import logger from 'src/utils/logger'
 import { JwtService } from '@nestjs/jwt'
 import * as moment from 'moment'
 import { VerifyRestPasswordCode } from './dto/verify-Code-output'
+import { UserTagsTypeVisibleService } from 'src/user-tags-type-visible/user-tags-type-visible.service'
+import { tag_type, tags } from 'src/common/enums'
 
 @Injectable()
 export class UserService {
@@ -27,7 +28,8 @@ export class UserService {
         private authService: AuthService,
         private deviceService: UserDeviceService,
         private mailerService: MailerService,
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        private userTagsTypeVisibleService: UserTagsTypeVisibleService
     ) {}
 
     async create(data: any) {
@@ -108,6 +110,17 @@ export class UserService {
             isVerified: true,
         })
         if (result) {
+            const userTagsTypeVisible = tags.map((tag) => ({
+                userId: result.userId,
+                visible: false,
+                emoji: '',
+                tagType: tag_type[tag],
+                userTags: [],
+            }))
+            await this.userTagsTypeVisibleService.saveUserTagsTypeVisible(
+                userTagsTypeVisible
+            )
+
             const payload = {
                 token: this.authService.generateJwt(
                     result.email,

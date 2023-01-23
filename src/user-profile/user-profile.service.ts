@@ -2,9 +2,6 @@
 import {
     Injectable,
     BadRequestException,
-    Logger,
-    HttpException,
-    HttpStatus,
     NotFoundException,
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -38,7 +35,7 @@ export class UserProfileService {
 
     async findOne(userId: string): Promise<UserProfile> {
         const profile = await this.userProfileRespository.findOne({ userId })
-        if(!profile) throw new NotFoundException("Profile not found")
+        if (!profile) throw new NotFoundException('Profile not found')
         return profile
     }
 
