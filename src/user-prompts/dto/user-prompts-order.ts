@@ -1,5 +1,5 @@
 import { Field, InputType } from '@nestjs/graphql'
-import { IsString } from 'class-validator'
+import { IsString, IsOptional } from 'class-validator'
 
 @InputType()
 export class UserPromptsOrder {
@@ -9,4 +9,16 @@ export class UserPromptsOrder {
 
     @Field(() => [String])
     userPromptIds: string[]
+}
+
+@InputType()
+export class IGetPromptOrder {
+    @Field(() => String)
+    @IsString()
+    userId: string
+
+    @Field(() => String, { nullable: true })
+    @IsString()
+    @IsOptional()
+    raterId?: string | undefined
 }

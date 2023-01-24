@@ -12,8 +12,9 @@ import { UserPrompts } from './entities/user-prompts.entity'
 import { ConfigService } from '@nestjs/config'
 import { lastValueFrom, map } from 'rxjs'
 import { PromptsService } from 'src/prompts/prompts.service'
-import { UserPromptsOrder } from './dto/user-prompts-order'
+import { IGetPromptOrder, UserPromptsOrder } from './dto/user-prompts-order'
 import { UserPromptsOutput } from './dto/user-prompts.output'
+import { RatingService } from 'src/rating/rating.service'
 
 @Injectable()
 export class UserPromptsService {
@@ -22,7 +23,8 @@ export class UserPromptsService {
         private userPromptsRepository: Repository<UserPrompts>,
         private httpService: HttpService,
         private configService: ConfigService,
-        private promptService: PromptsService
+        private promptService: PromptsService,
+        private ratingeService: RatingService
     ) {}
 
     async saveUserPrompt(userPromptsInput: UserPromptsInput): Promise<any> {
@@ -63,7 +65,10 @@ export class UserPromptsService {
         }
     }
 
-    async getUserPromptsOrder(userId: string): Promise<any> {
+    async getUserPromptsOrder({
+        userId,
+        raterId,
+    }: IGetPromptOrder): Promise<any> {
         const userPromptIds = await lastValueFrom(
             this.httpService.get(userId).pipe(map((response) => response.data))
         )
@@ -71,6 +76,7 @@ export class UserPromptsService {
         if (!userPromptIds || !userPromptIds.length) {
             return []
         }
+
         const userDisplay = await this.userPromptsRepository
             .createQueryBuilder('userprompts')
             .where('userprompts.id IN (:...userPromptIds)', {
@@ -89,6 +95,12 @@ export class UserPromptsService {
                 })
             })
         )
+        if (raterId) {
+            /*make request to check if contents have been rated before and 
+              return random unrated prompt by user
+            */
+            return await this.getRaterContent(raterId, userPromptIds, results)
+        }
         return results.sort(
             (a, b) => userPromptIds.indexOf(a.id) - userPromptIds.indexOf(b.id)
         )
@@ -106,5 +118,17 @@ export class UserPromptsService {
 
     async findOne(id: string): Promise<UserPrompts> {
         return await this.userPromptsRepository.findOne({ id })
+    }
+
+    async getRaterContent(raterId: string, contentIds: string[], prompts) {
+        const unRatedContents = await this.ratingeService.getRaterContent(
+            raterId,
+            contentIds
+        )
+        const max = unRatedContents.length
+        const randomIndex = Math.floor(Math.random() * (1 + max - 0)) + 0
+        const selectedId = unRatedContents[randomIndex]
+
+        return prompts.find((prompt) => prompt.id === selectedId)
     }
 }
