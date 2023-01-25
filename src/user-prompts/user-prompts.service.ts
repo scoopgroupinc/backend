@@ -125,8 +125,8 @@ export class UserPromptsService {
             raterId,
             contentIds
         )
-        const max = unRatedContents.length
-        const randomIndex = Math.floor(Math.random() * (1 + max - 0)) + 0
+        const max = unRatedContents.length - 1
+        const randomIndex = Math.floor(Math.random() * (1 + max))
         const selectedId = unRatedContents[randomIndex]
 
         return prompts.find((prompt) => prompt.id === selectedId)
