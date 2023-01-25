@@ -6,6 +6,7 @@ import { UserPromptsService } from './user-prompts.service'
 import { UserPromptsResolver } from './user-prompts.resolver'
 import { PromptsModule } from 'src/prompts/prompts.module'
 import { ConfigModule, ConfigService } from '@nestjs/config'
+import { RatingModule } from 'src/rating/rating.module'
 
 @Module({
     imports: [
@@ -22,6 +23,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
             }),
         }),
         PromptsModule,
+        RatingModule,
     ],
     providers: [UserPromptsResolver, UserPromptsService],
     exports: [],

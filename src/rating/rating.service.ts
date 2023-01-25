@@ -153,4 +153,13 @@ export class RatingService {
         const average = Math.round((total / count) * 100) / 100
         return { average, count }
     }
+
+    async getRaterContent(raterId: string, contentIds:string[] ){
+         const contents = await this.ratingRepository.find({contentId: In(contentIds), raterId})
+         const results = []
+         contentIds.forEach(contId=>{
+            if(!(contents.find(item=> item.contentId===contId))) results.push(contId)
+         })
+         return results;
+    }
 }

@@ -289,13 +289,18 @@ type Query {
   Always specify the prompt type (prompts and visual_prompts) to upload. Pass the prompt type as parameter.
   """
   uploadPrompts(promptType: String!): String!
-  getUserPromptsOrder(userId: String!): [UserPromptsOutput!]!
+  getUserPromptsOrder(userPromptsOrder: IGetPromptOrder!): [UserPromptsOutput!]!
   getAllOpenComplaints(complaintsFilter: ComplaintsFilter!): [ComplaintsOutput!]!
   getAComplaint(complaintId: String!): ComplaintsOutput!
   isUserBlocked(userIds: [String!]!, userId: String!): [BlockUserOutput!]!
   getUserMatches(userId: String!): [UserChoiceOutput!]!
   getMetaDetails: MetaDetails!
   getFeedBacks(feedbackfilter: FeedBackFilter!): [FeedBack!]!
+}
+
+input IGetPromptOrder {
+  userId: String!
+  raterId: String
 }
 
 input ComplaintsFilter {
