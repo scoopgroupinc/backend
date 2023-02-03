@@ -36,7 +36,7 @@ export class UserPreferenceService {
     async findManyByGender(gender: string[]): Promise<UserPreference[]> {
         return await this.userPreferenceRepository
             .createQueryBuilder('user_preference')
-            .andWhere('user_preference.gender IN(:...gender)')
+            .where('user_preference.gender IN(:...gender)', { gender })
             .getMany()
     }
 

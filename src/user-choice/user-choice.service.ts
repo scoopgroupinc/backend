@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import moment from 'moment'
+import * as moment from 'moment'
 import { BlockUserService } from 'src/blocked-users/blocked-users.service'
 import { MatchesService } from 'src/matches/matches.service'
 import { UserPreferenceService } from 'src/user-preference/user-preference.service'
@@ -28,12 +28,13 @@ export class UserChoiceService {
         })
         /// optionally we can add choices where the swiperchoice is unknown
         //check if user has backlogs of unknowns first before generating the new choices
-        if (!choices || choices.length < 5)
+        if (!choices || choices.length === 0 || choices.length < 5)
             choices = await this.genUserChoices(userId)
 
         const allChoices = []
         for (const choice of choices) {
             const user = await this.userService.findOneByID(choice.shownUserId)
+
             const profile = await this.userProfileService.findOne(
                 choice.shownUserId
             )
@@ -50,9 +51,12 @@ export class UserChoiceService {
 
     async genUserChoices(userId: string) {
         const userpreference = await this.userPreferenceService.findOne(userId)
-        let gender = ['male', 'female']
-        if (userpreference.gender === ['male']) gender = ['female']
-        if (userpreference.gender === ['female']) gender = ['male']
+
+        let gender = []
+        if (userpreference.gender.includes('female')) gender.push('male')
+        if (userpreference.gender.includes('male')) gender.push('female')
+        if (userpreference.gender.includes('bisexual'))
+            gender = ['female', 'male']
         const potentialMatches =
             await this.userPreferenceService.findManyByGender(gender)
 
@@ -65,6 +69,7 @@ export class UserChoiceService {
                     userId,
                     match.userId
                 )
+
                 //check if match has been blocked by user
                 const isBlocked = await this.blockUserService.findOne({
                     blockedUserId: match.userId,
@@ -77,7 +82,7 @@ export class UserChoiceService {
 
                 if (isMatch || isBlocked || isBlocker) continue
 
-                await this.userChoiceRepository.create({
+                await this.userChoiceRepository.save({
                     swiperId: userId,
                     shownUserId: match.userId,
                 })
