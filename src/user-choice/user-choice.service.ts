@@ -85,11 +85,21 @@ export class UserChoiceService {
                 })
 
                 if (isMatch || isBlocked || isBlocker) continue
-
-                await this.userChoiceRepository.save({
+                const createdAt = Between(
+                    moment().utc().startOf('day').toISOString(),
+                    moment().utc().endOf('day').toISOString()
+                )
+                const exits = await this.userChoiceRepository.find({
                     swiperId: userId,
                     shownUserId: match.userId,
+                    createdAt,
                 })
+                if (!exits || !exits.length) {
+                    await this.userChoiceRepository.save({
+                        swiperId: userId,
+                        shownUserId: match.userId,
+                    })
+                }
 
                 allMatches = await this.userChoiceRepository.find({
                     where: {
