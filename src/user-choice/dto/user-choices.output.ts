@@ -3,7 +3,7 @@ import { Field, ObjectType } from '@nestjs/graphql'
 @ObjectType()
 export class UserChoiceOutput {
     @Field(() => String)
-    Id: string
+    id?: string
 
     @Field(() => String)
     swiperId: string
