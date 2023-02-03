@@ -25,6 +25,10 @@ export class UserChoiceService {
         let choices = await this.userChoiceRepository.find({
             swiperId: userId,
             swiperChoice: swiper_choice.unknown,
+            createdAt: Between(
+                moment().utc().startOf('day').toISOString(),
+                moment().utc().endOf('day').toISOString()
+            ),
         })
         /// optionally we can add choices where the swiperchoice is unknown
         //check if user has backlogs of unknowns first before generating the new choices
