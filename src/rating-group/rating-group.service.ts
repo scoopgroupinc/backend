@@ -41,13 +41,12 @@ export class RatingGroupService {
                     'Content has already been rated by this user',
                     HttpStatus.NOT_ACCEPTABLE
                 )
-            }
-
-           
+            }           
 
             const taggedRatings = await this.assignFinalTagToRatings(
                 saveRatingInput.ratingDetails
             )
+
             const ratingEntries = taggedRatings.map((ratings) => ({
                 raterId,
                 contentId: saveRatingInput.contentId,
@@ -55,7 +54,7 @@ export class RatingGroupService {
                 rating: ratings.rating,
                 final: ratings?.final ?? false,
             }))
-
+             
             await this.ratingService.saveRatings(ratingEntries)
            
             const ratingGroup: RatingGroupInput = {
@@ -67,19 +66,20 @@ export class RatingGroupService {
             }
 
            const response = await this.ratingGroupRepository.save(ratingGroup)
-           
-           for(const comment of saveRatingInput.comment){
-            comment.ratingGroupId=response.id;
+          
+           if(saveRatingInput.comment.length){
+                for(const comment of saveRatingInput.comment){
+                    comment.ratingGroupId=response.id;
+                }
+                await this.ratingCommentService.saveRatingComment(
+                    saveRatingInput.comment
+                )
            }
-           await this.ratingCommentService.saveRatingComment(
-               saveRatingInput.comment
-           )
-
             return true
         } catch (error) {
             logger.debug(error)
             throw new HttpException(
-                'Something went wrong',
+                error,
                 HttpStatus.EXPECTATION_FAILED
             )
         }
@@ -97,6 +97,7 @@ export class RatingGroupService {
          * are we still going with the module where we keep all the users previous input data before final submit?
          */
         const criteriaKeys = Object.keys(groups)
+
         const newRatings = []
         for (let i = 0; i < criteriaKeys.length; i++) {
             const lastIndex = groups[criteriaKeys[i]].length - 1
@@ -106,7 +107,7 @@ export class RatingGroupService {
                 newRatings.push(element)
             })
         }
-
+        
         return newRatings
     }
 
@@ -121,5 +122,5 @@ export class RatingGroupService {
 
     async getRatingGroup(contentId: string): Promise<RatingGroupInput[]> {
         return await this.ratingGroupRepository.find({ contentId })
-    }
+    }   
 }
