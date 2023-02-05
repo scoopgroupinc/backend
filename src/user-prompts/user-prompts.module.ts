@@ -26,6 +26,6 @@ import { RatingModule } from 'src/rating/rating.module'
         RatingModule,
     ],
     providers: [UserPromptsResolver, UserPromptsService],
-    exports: [],
+    exports: [UserPromptsService],
 })
 export class UserPromptsModule {}

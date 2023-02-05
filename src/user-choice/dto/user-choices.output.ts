@@ -1,4 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql'
+import { UserPromptsOutput } from 'src/user-prompts/dto/user-prompts.output'
+import { UserTagsTypeVisibleEnity } from 'src/user-tags-type-visible/entities/user-tags-type-visible.entity'
 
 @ObjectType()
 export class UserChoiceOutput {
@@ -25,4 +27,10 @@ export class UserChoiceOutput {
 
     @Field(() => String)
     choiceName: string
+
+    @Field(() => UserPromptsOutput)
+    prompt: UserPromptsOutput
+
+    @Field(() => [UserTagsTypeVisibleEnity])
+    profile: UserTagsTypeVisibleEnity[]
 }
