@@ -227,6 +227,8 @@ type UserChoiceOutput {
   createdAt: DateTime!
   gender: String!
   choiceName: String!
+  prompt: UserPromptsOutput!
+  profile: [UserTagsTypeVisibleEnity!]!
 }
 
 type Query {

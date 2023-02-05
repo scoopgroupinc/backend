@@ -5,6 +5,8 @@ import { BlockUserService } from 'src/blocked-users/blocked-users.service'
 import { MatchesService } from 'src/matches/matches.service'
 import { UserPreferenceService } from 'src/user-preference/user-preference.service'
 import { UserProfileService } from 'src/user-profile/user-profile.service'
+import { UserPromptsService } from 'src/user-prompts/user-prompts.service'
+import { UserTagsTypeVisibleService } from 'src/user-tags-type-visible/user-tags-type-visible.service'
 import { UserService } from 'src/user/user.service'
 import { Between, Repository } from 'typeorm'
 import { swiper_choice, UserChoice } from './entities/user-choice.entity'
@@ -18,7 +20,9 @@ export class UserChoiceService {
         private userProfileService: UserProfileService,
         private userService: UserService,
         private matcheService: MatchesService,
-        private blockUserService: BlockUserService
+        private blockUserService: BlockUserService,
+        private userPromptsService: UserPromptsService,
+        private userTagsTypeVisibleService: UserTagsTypeVisibleService
     ) {}
 
     async getUserChoices(userId: string) {
@@ -49,7 +53,7 @@ export class UserChoiceService {
                 age: moment().diff(profile.birthday, 'years', false),
             })
         }
-        const uniqueMatches = []
+        let uniqueMatches = []
         allChoices.forEach((item) => {
             if (
                 !uniqueMatches.find(
@@ -58,9 +62,24 @@ export class UserChoiceService {
             )
                 uniqueMatches.push(item)
         })
-        if (uniqueMatches.length <= 5) return uniqueMatches
-
-        return uniqueMatches.slice(0, 5)
+        if (uniqueMatches.length > 5) uniqueMatches = uniqueMatches.slice(0, 5)
+        const response = []
+        await Promise.all(
+            uniqueMatches.map(async (match) => {
+                response.push({
+                    ...match,
+                    prompt: await this.userPromptsService.getUserPromptsOrder({
+                        userId: match.shownUserId,
+                        raterId: userId,
+                    }),
+                    profile:
+                        await this.userTagsTypeVisibleService.allUserTagsTypeVisible(
+                            match.shownUserId
+                        ),
+                })
+            })
+        )
+        return response
     }
 
     async genUserChoices(userId: string) {

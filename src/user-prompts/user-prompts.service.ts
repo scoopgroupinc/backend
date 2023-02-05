@@ -72,7 +72,6 @@ export class UserPromptsService {
         const userPromptIds = await lastValueFrom(
             this.httpService.get(userId).pipe(map((response) => response.data))
         )
-        console.log(userPromptIds)
         if (!userPromptIds || !userPromptIds.length) {
             return []
         }
@@ -83,7 +82,6 @@ export class UserPromptsService {
                 userPromptIds,
             })
             .getMany()
-        console.log(userDisplay)
         const results = []
         await Promise.all(
             userDisplay.map(async (display) => {
