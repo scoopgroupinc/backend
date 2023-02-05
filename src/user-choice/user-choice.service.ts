@@ -49,8 +49,18 @@ export class UserChoiceService {
                 age: moment().diff(profile.birthday, 'years', false),
             })
         }
-        if (allChoices.length <= 5) return allChoices
-        return allChoices.slice(0, 5)
+        const uniqueMatches = []
+        allChoices.forEach((item) => {
+            if (
+                !uniqueMatches.find(
+                    (itm) => itm.shownUserId === item.shownUserId
+                )
+            )
+                uniqueMatches.push(item)
+        })
+        if (uniqueMatches.length <= 5) return uniqueMatches
+
+        return uniqueMatches.slice(0, 5)
     }
 
     async genUserChoices(userId: string) {
