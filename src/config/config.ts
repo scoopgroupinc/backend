@@ -55,9 +55,9 @@ export const config = () => ({
             UserTagsTypeVisibleEnity,
             UserTagsEntity,
         ],
-        ssl: {
-            rejectUnauthorized: false,
-        },
+        // ssl: {
+        //     rejectUnauthorized: false,
+        // },
     },
     fileServer_Url: process.env.BE_FILE_SERVER_URL,
 })
