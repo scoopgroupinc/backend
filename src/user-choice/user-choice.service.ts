@@ -175,7 +175,7 @@ export class UserChoiceService {
             })
             // check if the other user also swiped yes then move
             // them to the matches table
-            if (shownUserChoice.swiperChoice === swiper_choice.yes) {
+            if (shownUserChoice?.swiperChoice === swiper_choice.yes) {
                 return await this.matcheService.createMatch(
                     choice.swiperId,
                     choice.shownUserId
