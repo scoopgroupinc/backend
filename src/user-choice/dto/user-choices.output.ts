@@ -1,7 +1,30 @@
+import { Optional } from '@nestjs/common'
 import { Field, ObjectType } from '@nestjs/graphql'
 import { UserPromptsOutput } from 'src/user-prompts/dto/user-prompts.output'
 import { UserTagsTypeVisibleEnity } from 'src/user-tags-type-visible/entities/user-tags-type-visible.entity'
 
+@ObjectType()
+export class IVisual {
+    @Field(() => String)
+    id: string
+
+    @Field(() => String)
+    userId: string
+
+    @Field(() => String)
+    videoOrPhoto: string
+
+    @Field(() => String, { nullable: true })
+    @Optional()
+    visualPromptId: string
+
+    @Field(() => String, { nullable: true })
+    @Optional()
+    description: string
+
+    @Field(() => Boolean)
+    isVisible: boolean
+}
 @ObjectType()
 export class UserChoiceOutput {
     @Field(() => String)
@@ -33,4 +56,8 @@ export class UserChoiceOutput {
 
     @Field(() => [UserTagsTypeVisibleEnity])
     profile: UserTagsTypeVisibleEnity[]
+
+    @Field(() => IVisual, { nullable: true })
+    @Optional()
+    visual?: IVisual
 }
