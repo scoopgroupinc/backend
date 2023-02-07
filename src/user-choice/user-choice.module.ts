@@ -1,4 +1,6 @@
+import { HttpModule } from '@nestjs/axios'
 import { Module } from '@nestjs/common'
+import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { BlockedUserModule } from 'src/blocked-users/blocked-users.module'
 import { MatchesModule } from 'src/matches/matches.modules.'
@@ -21,6 +23,17 @@ import { UserChoiceService } from './user-choice.service'
         BlockedUserModule,
         UserPromptsModule,
         UserTagsTypeVisibleModule,
+        HttpModule.registerAsync({
+            imports: [ConfigModule],
+            inject: [ConfigService],
+            useFactory: async (configService: ConfigService) => ({
+                baseURL: `${configService.get('fileServer_Url')}visuals/`,
+                headers: {
+                    ipaddress: process.env.FILE_SERVICE_IPADDRESS,
+                    clientKey: process.env.FILE_SERVICE_CLIENT_KEY,
+                },
+            }),
+        }),
     ],
     providers: [UserChoiceResolver, UserChoiceService],
     exports: [],

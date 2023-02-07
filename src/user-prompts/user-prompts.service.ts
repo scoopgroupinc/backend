@@ -22,7 +22,6 @@ export class UserPromptsService {
         @InjectRepository(UserPrompts)
         private userPromptsRepository: Repository<UserPrompts>,
         private httpService: HttpService,
-        private configService: ConfigService,
         private promptService: PromptsService,
         private ratingeService: RatingService
     ) {}
@@ -124,7 +123,7 @@ export class UserPromptsService {
             contentIds
         )
         const max = unRatedContents.length - 1
-        const randomIndex = Math.floor(Math.random() * (1 + max))
+        const randomIndex = Math.floor(Math.random() * max)
         const selectedId = unRatedContents[randomIndex]
 
         return prompts.find((prompt) => prompt.id === selectedId)

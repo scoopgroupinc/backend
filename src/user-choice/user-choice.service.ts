@@ -1,6 +1,8 @@
+import { HttpService } from '@nestjs/axios'
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import * as moment from 'moment'
+import { lastValueFrom, map } from 'rxjs'
 import { BlockUserService } from 'src/blocked-users/blocked-users.service'
 import { MatchesService } from 'src/matches/matches.service'
 import { UserPreferenceService } from 'src/user-preference/user-preference.service'
@@ -22,7 +24,8 @@ export class UserChoiceService {
         private matcheService: MatchesService,
         private blockUserService: BlockUserService,
         private userPromptsService: UserPromptsService,
-        private userTagsTypeVisibleService: UserTagsTypeVisibleService
+        private userTagsTypeVisibleService: UserTagsTypeVisibleService,
+        private httpService: HttpService
     ) {}
 
     async getUserChoices(userId: string) {
@@ -66,6 +69,14 @@ export class UserChoiceService {
         const response = []
         await Promise.all(
             uniqueMatches.map(async (match) => {
+                const visuals = await lastValueFrom(
+                    this.httpService
+                        .get(match.shownUserId)
+                        .pipe(map((response) => response.data))
+                )
+                const max = visuals.length
+                const randomIndex = Math.floor(Math.random() * max)
+                const selected = visuals[randomIndex]
                 response.push({
                     ...match,
                     prompt: await this.userPromptsService.getUserPromptsOrder({
@@ -76,6 +87,7 @@ export class UserChoiceService {
                         await this.userTagsTypeVisibleService.allUserTagsTypeVisible(
                             match.shownUserId
                         ),
+                    visual: selected,
                 })
             })
         )

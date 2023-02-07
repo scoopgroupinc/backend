@@ -218,6 +218,15 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type IVisual {
+  id: String!
+  userId: String!
+  videoOrPhoto: String!
+  visualPromptId: String
+  description: String
+  isVisible: Boolean!
+}
+
 type UserChoiceOutput {
   id: String!
   swiperId: String!
@@ -229,6 +238,7 @@ type UserChoiceOutput {
   choiceName: String!
   prompt: UserPromptsOutput!
   profile: [UserTagsTypeVisibleEnity!]!
+  visual: IVisual
 }
 
 type Query {
