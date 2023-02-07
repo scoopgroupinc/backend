@@ -2,7 +2,7 @@ import { MailerService } from '@nestjs-modules/mailer'
 import { HttpService } from '@nestjs/axios'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import moment from 'moment'
+import * as moment from 'moment'
 import { lastValueFrom, map } from 'rxjs'
 import { UserProfileService } from 'src/user-profile/user-profile.service'
 import { UserService } from 'src/user/user.service'
@@ -98,20 +98,21 @@ export class MatchesService {
         for (const id of userIds) {
             const matchName =
                 id === swiper1.userId ? swiper2.firstName : swiper1.firstName
-            const profilePic = await lastValueFrom(
-                this.httpService
-                    .get(
-                        id === swiper1.userId ? swiper2.userId : swiper1.userId
-                    )
-                    .pipe(map((response) => response.data))
-            )
+            // const profilePic = await lastValueFrom(
+            //     this.httpService
+            //         .get(
+            //             id === swiper1.userId ? swiper2.userId : swiper1.userId
+            //         )
+            //         .pipe(map((response) => response.data))
+            // )
+            // console.log(profilePic)
             await this.mailerService.sendMail({
                 to: id === swiper1.userId ? swiper1.email : swiper2.email,
                 from: 'noreply@scoop.love',
                 subject: 'Scoop Match Made ✔',
                 text: 'Matched',
                 template: 'matchNotification',
-                context: { year, matchName, profilePic },
+                context: { year, matchName, profilePic: undefined },
             })
         }
         //TODO: add user profile pic
