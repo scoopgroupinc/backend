@@ -364,6 +364,7 @@ type Mutation {
   updateComplaint(complaintsInput: ComplaintsInput!): String!
   closeComplaints(complaintId: String!): String!
   deactivateMatch(id: String!): String!
+  userSwipeAction(choice: String!, matchId: String!): String!
   createMetaDetails(metaDetailsInput: MetaDetailsInput!): MetaDetails!
   updateDetials(metaDetailsInput: MetaDetailsInput!): MetaDetails!
   saveUserFeedBack(feedbackInput: FeedBackInput!): String!
