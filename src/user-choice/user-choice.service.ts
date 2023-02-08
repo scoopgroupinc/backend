@@ -183,6 +183,6 @@ export class UserChoiceService {
             }
         }
 
-        return 'saved'
+        return { message: 'saved' }
     }
 }
