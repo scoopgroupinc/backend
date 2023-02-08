@@ -18,11 +18,11 @@ export class SwiperActionOutput {
     @Field(() => String)
     message: string
 
-    @Field(() => MatchUser)
+    @Field(() => MatchUser, { nullable: true })
     @Optional()
     user1?: MatchUser
 
-    @Field(() => MatchUser)
+    @Field(() => MatchUser, { nullable: true })
     @Optional()
     user2?: MatchUser
 }
