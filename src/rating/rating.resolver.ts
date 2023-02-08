@@ -24,9 +24,13 @@ export class RatingResolver {
         description: 'Fetch rating for specific content',
     })
     async getRatingByContent(
-        @Args('contentId') contentId: string
+        @Args('contentId') contentId: string,
+        @Args('contentType') contentType: string
     ): Promise<any> {
-        return await this.ratingService.getRatingByContent(contentId)
+        return await this.ratingService.getRatingByContent(
+            contentId,
+            contentType
+        )
     }
 
     @UseGuards(GqlAuthGuard)

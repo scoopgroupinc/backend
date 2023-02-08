@@ -98,21 +98,20 @@ export class MatchesService {
         for (const id of userIds) {
             const matchName =
                 id === swiper1.userId ? swiper2.firstName : swiper1.firstName
-            // const profilePic = await lastValueFrom(
-            //     this.httpService
-            //         .get(
-            //             id === swiper1.userId ? swiper2.userId : swiper1.userId
-            //         )
-            //         .pipe(map((response) => response.data))
-            // )
-            // console.log(profilePic)
+            const profilePic = await lastValueFrom(
+                this.httpService
+                    .get(
+                        id === swiper1.userId ? swiper2.userId : swiper1.userId
+                    )
+                    .pipe(map((response) => response.data[0].videoOrPhoto))
+            )
             await this.mailerService.sendMail({
                 to: id === swiper1.userId ? swiper1.email : swiper2.email,
                 from: 'noreply@scoop.love',
                 subject: 'Scoop Match Made ✔',
                 text: 'Matched',
                 template: 'matchNotification',
-                context: { year, matchName, profilePic: undefined },
+                context: { year, matchName, profilePic },
             })
         }
         //TODO: add user profile pic

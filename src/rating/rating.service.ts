@@ -35,9 +35,9 @@ export class RatingService {
         return await this.ratingRepository.save(ratingEntries)
     }
 
-    async getRatingByContent(contentId: string): Promise<any> {
+    async getRatingByContent(contentId: string, type: string): Promise<any> {
         const details = await this.ratingRepository.find({
-            where: { contentId, final: true },
+            where: { contentId, type, final: true },
         })
 
         if (details.length !== 0) {
@@ -82,7 +82,7 @@ export class RatingService {
     async findAveragesOfGroupedCriterias(groupedData) {
         const rateKeys = Object.keys(groupedData)
 
-        const results = []
+        const results:any = []
         for (let i = 0; i < rateKeys.length; i++) {
             let total = 0
             groupedData[rateKeys[i]].forEach((item) => {
@@ -92,8 +92,8 @@ export class RatingService {
             results[rateKeys[i]] =
                 Math.round((total / groupedData[rateKeys[i]].length) * 100) /
                 100
+            
         }
-
         return results
     }
 
