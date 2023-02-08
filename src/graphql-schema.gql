@@ -169,6 +169,7 @@ type RatingOutput {
   well_written: Float
   Informative: Float
   Engaging: Float
+  total: Int!
 }
 
 type AverageOutput {
@@ -266,7 +267,7 @@ type Query {
   uploadTags: String!
 
   """Fetch rating for specific content"""
-  getRatingByContent(contentId: String!): RatingOutput!
+  getRatingByContent(contentType: String!, contentId: String!): RatingOutput!
 
   """Fetch content comments by owner"""
   getRatingContentComments(contentId: String!): [RatingComment!]!

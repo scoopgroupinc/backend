@@ -1,4 +1,4 @@
-import { Field, Float, ObjectType } from '@nestjs/graphql'
+import { Field, Float, Int, ObjectType } from '@nestjs/graphql'
 
 @ObjectType()
 export class RatingOutput {
@@ -19,6 +19,9 @@ export class RatingOutput {
 
     @Field(() => Float, { nullable: true })
     Engaging?: number
+
+    @Field(() => Int)
+    total?: number
 }
 
 @ObjectType()

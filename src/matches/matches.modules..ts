@@ -18,7 +18,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
             imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: async (configService: ConfigService) => ({
-                baseURL: `${configService.get('fileServer_Url')}profile/photo/`,
+                baseURL: `${configService.get('fileServer_Url')}visuals/`,
                 headers: {
                     ipaddress: process.env.FILE_SERVICE_IPADDRESS,
                     clientKey: process.env.FILE_SERVICE_CLIENT_KEY,

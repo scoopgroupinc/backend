@@ -46,15 +46,16 @@ export class RatingGroupService {
             const taggedRatings = await this.assignFinalTagToRatings(
                 saveRatingInput.ratingDetails
             )
-
+            
             const ratingEntries = taggedRatings.map((ratings) => ({
                 raterId,
+                type,
                 contentId: saveRatingInput.contentId,
                 criteriaId: ratings.criteriaId,
                 rating: ratings.rating,
                 final: ratings?.final ?? false,
             }))
-             
+
             await this.ratingService.saveRatings(ratingEntries)
            
             const ratingGroup: RatingGroupInput = {

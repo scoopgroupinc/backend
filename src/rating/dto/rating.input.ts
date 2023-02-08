@@ -21,6 +21,11 @@ export class RatingInput {
     @IsNotEmpty()
     criteriaId: string
 
+    @Field()
+    @IsString()
+    @IsNotEmpty()
+    type: string
+
     @Field(() => Float)
     @IsNotEmpty()
     @IsDecimal()
