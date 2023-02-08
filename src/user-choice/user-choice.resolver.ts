@@ -1,6 +1,7 @@
 import { UseGuards } from '@nestjs/common'
 import { Args, Resolver, Query, Mutation } from '@nestjs/graphql'
 import { GqlAuthGuard } from 'src/auth/guards/jwt-auth.guard'
+import { SwiperActionOutput } from './dto/swiper-action.output'
 import { UserChoiceOutput } from './dto/user-choices.output'
 import { UserChoiceService } from './user-choice.service'
 
@@ -17,7 +18,7 @@ export class UserChoiceResolver {
     }
 
     @UseGuards(GqlAuthGuard)
-    @Mutation(() => String)
+    @Mutation(() => SwiperActionOutput)
     async userSwipeAction(
         @Args('matchId') matchId: string,
         @Args('choice') choice: string

@@ -219,6 +219,18 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type MatchUser {
+  userId: String!
+  firstName: String!
+  pic: String!
+}
+
+type SwiperActionOutput {
+  message: String!
+  user1: MatchUser!
+  user2: MatchUser!
+}
+
 type IVisual {
   id: String!
   userId: String!
@@ -365,7 +377,7 @@ type Mutation {
   updateComplaint(complaintsInput: ComplaintsInput!): String!
   closeComplaints(complaintId: String!): String!
   deactivateMatch(id: String!): String!
-  userSwipeAction(choice: String!, matchId: String!): String!
+  userSwipeAction(choice: String!, matchId: String!): SwiperActionOutput!
   createMetaDetails(metaDetailsInput: MetaDetailsInput!): MetaDetails!
   updateDetials(metaDetailsInput: MetaDetailsInput!): MetaDetails!
   saveUserFeedBack(feedbackInput: FeedBackInput!): String!

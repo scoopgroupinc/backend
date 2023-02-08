@@ -86,7 +86,7 @@ export class MatchesService {
     }
 
     async createMatch(firstSwiper: string, secondSwiper: string) {
-        await this.matchesRpository.create({
+        await this.matchesRpository.save({
             firstSwiper,
             secondSwiper,
         })
@@ -94,7 +94,8 @@ export class MatchesService {
         const year = moment().year()
         const swiper1 = await this.userService.findOneByID(firstSwiper)
         const swiper2 = await this.userService.findOneByID(secondSwiper)
-
+        let pic1 = null
+        let pic2 = null
         for (const id of userIds) {
             const matchName =
                 id === swiper1.userId ? swiper2.firstName : swiper1.firstName
@@ -103,8 +104,11 @@ export class MatchesService {
                     .get(
                         id === swiper1.userId ? swiper2.userId : swiper1.userId
                     )
-                    .pipe(map((response) => response.data[0].videoOrPhoto))
+                    .pipe(map((response) => response.data))
             )
+
+            if (id === swiper1.userId) pic2 = profilePic[0].videoOrPhoto
+            if (id === swiper2.userId) pic1 = profilePic[0].videoOrPhoto
             await this.mailerService.sendMail({
                 to: id === swiper1.userId ? swiper1.email : swiper2.email,
                 from: 'noreply@scoop.love',
@@ -115,6 +119,10 @@ export class MatchesService {
             })
         }
         //TODO: add user profile pic
-        return 'match created'
+        return {
+            message: 'match created',
+            user1: { ...swiper1, pic: pic1 },
+            user2: { ...swiper2, pic: pic2 },
+        }
     }
 }
