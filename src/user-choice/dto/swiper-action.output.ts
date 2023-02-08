@@ -1,3 +1,4 @@
+import { Optional } from '@nestjs/common'
 import { Field, ObjectType } from '@nestjs/graphql'
 
 @ObjectType()
@@ -18,8 +19,10 @@ export class SwiperActionOutput {
     message: string
 
     @Field(() => MatchUser)
-    user1: MatchUser
+    @Optional()
+    user1?: MatchUser
 
     @Field(() => MatchUser)
-    user2: MatchUser
+    @Optional()
+    user2?: MatchUser
 }
