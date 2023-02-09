@@ -40,6 +40,13 @@ export class RatingService {
             where: { contentId, type, final: true },
         })
 
+        if(!details.length){
+            throw new HttpException(
+                'Content details not found',
+                HttpStatus.NOT_FOUND
+            )
+        }
+
         if (details.length !== 0) {
             try {
                 const allCritarias =
@@ -63,6 +70,8 @@ export class RatingService {
                 const summary = await this.findAveragesOfGroupedCriterias(
                     newRating
                 )
+                const rateKeys = Object.keys(newRating)
+                summary.total = newRating[rateKeys[0]].length
                 return summary
             } catch (error) {
                 logger.debug(error)
@@ -73,10 +82,6 @@ export class RatingService {
             }
         }
 
-        throw new HttpException(
-            'Content details not found',
-            HttpStatus.NOT_FOUND
-        )
     }
 
     async findAveragesOfGroupedCriterias(groupedData) {
