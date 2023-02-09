@@ -10,6 +10,8 @@ export class UserOutput {
     lastName?: string | null
     @Field({ nullable: true })
     email?: string | null
+    @Field(() => Boolean)
+    onBoarding: boolean
 }
 
 @ObjectType()

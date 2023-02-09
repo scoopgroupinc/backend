@@ -131,6 +131,7 @@ export class UserService {
                     email: result.email,
                     firstName: result.firstName,
                     lastName: result.lastName,
+                    onBoarding: result.onBoarding,
                 },
             }
 
@@ -262,5 +263,10 @@ export class UserService {
             throw new HttpException('User not found', HttpStatus.NOT_FOUND)
         await this.userRepository.delete({ userId: user.userId })
         return 'user deleted'
+    }
+
+    async updateOnBoarding(userId: string, value: boolean) {
+        await this.userRepository.update({ userId }, { onBoarding: value })
+        return 'Saved'
     }
 }

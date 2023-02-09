@@ -95,4 +95,12 @@ export class UserResolver {
     ) {
         return await this.userService.sendVerificationMail(email, code)
     }
+
+    @Mutation(() => String)
+    async updateOnBoarding(
+        @Args('userId') userId: string,
+        @Args('value') value: boolean
+    ) {
+        return await this.userService.updateOnBoarding(userId, value)
+    }
 }
