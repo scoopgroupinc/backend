@@ -15,6 +15,7 @@ type User {
   isVerified: Boolean
   resetCode: Float
   updatedAt: String!
+  onBoarding: Boolean!
 }
 
 type UserDevice {
@@ -51,6 +52,7 @@ type UserOutput {
   firstName: String
   lastName: String
   email: String
+  onBoarding: Boolean!
 }
 
 type UserToken {
@@ -360,6 +362,7 @@ type Mutation {
   verifyPasswordResetCode(code: Float!, email: String!): VerifyRestPasswordCode!
   resetPassword(password: String!, email: String!): User!
   testNewMailer(code: Float!, email: String!): String!
+  updateOnBoarding(value: Boolean!, userId: String!): String!
   saveDeviceDetails(userdeviceInput: UserDeviceInput!): UserDevice!
   saveUserTagsTypeVisible(userTagsTypeVisibleInput: [UserTagsTypeVisibleInput!]!): [UserTagsTypeVisibleEnity!]!
   saveUserProfile(userProfileInput: UserProfileInput!): UserProfile!
