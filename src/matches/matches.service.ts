@@ -41,23 +41,32 @@ export class MatchesService {
         for (const match of userMatches) {
             let matchTo
             if (userId !== match.firstSwiper) {
-                matchTo = await this.userService.findOneByID(match.firstSwiper)
+                matchTo = await this.userService.findOneByID(match.secondSwiper)
             }
 
-            if (userId !== match.firstSwiper) {
+            if (userId !== match.secondSwiper) {
                 matchTo = await this.userService.findOneByID(match.firstSwiper)
             }
 
             const profile = await this.userProfileService.findOne(
                 matchTo.userId
             )
+            const visuals = await lastValueFrom(
+                this.httpService
+                    .get(matchTo.userId)
+                    .pipe(map((response) => response.data))
+            )
+            const max = visuals.length
+            const randomIndex = Math.floor(Math.random() * max)
+            const selected = visuals[randomIndex]
             allMatches.push({
-                ...userMatches,
+                ...match,
                 userId,
                 matchUserId: matchTo.userId,
                 matchName: `${matchTo.firstName} ${matchTo.lastName}`,
                 gender: profile.gender,
                 age: moment().diff(profile.birthday, 'years', false),
+                visual: selected,
             })
         }
         return allMatches

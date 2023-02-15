@@ -1,4 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql'
+import { IsOptional } from 'class-validator'
+import { IVisual } from 'src/user-choice/dto/user-choices.output'
 
 @ObjectType()
 export class MatchesOutput {
@@ -22,4 +24,8 @@ export class MatchesOutput {
 
     @Field(() => Date)
     createdAt: Date
+
+    @Field(() => IVisual, { nullable: true })
+    @IsOptional()
+    visual?: IVisual
 }
