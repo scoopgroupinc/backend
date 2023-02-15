@@ -11,7 +11,7 @@ export class MatchesOutput {
     userId: string
 
     @Field(() => String)
-    matchedUserId: string
+    matchUserId: string
 
     @Field(() => String)
     matchName: string

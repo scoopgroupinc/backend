@@ -237,7 +237,7 @@ scalar DateTime
 type MatchesOutput {
   id: ID!
   userId: String!
-  matchedUserId: String!
+  matchUserId: String!
   matchName: String!
   gender: String!
   age: String!

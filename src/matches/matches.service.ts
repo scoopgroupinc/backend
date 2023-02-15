@@ -2,6 +2,7 @@ import { MailerService } from '@nestjs-modules/mailer'
 import { HttpService } from '@nestjs/axios'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { isNotEmpty } from 'class-validator'
 import * as moment from 'moment'
 import { lastValueFrom, map } from 'rxjs'
 import { UserProfileService } from 'src/user-profile/user-profile.service'
@@ -41,13 +42,13 @@ export class MatchesService {
         for (const match of userMatches) {
             let matchTo
             if (userId !== match.firstSwiper) {
-                matchTo = await this.userService.findOneByID(match.secondSwiper)
-            }
-
-            if (userId !== match.secondSwiper) {
                 matchTo = await this.userService.findOneByID(match.firstSwiper)
             }
 
+            if (userId !== match.secondSwiper) {
+                matchTo = await this.userService.findOneByID(match.secondSwiper)
+            }
+            console.log(matchTo)
             const profile = await this.userProfileService.findOne(
                 matchTo.userId
             )
@@ -59,15 +60,23 @@ export class MatchesService {
             const max = visuals.length
             const randomIndex = Math.floor(Math.random() * max)
             const selected = visuals[randomIndex]
-            allMatches.push({
-                ...match,
-                userId,
-                matchUserId: matchTo.userId,
-                matchName: `${matchTo.firstName} ${matchTo.lastName}`,
-                gender: profile.gender,
-                age: moment().diff(profile.birthday, 'years', false),
-                visual: selected,
-            })
+            const isFirstExist = allMatches.find(
+                (itm) => itm.firstSwiper === matchTo.userId
+            )
+            const isSecondExist = allMatches.find(
+                (itm) => itm.secondSwiper === matchTo.userId
+            )
+            if (!isFirstExist && !isSecondExist) {
+                allMatches.push({
+                    ...match,
+                    userId,
+                    matchUserId: matchTo.userId,
+                    matchName: `${matchTo.firstName} ${matchTo.lastName}`,
+                    gender: profile.gender,
+                    age: moment().diff(profile.birthday, 'years', false),
+                    visual: selected,
+                })
+            }
         }
         return allMatches
     }
