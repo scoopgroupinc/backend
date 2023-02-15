@@ -1,5 +1,5 @@
-import { Optional } from '@nestjs/common'
 import { Field, ObjectType } from '@nestjs/graphql'
+import { IsOptional } from 'class-validator'
 import { UserPromptsOutput } from 'src/user-prompts/dto/user-prompts.output'
 import { UserTagsTypeVisibleEnity } from 'src/user-tags-type-visible/entities/user-tags-type-visible.entity'
 
@@ -15,11 +15,11 @@ export class IVisual {
     videoOrPhoto: string
 
     @Field(() => String, { nullable: true })
-    @Optional()
+    @IsOptional()
     visualPromptId: string
 
     @Field(() => String, { nullable: true })
-    @Optional()
+    @IsOptional()
     description: string
 
     @Field(() => Boolean)
@@ -58,6 +58,6 @@ export class UserChoiceOutput {
     profile: UserTagsTypeVisibleEnity[]
 
     @Field(() => IVisual, { nullable: true })
-    @Optional()
+    @IsOptional()
     visual?: IVisual
 }

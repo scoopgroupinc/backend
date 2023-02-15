@@ -11,7 +11,7 @@ export class UserChoiceResolver {
 
     @UseGuards(GqlAuthGuard)
     @Query(() => [UserChoiceOutput])
-    async getUserMatches(
+    async getUserChoices(
         @Args('userId') userId: string
     ): Promise<UserChoiceOutput[]> {
         return await this.userChoiceService.getUserChoices(userId)

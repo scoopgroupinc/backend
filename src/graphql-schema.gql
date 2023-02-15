@@ -206,33 +206,6 @@ type ComplaintsOutput {
   isClosed: Boolean!
 }
 
-type MatchesOutput {
-  id: ID!
-  userId: String!
-  matchedUserId: String!
-  matchName: String!
-  gender: String!
-  age: String!
-  createdAt: DateTime!
-}
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
-type MatchUser {
-  userId: String!
-  firstName: String!
-  pic: String!
-}
-
-type SwiperActionOutput {
-  message: String!
-  user1: MatchUser
-  user2: MatchUser
-}
-
 type IVisual {
   id: String!
   userId: String!
@@ -254,6 +227,34 @@ type UserChoiceOutput {
   prompt: UserPromptsOutput!
   profile: [UserTagsTypeVisibleEnity!]!
   visual: IVisual
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type MatchesOutput {
+  id: ID!
+  userId: String!
+  matchedUserId: String!
+  matchName: String!
+  gender: String!
+  age: String!
+  createdAt: DateTime!
+  visual: IVisual
+}
+
+type MatchUser {
+  userId: String!
+  firstName: String!
+  pic: String!
+}
+
+type SwiperActionOutput {
+  message: String!
+  user1: MatchUser
+  user2: MatchUser
 }
 
 type Query {
@@ -320,7 +321,8 @@ type Query {
   getAllOpenComplaints(complaintsFilter: ComplaintsFilter!): [ComplaintsOutput!]!
   getAComplaint(complaintId: String!): ComplaintsOutput!
   isUserBlocked(userIds: [String!]!, userId: String!): [BlockUserOutput!]!
-  getUserMatches(userId: String!): [UserChoiceOutput!]!
+  getUserMatches(userId: String!): [MatchesOutput!]!
+  getUserChoices(userId: String!): [UserChoiceOutput!]!
   getMetaDetails: MetaDetails!
   getFeedBacks(feedbackfilter: FeedBackFilter!): [FeedBack!]!
 }
