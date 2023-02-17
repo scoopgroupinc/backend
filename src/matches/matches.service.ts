@@ -35,8 +35,12 @@ export class MatchesService {
                 },
             ],
         })
+
         if (!userMatches || userMatches.length === 0)
-            return { userMatches, message: 'no match found for user' }
+            throw new HttpException(
+                'No match found for user',
+                HttpStatus.NOT_FOUND
+            )
 
         const allMatches = []
         for (const match of userMatches) {

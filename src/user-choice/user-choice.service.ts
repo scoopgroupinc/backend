@@ -45,16 +45,17 @@ export class UserChoiceService {
         const allChoices = []
         for (const choice of choices) {
             const user = await this.userService.findOneByID(choice.shownUserId)
-
-            const profile = await this.userProfileService.findOne(
-                choice.shownUserId
-            )
-            allChoices.push({
-                ...choice,
-                choiceName: `${user.firstName} ${user.lastName}`,
-                gender: profile.gender,
-                age: moment().diff(profile.birthday, 'years', false),
-            })
+            if (user) {
+                const profile = await this.userProfileService.findOne(
+                    choice.shownUserId
+                )
+                allChoices.push({
+                    ...choice,
+                    choiceName: `${user.firstName} ${user.lastName}`,
+                    gender: profile.gender,
+                    age: moment().diff(profile.birthday, 'years', false),
+                })
+            }
         }
         let uniqueMatches = []
         allChoices.forEach((item) => {
@@ -96,7 +97,7 @@ export class UserChoiceService {
 
     async genUserChoices(userId: string) {
         const userpreference = await this.userPreferenceService.findOne(userId)
-
+        console.log(userpreference)
         let gender = []
         if (userpreference.gender.includes('female')) gender.push('male')
         if (userpreference.gender.includes('male')) gender.push('female')
