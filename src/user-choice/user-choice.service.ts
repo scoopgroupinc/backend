@@ -97,7 +97,7 @@ export class UserChoiceService {
 
     async genUserChoices(userId: string) {
         const userpreference = await this.userPreferenceService.findOne(userId)
-        console.log(userpreference)
+
         let gender = []
         if (userpreference.gender.includes('female')) gender.push('male')
         if (userpreference.gender.includes('male')) gender.push('female')
