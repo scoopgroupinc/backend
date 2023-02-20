@@ -16,6 +16,7 @@ type User {
   resetCode: Float
   updatedAt: String!
   onBoarding: Boolean!
+  voteOnboard: Boolean!
 }
 
 type UserDevice {
@@ -53,6 +54,7 @@ type UserOutput {
   lastName: String
   email: String
   onBoarding: Boolean!
+  voteOnboard: Boolean!
 }
 
 type UserToken {
