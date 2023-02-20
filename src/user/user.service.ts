@@ -20,6 +20,7 @@ import * as moment from 'moment'
 import { VerifyRestPasswordCode } from './dto/verify-Code-output'
 import { UserTagsTypeVisibleService } from 'src/user-tags-type-visible/user-tags-type-visible.service'
 import { tag_type, tags } from 'src/common/enums'
+import { OnBoardInput } from './dto/onBoarding.input'
 
 @Injectable()
 export class UserService {
@@ -266,8 +267,11 @@ export class UserService {
         return 'user deleted'
     }
 
-    async updateOnBoarding(userId: string, value: boolean) {
-        await this.userRepository.update({ userId }, { onBoarding: value })
+    async updateOnBoarding({ userId, voteOnboard, onBoarding }: OnBoardInput) {
+        await this.userRepository.update(
+            { userId },
+            { onBoarding, voteOnboard }
+        )
         return 'Saved'
     }
 }

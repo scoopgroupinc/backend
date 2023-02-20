@@ -13,6 +13,7 @@ import { JwtService } from '@nestjs/jwt'
 import { GqlAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { UserType } from './types/delete-user.schema'
 import { VerifyRestPasswordCode } from './dto/verify-Code-output'
+import { OnBoardInput } from './dto/onBoarding.input'
 
 @Resolver(() => User)
 export class UserResolver {
@@ -97,10 +98,7 @@ export class UserResolver {
     }
 
     @Mutation(() => String)
-    async updateOnBoarding(
-        @Args('userId') userId: string,
-        @Args('value') value: boolean
-    ) {
-        return await this.userService.updateOnBoarding(userId, value)
+    async updateOnBoarding(@Args('onboardInput') onboardInput: OnBoardInput) {
+        return await this.userService.updateOnBoarding(onboardInput)
     }
 }

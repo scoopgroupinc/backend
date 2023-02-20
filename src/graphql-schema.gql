@@ -366,7 +366,7 @@ type Mutation {
   verifyPasswordResetCode(code: Float!, email: String!): VerifyRestPasswordCode!
   resetPassword(password: String!, email: String!): User!
   testNewMailer(code: Float!, email: String!): String!
-  updateOnBoarding(value: Boolean!, userId: String!): String!
+  updateOnBoarding(onboardInput: OnBoardInput!): String!
   saveDeviceDetails(userdeviceInput: UserDeviceInput!): UserDevice!
   saveUserTagsTypeVisible(userTagsTypeVisibleInput: [UserTagsTypeVisibleInput!]!): [UserTagsTypeVisibleEnity!]!
   saveUserProfile(userProfileInput: UserProfileInput!): UserProfile!
@@ -405,6 +405,12 @@ input UpdateUserInput {
 input LoginUserInput {
   email: String!
   password: String!
+}
+
+input OnBoardInput {
+  userId: String!
+  onBoarding: Boolean
+  voteOnboard: Boolean
 }
 
 input UserDeviceInput {
