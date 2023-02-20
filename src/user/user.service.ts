@@ -132,6 +132,7 @@ export class UserService {
                     firstName: result.firstName,
                     lastName: result.lastName,
                     onBoarding: result.onBoarding,
+                    voteOnboard: result.voteOnboard,
                 },
             }
 
