@@ -22,6 +22,9 @@ export class RatingOutput {
 
     @Field(() => Int)
     total?: number
+
+    @Field(() => String, { nullable: true })
+    counts?: string
 }
 
 @ObjectType()

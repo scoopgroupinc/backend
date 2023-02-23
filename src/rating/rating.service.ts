@@ -11,6 +11,7 @@ import { RatingCommentService } from 'src/rating-comment/rating-comment.service'
 import { AverageOutput } from './dto/rating.output'
 import { RatingCommentInput } from 'src/rating-comment/dto/rating-comment.input'
 import logger from 'src/utils/logger'
+import {groupBy, sumBy, countBy} from 'lodash'
 
 @Injectable()
 export class RatingService {
@@ -65,14 +66,27 @@ export class RatingService {
                     }
                     newObject.push(data)
                 })
-
                 const newRating = await this.groupCriterias(newObject)
                 const summary = await this.findAveragesOfGroupedCriterias(
                     newRating
                 )
+                
+                const counts = {}
+                const breakPoints= ['0','0.33','0.66','0.99']
+                for(const rate in newRating){
+                    const someCrit= groupBy(newRating[rate],({rating})=>rating)
+                    const accRa=[]
+                    breakPoints.forEach(point=>{
+                       const pnt= someCrit[point]?.length??0
+                       accRa.push({[point]:pnt||0})
+                    })
+                    counts[rate]=accRa
+                }
+                
+                const well_written = summary['Well Written']
                 const rateKeys = Object.keys(newRating)
                 summary.total = newRating[rateKeys[0]].length
-                return summary
+                return {...summary,well_written, counts: JSON.stringify(counts)}
             } catch (error) {
                 logger.debug(error)
                 throw new HttpException(
