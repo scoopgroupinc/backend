@@ -64,11 +64,11 @@ export class User extends BaseEntity {
     updatedAt: Date
 
     @Field(()=> Boolean)
-    @Column({ default: false, nullable: false })
+    @Column({ default: false})
     onBoarding: boolean
 
     @Field(()=> Boolean)
-    @Column({ default: false, nullable: false })
+    @Column({ default: false})
     voteOnboard : boolean
 
     async validatePassword(password: string): Promise<boolean> {
