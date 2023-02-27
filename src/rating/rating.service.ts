@@ -82,11 +82,11 @@ export class RatingService {
                     })
                     counts[rate]=accRa
                 }
-                
+                const comments= await this.getContentComments(contentId);
                 const well_written = summary['Well Written']
                 const rateKeys = Object.keys(newRating)
                 summary.total = newRating[rateKeys[0]].length
-                return {...summary,well_written, counts: JSON.stringify(counts)}
+                return {...summary,well_written, comments, counts: JSON.stringify(counts)}
             } catch (error) {
                 logger.debug(error)
                 throw new HttpException(

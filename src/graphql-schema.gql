@@ -175,6 +175,12 @@ type RatingOutput {
   Engaging: Float
   total: Int!
   counts: String
+  comments: [CommentOutput!]
+}
+
+type CommentOutput {
+  endTime: String!
+  comment: String!
 }
 
 type AverageOutput {

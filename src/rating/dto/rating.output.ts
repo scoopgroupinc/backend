@@ -25,6 +25,18 @@ export class RatingOutput {
 
     @Field(() => String, { nullable: true })
     counts?: string
+
+    @Field(() => [CommentOutput], { nullable: true })
+    comments?: CommentOutput[]
+}
+
+@ObjectType()
+export class CommentOutput {
+    @Field()
+    endTime?: string
+
+    @Field(() => String)
+    comment: string
 }
 
 @ObjectType()
