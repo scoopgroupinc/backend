@@ -291,7 +291,7 @@ type Query {
   uploadTags: String!
 
   """Fetch rating for specific content"""
-  getRatingByContent(contentType: String!, contentId: String!): RatingOutput!
+  getRatingByContent(ratingInput: [IGetRatingInput!]!): [RatingOutput!]!
 
   """Fetch content comments by owner"""
   getRatingContentComments(contentId: String!): [RatingComment!]!
@@ -334,6 +334,11 @@ type Query {
   getUserChoices(userId: String!): [UserChoiceOutput!]!
   getMetaDetails: MetaDetails!
   getFeedBacks(feedbackfilter: FeedBackFilter!): [FeedBack!]!
+}
+
+input IGetRatingInput {
+  contentId: String!
+  type: String!
 }
 
 input IGetPromptOrder {
