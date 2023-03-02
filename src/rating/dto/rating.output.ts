@@ -2,6 +2,12 @@ import { Field, Float, Int, ObjectType } from '@nestjs/graphql'
 
 @ObjectType()
 export class RatingOutput {
+    @Field(() => String)
+    contentId: string
+
+    @Field(() => String)
+    type: string
+
     @Field(() => Float, { nullable: true })
     Trustworty?: number
 
@@ -20,7 +26,7 @@ export class RatingOutput {
     @Field(() => Float, { nullable: true })
     Engaging?: number
 
-    @Field(() => Int)
+    @Field(() => Int, { nullable: true })
     total?: number
 
     @Field(() => String, { nullable: true })

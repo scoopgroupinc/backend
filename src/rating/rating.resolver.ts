@@ -6,6 +6,7 @@ import { RatingCommentInput } from 'src/rating-comment/dto/rating-comment.input'
 import { RatingComment } from 'src/rating-comment/entities/rating-comment.entity'
 import { UseGuards } from '@nestjs/common'
 import { GqlAuthGuard } from 'src/auth/guards/jwt-auth.guard'
+import { IGetRatingInput } from './dto/rating.input'
 
 @Resolver()
 export class RatingResolver {
@@ -20,17 +21,14 @@ export class RatingResolver {
     }
 
     @UseGuards(GqlAuthGuard)
-    @Query(() => RatingOutput, {
+    @Query(() => [RatingOutput], {
         description: 'Fetch rating for specific content',
     })
     async getRatingByContent(
-        @Args('contentId') contentId: string,
-        @Args('contentType') contentType: string
-    ): Promise<any> {
-        return await this.ratingService.getRatingByContent(
-            contentId,
-            contentType
-        )
+        @Args({ name: 'ratingInput', type: () => [IGetRatingInput] })
+        ratingInput: IGetRatingInput[]
+    ): Promise<RatingOutput[]> {
+        return await this.ratingService.getRatingByContent(ratingInput)
     }
 
     @UseGuards(GqlAuthGuard)

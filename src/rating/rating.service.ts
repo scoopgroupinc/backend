@@ -3,7 +3,7 @@ import { Injectable, HttpException, HttpStatus } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Rating } from './entities/rating.entity'
 import { Repository, In } from 'typeorm'
-import { RatingInput } from './dto/rating.input'
+import { IGetRatingInput, RatingInput } from './dto/rating.input'
 import { SaveRatingInput } from './dto/save-rating.input'
 import { RateCriteriasService } from 'src/rate-criterias/rate-criterias.service'
 import { RatingGroupService } from '../rating-group/rating-group.service'
@@ -36,17 +36,24 @@ export class RatingService {
         return await this.ratingRepository.save(ratingEntries)
     }
 
-    async getRatingByContent(contentId: string, type: string): Promise<any> {
+    async getRatingByContent(ratingInput:IGetRatingInput[]): Promise<any> {
+       const response =[]
+       for(const input of ratingInput){
+        const {contentId, type} = input
         const details = await this.ratingRepository.find({
             where: { contentId, type, final: true },
         })
 
-        if(!details.length){
-            throw new HttpException(
-                'Content details not found',
-                HttpStatus.NOT_FOUND
-            )
-        }
+        if(!Boolean(details.length)){
+            response.push({
+                contentId,
+                type,
+                total:0,
+            })
+
+            continue
+
+        } 
 
         if (details.length !== 0) {
             try {
@@ -86,7 +93,7 @@ export class RatingService {
                 const well_written = summary['Well Written']
                 const rateKeys = Object.keys(newRating)
                 summary.total = newRating[rateKeys[0]].length
-                return {...summary,well_written, comments, counts: JSON.stringify(counts)}
+                response.push({...summary,well_written, contentId, type,comments, counts: JSON.stringify(counts)})
             } catch (error) {
                 logger.debug(error)
                 throw new HttpException(
@@ -95,6 +102,9 @@ export class RatingService {
                 )
             }
         }
+      }
+
+      return response
 
     }
 

@@ -31,3 +31,14 @@ export class RatingInput {
     @IsDecimal()
     rating: number
 }
+
+@InputType()
+export class IGetRatingInput {
+    @Field()
+    @IsString()
+    contentId: string
+
+    @Field()
+    @IsString()
+    type: string
+}
