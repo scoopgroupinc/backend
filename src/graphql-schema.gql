@@ -167,13 +167,15 @@ type FeedBack {
 }
 
 type RatingOutput {
+  contentId: String!
+  type: String!
   Trustworty: Float
   Smart: Float
   Attractive: Float
   well_written: Float
   Informative: Float
   Engaging: Float
-  total: Int!
+  total: Int
   counts: String
   comments: [CommentOutput!]
 }

@@ -44,7 +44,16 @@ export class RatingService {
             where: { contentId, type, final: true },
         })
 
-        if(!details.length) return
+        if(!Boolean(details.length)){
+            response.push({
+                contentId,
+                type,
+                total:0,
+            })
+
+            continue
+
+        } 
 
         if (details.length !== 0) {
             try {
@@ -84,7 +93,7 @@ export class RatingService {
                 const well_written = summary['Well Written']
                 const rateKeys = Object.keys(newRating)
                 summary.total = newRating[rateKeys[0]].length
-                response.push({...summary,well_written, comments, counts: JSON.stringify(counts)})
+                response.push({...summary,well_written, contentId, type,comments, counts: JSON.stringify(counts)})
             } catch (error) {
                 logger.debug(error)
                 throw new HttpException(
