@@ -1,5 +1,6 @@
 import { UseGuards } from '@nestjs/common'
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql'
+import { String } from 'lodash'
 import { GqlAuthGuard } from 'src/auth/guards/jwt-auth.guard'
 import { IGetPromptOrder, UserPromptsOrder } from './dto/user-prompts-order'
 import { UserPromptsInput } from './dto/user-prompts.input'
@@ -46,5 +47,13 @@ export class UserPromptsResolver {
         return await this.userPromptsService.saveUserPromptsOrder(
             userPromptsOrder
         )
+    }
+
+    @UseGuards(GqlAuthGuard)
+    @Query(() => [UserPromptsOutput])
+    async getUserPrompts(
+        @Args('userId') userId: string
+    ): Promise<UserPromptsOutput[]> {
+        return await this.userPromptsService.getUserPrompts(userId)
     }
 }
