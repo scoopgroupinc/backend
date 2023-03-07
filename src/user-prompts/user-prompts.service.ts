@@ -103,6 +103,22 @@ export class UserPromptsService {
         )
     }
 
+    async getUserPrompts(userId: string) {
+        const prompts = await this.userPromptsRepository.find({ userId })
+        const results = []
+        await Promise.all(
+            prompts.map(async (prmpt) => {
+                results.push({
+                    ...prmpt,
+                    prompt: await (
+                        await this.promptService.findOne(prmpt.promptId)
+                    ).prompt,
+                })
+            })
+        )
+        return results
+    }
+
     async saveUserPromptsOrder(userPromptsOrder: UserPromptsOrder) {
         if (userPromptsOrder.userPromptIds.length > 6)
             return new BadRequestException('Select a maximum of six(6) prompts')

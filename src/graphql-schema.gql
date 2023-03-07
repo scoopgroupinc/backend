@@ -329,6 +329,7 @@ type Query {
   """
   uploadPrompts(promptType: String!): String!
   getUserPromptsOrder(userPromptsOrder: IGetPromptOrder!): [UserPromptsOutput!]!
+  getUserPrompts(userId: String!): [UserPromptsOutput!]!
   getAllOpenComplaints(complaintsFilter: ComplaintsFilter!): [ComplaintsOutput!]!
   getAComplaint(complaintId: String!): ComplaintsOutput!
   isUserBlocked(userIds: [String!]!, userId: String!): [BlockUserOutput!]!
