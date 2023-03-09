@@ -44,7 +44,11 @@ export class UserPromptsService {
                             userId: userPrompt.userId,
                             promptId: userPrompt.promptId,
                         })
-                    if (existingUserPrompt.answer === userPrompt.answer) return
+                    if (
+                        existingUserPrompt.answer.toLowerCase() ===
+                        userPrompt.answer.toLowerCase()
+                    )
+                        return
                     if (existingUserPrompt) {
                         existingUserPrompt.answer = userPrompt.answer
                         results.push(
