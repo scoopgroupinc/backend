@@ -19,6 +19,8 @@ import { FeedBack } from 'src/feedback/entities/feedback.entity'
 import { BlockedUsers } from 'src/blocked-users/entities/blocked-users.entity'
 import { UserTagsTypeVisibleEnity } from 'src/user-tags-type-visible/entities/user-tags-type-visible.entity'
 import { UserTagsEntity } from 'src/user-tags/entities/user-tags.entity'
+import { GroupCodes } from 'src/group-code/entities/group.entity'
+import { UserGroupCodes } from 'src/group-code/entities/userCodes.entity'
 
 export const config = () => ({
     port: parseInt(process.env.PORT, 10),
@@ -54,6 +56,8 @@ export const config = () => ({
             BlockedUsers,
             UserTagsTypeVisibleEnity,
             UserTagsEntity,
+            GroupCodes,
+            UserGroupCodes,
         ],
         // ssl: {
         //     rejectUnauthorized: false,

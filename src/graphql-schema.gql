@@ -268,6 +268,15 @@ type SwiperActionOutput {
   user2: MatchUser
 }
 
+type IGroupMembers {
+  id: String!
+  userId: String!
+  name: String!
+  gender: String!
+  visual: String
+  age: String
+}
+
 type Query {
   getUser(userId: String!): User!
   getUserDevice(macAddress: String!): UserDevice!
@@ -337,6 +346,8 @@ type Query {
   getUserChoices(userId: String!): [UserChoiceOutput!]!
   getMetaDetails: MetaDetails!
   getFeedBacks(feedbackfilter: FeedBackFilter!): [FeedBack!]!
+  verifyCode(userId: String!, code: String!): String!
+  getGroupMembers(userId: String!): [IGroupMembers!]!
 }
 
 input IGetRatingInput {
@@ -403,6 +414,7 @@ type Mutation {
   createMetaDetails(metaDetailsInput: MetaDetailsInput!): MetaDetails!
   updateDetials(metaDetailsInput: MetaDetailsInput!): MetaDetails!
   saveUserFeedBack(feedbackInput: FeedBackInput!): String!
+  createCodes(code: String!): String!
 }
 
 input CreateUserInput {
