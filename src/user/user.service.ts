@@ -33,7 +33,7 @@ export class UserService {
         private userTagsTypeVisibleService: UserTagsTypeVisibleService
     ) {}
 
-    async create(data: any) {
+    async create(data: LoginUserInput) {
         const { email, password } = data
         const salt = await bcrypt.genSalt()
         const hashedPassword = await this.hashPassward(password, salt)

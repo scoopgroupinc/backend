@@ -27,6 +27,7 @@ import { MetaDetailsModule } from './meta-details/meta.module'
 import { FeedBackModule } from './feedback/feedback.module'
 import { BlockedUserModule } from './blocked-users/blocked-users.module'
 import { UserTagsTypeVisibleModule } from './user-tags-type-visible/user-tags-type-visible.module'
+import { GroupCodesModule } from './group-code/group-code.module'
 
 const { user, pass, host, port } = configs.get('mail')
 @Module({
@@ -89,6 +90,7 @@ const { user, pass, host, port } = configs.get('mail')
         FeedBackModule,
         BlockedUserModule,
         UserTagsTypeVisibleModule,
+        GroupCodesModule,
     ],
     controllers: [],
     providers: [],
