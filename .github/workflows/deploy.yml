@@ -26,11 +26,7 @@ jobs:
       - name: pull secrets
         run: |
           aws s3 sync "s3://$AWS_SECRETS_BUCKET_NAME" .
-          mv scoop-backend/.env.dev .
-          mv scoop-backend/dev/* src/environments/dev/secrets
-          cd src/environments/dev/secrets
-          ls -la
-          cd ../../../../..
+          mv scoop-backend/.env .
           rm -rf scoop-backend
       - name: install dependencies
         run: |
