@@ -45,8 +45,8 @@ export class UserPromptsService {
                             promptId: userPrompt.promptId,
                         })
                     if (
-                        existingUserPrompt.answer.toLowerCase() ===
-                        userPrompt.answer.toLowerCase()
+                        existingUserPrompt?.answer.toLowerCase() ===
+                        userPrompt?.answer.toLowerCase()
                     )
                         return
                     if (existingUserPrompt) {
@@ -65,6 +65,7 @@ export class UserPromptsService {
             )
             return results
         } catch (error) {
+            console.log(error)
             throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
         }
     }
