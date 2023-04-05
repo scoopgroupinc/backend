@@ -52,7 +52,7 @@ export class MatchesService {
             if (userId !== match.secondSwiper) {
                 matchTo = await this.userService.findOneByID(match.secondSwiper)
             }
-            console.log(matchTo)
+            if (!matchTo) continue
             const profile = await this.userProfileService.findOne(
                 matchTo.userId
             )
