@@ -109,6 +109,14 @@ export class UserChoiceService {
         let allMatches
         for (const match of potentialMatches) {
             if (match.userId !== userId) {
+                const smUser = await this.userProfileService.findOne(
+                    match.userId
+                )
+                if (
+                    !userpreference.gender.includes(smUser.gender) &&
+                    !userpreference.gender.includes('bisexual')
+                )
+                    continue
                 //check if they've ever been matched from the matches table
                 // if so conitue loop and skip this user
                 const isMatch = await this.matcheService.checkForMatch(
