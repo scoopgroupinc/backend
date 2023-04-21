@@ -1,11 +1,29 @@
 import { Field, ObjectType } from '@nestjs/graphql'
 import { IsOptional } from 'class-validator'
 
+// @ObjectType()
+// export class IGroupDetails {
+//     @Field(() => [IGroupDetails])
+//     group: IGroupDetails[]
+// }
+
 @ObjectType()
 export class IGroupMembers {
     @Field(() => String)
-    id: string
+    groupId: string
 
+    @Field(() => String)
+    groupName?: string
+
+    @Field(() => String)
+    groupCode?: string
+
+    @Field(() => [IGroupUser])
+    members?: IGroupUser[]
+}
+
+@ObjectType()
+export class IGroupUser {
     @Field(() => String)
     userId: string
 
@@ -19,7 +37,7 @@ export class IGroupMembers {
     @IsOptional()
     visual: string
 
-    @Field(() => String, { nullable: true })
-    @IsOptional()
-    age: string
+    // @Field(() => String, { nullable: true })
+    // @IsOptional()
+    // age: string
 }
