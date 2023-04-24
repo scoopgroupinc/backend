@@ -10,8 +10,8 @@ export class GroupCodesResolver {
 
     @UseGuards(GqlAuthGuard)
     @Mutation(() => String)
-    async createCodes(@Args('code') code: string) {
-        return await this.groupCodeService.create(code)
+    async createCodes(@Args('code') code: string, @Args('name') name: string) {
+        return await this.groupCodeService.create(code, name)
     }
 
     @UseGuards(GqlAuthGuard)

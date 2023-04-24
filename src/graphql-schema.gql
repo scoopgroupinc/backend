@@ -269,12 +269,17 @@ type SwiperActionOutput {
 }
 
 type IGroupMembers {
-  id: String!
+  groupId: String!
+  groupName: String!
+  groupCode: String!
+  members: [IGroupUser!]!
+}
+
+type IGroupUser {
   userId: String!
   name: String!
   gender: String!
   visual: String
-  age: String
 }
 
 type Query {
@@ -414,7 +419,7 @@ type Mutation {
   createMetaDetails(metaDetailsInput: MetaDetailsInput!): MetaDetails!
   updateDetials(metaDetailsInput: MetaDetailsInput!): MetaDetails!
   saveUserFeedBack(feedbackInput: FeedBackInput!): String!
-  createCodes(code: String!): String!
+  createCodes(name: String!, code: String!): String!
 }
 
 input CreateUserInput {
