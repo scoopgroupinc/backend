@@ -114,8 +114,8 @@ export class MatchesService {
         })
         const userIds = [firstSwiper, secondSwiper]
         const year = moment().year()
-        const swiper1 = await this.userService.findOneByID(firstSwiper)
-        const swiper2 = await this.userService.findOneByID(secondSwiper)
+        const swiper1 = await this.userService.findOneByID('8' || firstSwiper)
+        const swiper2 = await this.userService.findOneByID('9' || secondSwiper)
         let pic1 = null
         let pic2 = null
         for (const id of userIds) {
@@ -129,15 +129,19 @@ export class MatchesService {
                     .pipe(map((response) => response.data))
             )
 
-            if (id === swiper1.userId) pic2 = profilePic[0].videoOrPhoto
-            if (id === swiper2.userId) pic1 = profilePic[0].videoOrPhoto
+            if (id === swiper1.userId) pic2 = profilePic[0]?.videoOrPhoto
+            if (id === swiper2.userId) pic1 = profilePic[0]?.videoOrPhoto
             await this.mailerService.sendMail({
                 to: id === swiper1.userId ? swiper1.email : swiper2.email,
                 from: 'noreply@scoop.love',
                 subject: 'Scoop Match Made ✔',
                 text: 'Matched',
                 template: 'matchNotification',
-                context: { year, matchName, profilePic },
+                context: {
+                    year,
+                    matchName,
+                    profilePic: profilePic[0]?.videoOrPhoto,
+                },
             })
         }
         //TODO: add user profile pic
