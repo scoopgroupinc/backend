@@ -129,15 +129,19 @@ export class MatchesService {
                     .pipe(map((response) => response.data))
             )
 
-            if (id === swiper1.userId) pic2 = profilePic[0].videoOrPhoto
-            if (id === swiper2.userId) pic1 = profilePic[0].videoOrPhoto
+            if (id === swiper1.userId) pic2 = profilePic[0]?.videoOrPhoto
+            if (id === swiper2.userId) pic1 = profilePic[0]?.videoOrPhoto
             await this.mailerService.sendMail({
                 to: id === swiper1.userId ? swiper1.email : swiper2.email,
                 from: 'noreply@scoop.love',
                 subject: 'Scoop Match Made ✔',
                 text: 'Matched',
                 template: 'matchNotification',
-                context: { year, matchName, profilePic },
+                context: {
+                    year,
+                    matchName,
+                    profilePic: profilePic[0]?.videoOrPhoto,
+                },
             })
         }
         //TODO: add user profile pic
