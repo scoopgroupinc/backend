@@ -114,8 +114,8 @@ export class MatchesService {
         })
         const userIds = [firstSwiper, secondSwiper]
         const year = moment().year()
-        const swiper1 = await this.userService.findOneByID('8' || firstSwiper)
-        const swiper2 = await this.userService.findOneByID('9' || secondSwiper)
+        const swiper1 = await this.userService.findOneByID(firstSwiper)
+        const swiper2 = await this.userService.findOneByID(secondSwiper)
         let pic1 = null
         let pic2 = null
         for (const id of userIds) {
