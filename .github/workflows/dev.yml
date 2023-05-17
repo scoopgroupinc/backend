@@ -1,0 +1,53 @@
+name: Build and Deploy to dev
+
+on:
+  push:
+    branches:
+      - development
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: 'us-east-1'
+  AWS_SECRETS_BUCKET_NAME: ${{ secrets.AWS_SECRETS_BUCKET_NAME }}
+  EC2_SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: $AWS_ACCESS_KEY_ID
+          aws-secret-access-key: $AWS_SECRET_ACCESS_KEY
+          aws-region: $AWS_DEFAULT_REGION
+      
+      - name: Download private key from S3
+        run: aws s3 cp s3://$AWS_SECRETS_BUCKET_NAME/privateKeys/backend_Service_graphql.pem backend_Service_graphql.pem
+      
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.1
+        with:
+          ssh-private-key: |
+            cat backend_Service_graphql.pem
+
+      - name: Deploy to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no -i backend_Service_graphql ec2-user@54.242.81.114 << EOF
+            cd /backend
+            git pull origin main            
+            echo "Pulling recent changes from repo"
+
+      - name: install dependencies
+        run: |
+          echo "Installing dependencies"
+          npm install
+
+      - name: build
+        run: |
+          npm run build && pm2 restart 0
+           echo "Completed!!"
