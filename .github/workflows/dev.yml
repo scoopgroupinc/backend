@@ -23,7 +23,7 @@ jobs:
         with:
           aws-access-key-id: $AWS_ACCESS_KEY_ID
           aws-secret-access-key: $AWS_SECRET_ACCESS_KEY
-          aws-region: $AWS_DEFAULT_REGION
+          aws-region: 'us-east-1'
       
       - name: Download private key from S3
         run: aws s3 cp s3://$AWS_SECRETS_BUCKET_NAME/privateKeys/backend_Service_graphql.pem backend_Service_graphql.pem
