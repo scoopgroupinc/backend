@@ -28,7 +28,9 @@ jobs:
 
       - name: Download private key from S3
         run: aws s3 cp s3://${{ secrets.AWS_SECRETS_BUCKET_NAME }}/privateKeys/backend_Service_graphql.pem  backend_Service_graphql.pem
-             aws s3 cp s3://${{ secrets.AWS_SECRETS_BUCKET_NAME }}/scoop-backend/.env .env
+        
+      - name: Download env from S3     
+        run: aws s3 cp s3://${{ secrets.AWS_SECRETS_BUCKET_NAME }}/scoop-backend/.env .env
                
       - name: Set up SSH
         uses: webfactory/ssh-agent@v0.5.1
