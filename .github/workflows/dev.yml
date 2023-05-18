@@ -37,10 +37,8 @@ jobs:
       - name: Deploy to EC2
         run: |
             ssh -o StrictHostKeyChecking=no -i backend_Service_graphql.pem ec2-user@ec2-54-242-81-114.compute-1.amazonaws.com 
-            echo "working directory"
             pwd
-            echo "************"
-            cd ~/backend
+            #cd ~/backend
             git pull origin main            
             echo "Pulling recent changes from repo"
 
