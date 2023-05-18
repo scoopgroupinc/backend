@@ -38,6 +38,8 @@ jobs:
         run: |
             ssh -o StrictHostKeyChecking=no -i backend_Service_graphql.pem ec2-user@ec2-54-242-81-114.compute-1.amazonaws.com 
             pwd
+            cd ../../../../            
+            ls
             cd ~/home/ec2-user/backend
             git pull origin development            
             echo "Pulling recent changes from repo"
