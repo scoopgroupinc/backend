@@ -42,7 +42,7 @@ jobs:
             ssh -o StrictHostKeyChecking=no -i backend_Service_graphql.pem ec2-user@ec2-54-242-81-114.compute-1.amazonaws.com 
             pwd
             ls
-            #cd /home/ec2-user/backend
+            cd /home/ec2-user/backend
             #ls           
             #ls -la
             #cd ~/home/ec2-user/backend
