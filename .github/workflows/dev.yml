@@ -45,8 +45,11 @@ jobs:
       - name: install dependencies
         run: |
           echo "Installing dependencies"
-          npm install          
-     
+          npm install  
+          
+      - name: Install pm2
+        run: npm install -g pm2
+        
       - name: build
         run: |          
           npm run build && pm2 start dist/main.js
