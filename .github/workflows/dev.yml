@@ -49,12 +49,7 @@ jobs:
      
       - name: build
         run: |          
-          npm run build
+          npm run build && pm2 start dist/main.js
            echo "build Completed!!"
            
-      - name: install pm2
-        run: |
-          echo "Installing pm2"
-          sudo npm install -g pm2 && pm2 delete all 
-          pm2 start dist/main.js
-          
+              
