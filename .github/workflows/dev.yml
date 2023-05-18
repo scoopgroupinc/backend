@@ -45,9 +45,16 @@ jobs:
       - name: install dependencies
         run: |
           echo "Installing dependencies"
-          npm install
-
+          npm install          
+     
       - name: build
+        run: |          
+          npm run build
+           echo "build Completed!!"
+           
+      - name: install pm2
         run: |
-          npm run build && pm2 restart 0
-           echo "Completed!!"
+          echo "Installing pm2"
+          sudo npm install -g pm2 && pm2 delete all 
+          pm2 start dist/main.js
+          
