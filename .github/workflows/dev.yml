@@ -49,5 +49,5 @@ jobs:
       - name: Deploy to EC2 with CodeDeploy
         run: |          
           aws s3 cp scoop-backend-dev.zip s3://$AWS_S3_BUILD_ARTIFACTS_BUCKET_NAME/scoop-backend-dev.zip
-          aws deploy create-deployment --application-name backend-dev-app --deployment-group-name ec2-backend-dev-app --s3-location bucket=$AWS_S3_BUILD_ARTIFACTS_BUCKET_NAME,key=scoop-backend-dev.zip,bundleType=zip --deployment-config-name CodeDeployDefault.AllAtOnce
+          aws deploy create-deployment --application-name backend-dev-app --deployment-group-name ec2-backend-dev-app --s3-location bucket=$AWS_S3_BUILD_ARTIFACTS_BUCKET_NAME,key=appspec.yml,bundleType=zip --deployment-config-name CodeDeployDefault.AllAtOnce
            
