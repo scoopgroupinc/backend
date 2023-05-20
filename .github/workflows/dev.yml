@@ -47,9 +47,7 @@ jobs:
       #     aws elasticbeanstalk create-application-version --application-name scoop-backend-prod --source-bundle S3Bucket="$AWS_S3_BUILD_ARTIFACTS_BUCKET_NAME",S3Key="scoop-backend-prod.zip" --version-label="$versionLabel"
       #     aws elasticbeanstalk update-environment --application-name scoop-backend-prod --environment-name Scoopbackendprod-env --version-label "$versionLabel"
       - name: Deploy to EC2 with CodeDeploy
-        run: |
-          aws deploy create-application --application-name backend-dev-app
-          aws deploy create-deployment-group --application-name backend-dev-app --deployment-group-name ec2-backend-dev-app --deployment-config-name CodeDeployDefault.AllAtOnce --ec2-tag-filters Key=Name,Value=Backend Service-dev,Type=KEY_AND_VALUE
+        run: |          
           aws s3 cp scoop-backend-dev.zip s3://$AWS_S3_BUILD_ARTIFACTS_BUCKET_NAME/scoop-backend-dev.zip
-          aws deploy create-deployment --application-name scoop-backend-dev.zip --deployment-group-name ec2-backend-dev-app --s3-location bucket=$AWS_S3_BUILD_ARTIFACTS_BUCKET_NAME,key=scoop-backend-dev.zip,bundleType=zip --deployment-config-name CodeDeployDefault.AllAtOnce
+          aws deploy create-deployment --application-name backend-dev-app --deployment-group-name ec2-backend-dev-app --s3-location bucket=$AWS_S3_BUILD_ARTIFACTS_BUCKET_NAME,key=scoop-backend-dev.zip,bundleType=zip --deployment-config-name CodeDeployDefault.AllAtOnce
            
