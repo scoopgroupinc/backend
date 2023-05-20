@@ -29,30 +29,25 @@ jobs:
       # - name: Download private key from S3
       #   run: aws s3 cp s3://${{ secrets.AWS_SECRETS_BUCKET_NAME }}/privateKeys/backend_Service_graphql.pem  backend_Service_graphql.pem
                
-      # - name: Set up SSH
-      #   uses: webfactory/ssh-agent@v0.5.1
-      #   with:
-      #     ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.1
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy to EC2
         run: |
-            ssh -o StrictHostKeyChecking=no -i backend_Service_graphql.pem ec2-user@ec2-54-242-81-114.compute-1.amazonaws.com 
-        with:
-          script: |
-            cd /home/ec2-user/backend/
-            git pull
-            npm install && npm run build
-            pm2 restart 0
+            ssh -o StrictHostKeyChecking=no -i backend_Service_graphql.pem ec2-user@ec2-54-242-81-114.compute-1.amazonaws.com  'cd /home/ec2-user/backend/ && ./deploy.sh'
+            echo "build Completed!!"
 
-      - name: install dependencies
-        run: |
-          echo "Installing dependencies"
-          npm install  
+      # - name: install dependencies
+      #   run: |
+      #     echo "Installing dependencies"
+      #     npm install  
           
-      - name: Install pm2
-        run: npm install -g pm2
+      # - name: Install pm2
+      #   run: npm install -g pm2
         
-      - name: build
-        run: |          
-          npm run build && pm2 start dist/main.js
-           echo "build Completed!!"
+      # - name: build
+      #   run: |          
+      #     npm run build && pm2 start dist/main.js
+      #      echo "build Completed!!"
