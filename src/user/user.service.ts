@@ -87,7 +87,7 @@ export class UserService {
         const payload = {
             token: this.authService.generateJwt(user.email, user.userId),
             user,
-            message: 'abena',
+            message: null,
         }
 
         // this.deviceService.updateLastLogin(macAddress)
