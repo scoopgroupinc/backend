@@ -3,12 +3,12 @@ name: Build and Deploy to dev
 on:
   push:
     branches:
-      - development
-#env:
-  #AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #AWS_DEFAULT_REGION: 'us-east-1'
-  #AWS_SECRETS_BUCKET_NAME: ${{ secrets.AWS_SECRETS_BUCKET_NAME }}
+      - develop
+env:
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: 'us-east-1'
+  AWS_SECRETS_BUCKET_NAME: ${{ secrets.AWS_SECRETS_BUCKET_NAME }}
 
 
 jobs:
@@ -16,49 +16,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2   
-        
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: pull code
+        uses: actions/checkout@v3
+      - name: srt up node.js nevironment
+        uses: actions/setup-node@v3
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: 'us-east-1'
-
-      - name: Download private key from S3
-        run: aws s3 cp s3://${{ secrets.AWS_SECRETS_BUCKET_NAME }}/privateKeys/backend_Service_graphql.pem  backend_Service_graphql.pem
-        
-      - name: Download env from S3     
-        run: aws s3 cp s3://${{ secrets.AWS_SECRETS_BUCKET_NAME }}/scoop-backend/.env .env
-               
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.5.1
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Deploy to EC2
+          node-version: 16
+      - name: pull secrets
         run: |
-            ssh -o StrictHostKeyChecking=no -i backend_Service_graphql.pem ec2-user@ec2-54-242-81-114.compute-1.amazonaws.com 
-            pwd
-            cd  ../../../..
-            cd /ec2-user/backend
-            #ls           
-            #ls -la
-            #cd ~/home/ec2-user/backend
-            git pull origin development            
-            echo "Pulling recent changes from repo"
-
+          aws s3 sync "s3://$AWS_SECRETS_BUCKET_NAME" .
+          mv scoop-backend/.env .
+          rm -rf scoop-backend
       - name: install dependencies
         run: |
-          echo "Installing dependencies"
-          npm install  
-          
-      - name: Install pm2
-        run: npm install -g pm2
-        
+          npm install
       - name: build
-        run: |          
-          npm run build && pm2 start dist/main.js
-           echo "build Completed!!"
+        run: |
+          npm run build
+      - name: build artifacts as zip
+        run: |
+          echo "Creating build artifacts as zip"
+          zip -qr scoop-backend-dev.zip .
+          echo "Completed!!"
+      - name: Upload artifacts to S3
+        run: |
+          aws s3 cp scoop-backend-dev.zip "s3://$AWS_S3_BUILD_ARTIFACTS_BUCKET_NAME"
+      # - name: Deploy aftifacts to EC2
+      #   run: |
+      #     #versionLabel=$(uuidgen)
+      #     aws elasticbeanstalk create-application-version --application-name scoop-backend-prod --source-bundle S3Bucket="$AWS_S3_BUILD_ARTIFACTS_BUCKET_NAME",S3Key="scoop-backend-prod.zip" --version-label="$versionLabel"
+      #     aws elasticbeanstalk update-environment --application-name scoop-backend-prod --environment-name Scoopbackendprod-env --version-label "$versionLabel"
+      - name: Deploy to EC2 with CodeDeploy
+        run: |
+          aws deploy create-application --application-name backend-dev-app
+          aws deploy create-deployment-group --application-name backend-dev-app --deployment-group-name ec2-backend-dev-app --deployment-config-name CodeDeployDefault.AllAtOnce --ec2-tag-filters Key=Name,Value=Backend Service-dev,Type=KEY_AND_VALUE
+          aws s3 cp scoop-backend-dev.zip s3://$AWS_S3_BUILD_ARTIFACTS_BUCKET_NAME/scoop-backend-dev.zip
+          aws deploy create-deployment --application-name scoop-backend-dev.zip --deployment-group-name ec2-backend-dev-app --s3-location bucket=$AWS_S3_BUILD_ARTIFACTS_BUCKET_NAME,key=scoop-backend-dev.zip,bundleType=zip --deployment-config-name CodeDeployDefault.AllAtOnce
            
