@@ -28,6 +28,7 @@ import { FeedBackModule } from './feedback/feedback.module'
 import { BlockedUserModule } from './blocked-users/blocked-users.module'
 import { UserTagsTypeVisibleModule } from './user-tags-type-visible/user-tags-type-visible.module'
 import { GroupCodesModule } from './group-code/group-code.module'
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
 
 const { user, pass, host, port } = configs.get('mail')
 @Module({
@@ -37,10 +38,11 @@ const { user, pass, host, port } = configs.get('mail')
             isGlobal: true,
         }),
 
-        GraphQLModule.forRoot({
+        GraphQLModule.forRoot<ApolloDriverConfig>({
             autoSchemaFile: join(process.cwd(), 'src/graphql-schema.gql'),
             playground: true,
             introspection: true,
+            driver: ApolloDriver,
         }),
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
