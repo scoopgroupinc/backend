@@ -29,10 +29,10 @@ jobs:
           rm -rf scoop-backend
       - name: install dependencies
         run: |
-          yarn install
+          npm install
       - name: build
         run: |
-          yarn build
+          npm run build
       - name: build artifacts as zip
         run: |
           echo "Creating build artifacts as zip"
