@@ -317,7 +317,7 @@ type Query {
          is the rater id and then the criteria id. Passing the rater id as an empty string  will return a result of the 
           average rating for the criteria id provided
   """
-  getAverageRatings(criteriaId: String!, raterId: String!): AverageOutput!
+  getAverageRatings(raterId: String!, criteriaId: String!): AverageOutput!
 
   """fetch a tag"""
   getspecificTag(criteriaId: String!): RateCriterias!
@@ -336,7 +336,7 @@ type Query {
       string ('') as second parameter, id. Specify or pass id as second paramter whiles the second parameter remains an empty
       string ('') to fetch a specific prompt.
   """
-  getPrompts(id: String!, promptType: String!): [Prompts!]!
+  getPrompts(promptType: String!, id: String!): [Prompts!]!
 
   """
   Always specify the prompt type (prompts and visual_prompts) to upload. Pass the prompt type as parameter.
@@ -346,12 +346,12 @@ type Query {
   getUserPrompts(userId: String!): [UserPromptsOutput!]!
   getAllOpenComplaints(complaintsFilter: ComplaintsFilter!): [ComplaintsOutput!]!
   getAComplaint(complaintId: String!): ComplaintsOutput!
-  isUserBlocked(userIds: [String!]!, userId: String!): [BlockUserOutput!]!
+  isUserBlocked(userId: String!, userIds: [String!]!): [BlockUserOutput!]!
   getUserMatches(userId: String!): [MatchesOutput!]!
   getUserChoices(userId: String!): [UserChoiceOutput!]!
   getMetaDetails: MetaDetails!
   getFeedBacks(feedbackfilter: FeedBackFilter!): [FeedBack!]!
-  verifyCode(userId: String!, code: String!): String!
+  verifyCode(code: String!, userId: String!): String!
   getGroupMembers(userId: String!): [IGroupMembers!]!
 }
 
@@ -389,14 +389,14 @@ input FeedBackFilter {
 type Mutation {
   createUser(createUserInput: CreateUserInput!): String!
   updateUser(updateUserInput: UpdateUserInput!): User!
-  deleteUser(email: String!, userId: String!): String!
+  deleteUser(userId: String!, email: String!): String!
   login(loginUserInput: LoginUserInput!): UserToken!
-  activateAccount(email: String!, code: Float!): UserToken!
+  activateAccount(code: Float!, email: String!): UserToken!
   resendActivationCode(email: String!): String!
   forgotPassword(email: String!): String!
-  verifyPasswordResetCode(code: Float!, email: String!): VerifyRestPasswordCode!
-  resetPassword(password: String!, email: String!): User!
-  testNewMailer(code: Float!, email: String!): String!
+  verifyPasswordResetCode(email: String!, code: Float!): VerifyRestPasswordCode!
+  resetPassword(email: String!, password: String!): User!
+  testNewMailer(email: String!, code: Float!): String!
   updateOnBoarding(onboardInput: OnBoardInput!): String!
   saveDeviceDetails(userdeviceInput: UserDeviceInput!): UserDevice!
   saveUserTagsTypeVisible(userTagsTypeVisibleInput: [UserTagsTypeVisibleInput!]!): [UserTagsTypeVisibleEnity!]!
@@ -415,11 +415,11 @@ type Mutation {
   updateComplaint(complaintsInput: ComplaintsInput!): String!
   closeComplaints(complaintId: String!): String!
   deactivateMatch(id: String!): String!
-  userSwipeAction(choice: String!, matchId: String!): SwiperActionOutput!
+  userSwipeAction(matchId: String!, choice: String!): SwiperActionOutput!
   createMetaDetails(metaDetailsInput: MetaDetailsInput!): MetaDetails!
   updateDetials(metaDetailsInput: MetaDetailsInput!): MetaDetails!
   saveUserFeedBack(feedbackInput: FeedBackInput!): String!
-  createCodes(name: String!, code: String!): String!
+  createCodes(code: String!, name: String!): String!
 }
 
 input CreateUserInput {
