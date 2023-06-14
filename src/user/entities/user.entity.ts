@@ -65,11 +65,11 @@ export class User extends BaseEntity {
 
     @Field(()=> Boolean)
     @Column({ default: false})
-    onBoarding: boolean
+    isOnboard: boolean
 
     @Field(()=> Boolean)
     @Column({ default: false})
-    voteOnboard : boolean
+    isVoteOnboard : boolean
 
     async validatePassword(password: string): Promise<boolean> {
         const hash = await bcrypt.hash(password, this.salt)
