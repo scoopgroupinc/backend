@@ -9,9 +9,9 @@ export class OnBoardInput {
 
     @Field({ nullable: true })
     @IsOptional()
-    onBoarding?: boolean
+    isOnboarded?: boolean
 
     @Field({ nullable: true })
     @IsOptional()
-    voteOnboard?: boolean
+    isVoteOnboarded?: boolean
 }

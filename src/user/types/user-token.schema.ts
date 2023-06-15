@@ -11,9 +11,9 @@ export class UserOutput {
     @Field({ nullable: true })
     email?: string | null
     @Field(() => Boolean)
-    onBoarding: boolean
+    isOnboarded: boolean
     @Field(() => Boolean)
-    voteOnboard: boolean
+    isVoteOnboarded: boolean
 }
 
 @ObjectType()

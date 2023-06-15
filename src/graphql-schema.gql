@@ -15,8 +15,8 @@ type User {
   isVerified: Boolean
   resetCode: Float
   updatedAt: String!
-  onBoarding: Boolean!
-  voteOnboard: Boolean!
+  isOnboarded: Boolean!
+  isVoteOnboarded: Boolean!
 }
 
 type UserDevice {
@@ -53,8 +53,8 @@ type UserOutput {
   firstName: String
   lastName: String
   email: String
-  onBoarding: Boolean!
-  voteOnboard: Boolean!
+  isOnboarded: Boolean!
+  isVoteOnboarded: Boolean!
 }
 
 type UserToken {
@@ -436,8 +436,8 @@ input LoginUserInput {
 
 input OnBoardInput {
   userId: String!
-  onBoarding: Boolean
-  voteOnboard: Boolean
+  isOnboarded: Boolean
+  isVoteOnboarded: Boolean
 }
 
 input UserDeviceInput {
