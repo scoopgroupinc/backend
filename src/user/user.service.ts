@@ -132,8 +132,8 @@ export class UserService {
                     email: result.email,
                     firstName: result.firstName,
                     lastName: result.lastName,
-                    isOnboard: result.onBoarding,
-                    isVoteOnboard: result.isVoteOnboard,
+                    isOnboarded: result.isOnboarded,
+                    isVoteOnboarded: result.isVoteOnboarded,
                 },
             }
 
@@ -267,10 +267,10 @@ export class UserService {
         return 'user deleted'
     }
 
-    async updateOnBoarding({ userId, isVoteOnboard, isOnboard }: OnBoardInput) {
+    async updateOnBoarding({ userId, isVoteOnboarded, isOnboarded }: OnBoardInput) {
         await this.userRepository.update(
             { userId },
-            { isOnboard, isVoteOnboard }
+            { isOnboarded, isVoteOnboarded }
         )
         return 'Saved'
     }
