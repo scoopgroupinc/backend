@@ -114,7 +114,7 @@ export class UserService {
         if (result) {
             const userTagsTypeVisible = tags.map((tag) => ({
                 userId: result.userId,
-                visible: false,
+                visible: true,
                 emoji: '',
                 tagType: tag_type[tag],
                 userTags: [],
@@ -133,8 +133,8 @@ export class UserService {
                     email: result.email,
                     firstName: result.firstName,
                     lastName: result.lastName,
-                    onBoarding: result.onBoarding,
-                    voteOnboard: result.voteOnboard,
+                    isOnboarded: result.isOnboarded,
+                    isVoteOnboarded: result.isVoteOnboarded,
                 },
             }
 
@@ -268,10 +268,10 @@ export class UserService {
         return 'user deleted'
     }
 
-    async updateOnBoarding({ userId, voteOnboard, onBoarding }: OnBoardInput) {
+    async updateOnBoarding({ userId, isVoteOnboarded, isOnboarded }: OnBoardInput) {
         await this.userRepository.update(
             { userId },
-            { onBoarding, voteOnboard }
+            { isOnboarded, isVoteOnboarded }
         )
         return 'Saved'
     }
