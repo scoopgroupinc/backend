@@ -21,6 +21,7 @@ import { UserTagsTypeVisibleEnity } from 'src/user-tags-type-visible/entities/us
 import { UserTagsEntity } from 'src/user-tags/entities/user-tags.entity'
 import { GroupCodes } from 'src/group-code/entities/group.entity'
 import { UserGroupCodes } from 'src/group-code/entities/userCodes.entity'
+import { UserAuthProvider } from 'src/user/entities/userAuthProvider.entity'
 
 export const config = () => ({
     port: parseInt(process.env.PORT, 10),
@@ -37,6 +38,7 @@ export const config = () => ({
         entities: [
             User,
             Auth,
+            UserAuthProvider,
             UserDevice,
             LocationEntity,
             UserProfile,

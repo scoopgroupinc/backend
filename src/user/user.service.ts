@@ -10,7 +10,7 @@ import { MailerService } from '@nestjs-modules/mailer'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { User } from './entities/user.entity'
-import { LoginUserInput } from './dto/login-user.input'
+import { AuthProviderInput, LoginUserInput } from './dto/login-user.input'
 import { AuthService } from '../auth/auth.service'
 import { UserDeviceService } from '../user-devices/user-devices.service'
 import { UpdateUserInput } from './dto/update-user.input'
@@ -21,11 +21,14 @@ import { VerifyRestPasswordCode } from './dto/verify-Code-output'
 import { UserTagsTypeVisibleService } from 'src/user-tags-type-visible/user-tags-type-visible.service'
 import { tag_type, tags } from 'src/common/enums'
 import { OnBoardInput } from './dto/onBoarding.input'
+import { UserAuthProvider } from './entities/userAuthProvider.entity'
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(User) private userRepository: Repository<User>,
+        @InjectRepository(UserAuthProvider)
+        private userAuthProviderRepository: Repository<UserAuthProvider>,
         private authService: AuthService,
         private deviceService: UserDeviceService,
         private mailerService: MailerService,
@@ -92,6 +95,59 @@ export class UserService {
 
         // this.deviceService.updateLastLogin(macAddress)
         return payload
+    }
+
+    async loginWithProvider(body: AuthProviderInput) {
+        const { providerName, providerUserId, email } = body
+        const user = await this.findOne(email)
+        if (!user) {
+            const userCreateResp = await this.userRepository.save({
+                email: email.toLowerCase(),
+                isVerified: true,
+            })
+
+            await this.userAuthProviderRepository.save({
+                userId: userCreateResp.userId,
+                providerUserId,
+                providerName,
+            })
+            const payload = {
+                token: this.authService.generateJwt(
+                    email,
+                    userCreateResp.userId
+                ),
+                user,
+                message: null,
+            }
+
+            return payload
+        } else {
+            const userAuth = await this.userAuthProviderRepository.findOne({
+                where: { providerUserId },
+            })
+            if (!userAuth) {
+                await this.userAuthProviderRepository.save({
+                    userId: user.userId,
+                    providerUserId,
+                    providerName,
+                })
+                const payload = {
+                    token: this.authService.generateJwt(email, user.userId),
+                    user,
+                    message: null,
+                }
+
+                return payload
+            } else {
+                const payload = {
+                    token: this.authService.generateJwt(email, user.userId),
+                    user,
+                    message: null,
+                }
+
+                return payload
+            }
+        }
     }
 
     async activateAccount(code: number, email: string) {
@@ -268,7 +324,11 @@ export class UserService {
         return 'user deleted'
     }
 
-    async updateOnBoarding({ userId, isVoteOnboarded, isOnboarded }: OnBoardInput) {
+    async updateOnBoarding({
+        userId,
+        isVoteOnboarded,
+        isOnboarded,
+    }: OnBoardInput) {
         await this.userRepository.update(
             { userId },
             { isOnboarded, isVoteOnboarded }
