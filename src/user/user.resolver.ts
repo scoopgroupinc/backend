@@ -7,7 +7,7 @@ import { User } from './entities/user.entity'
 import { UserToken } from './types/user-token.schema'
 import { CreateUserInput } from './dto/create-user.input'
 import { UpdateUserInput } from './dto/update-user.input'
-import { LoginUserInput } from './dto/login-user.input'
+import { AuthProviderInput, LoginUserInput } from './dto/login-user.input'
 import { AuthService } from '../auth/auth.service'
 import { JwtService } from '@nestjs/jwt'
 import { GqlAuthGuard } from '../auth/guards/jwt-auth.guard'
@@ -52,6 +52,13 @@ export class UserResolver {
     @Mutation(() => UserToken)
     async login(@Args('loginUserInput') loginUserInput: LoginUserInput) {
         return await this.userService.login(loginUserInput)
+    }
+
+    @Mutation(() => UserToken)
+    async loginWithProvider(
+        @Args('authProviderInput') authProviderInput: AuthProviderInput
+    ) {
+        return await this.userService.loginWithProvider(authProviderInput)
     }
 
     @Mutation(() => UserToken)

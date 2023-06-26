@@ -391,6 +391,7 @@ type Mutation {
   updateUser(updateUserInput: UpdateUserInput!): User!
   deleteUser(userId: String!, email: String!): String!
   login(loginUserInput: LoginUserInput!): UserToken!
+  loginWithProvider(authProviderInput: AuthProviderInput!): UserToken!
   activateAccount(code: Float!, email: String!): UserToken!
   resendActivationCode(email: String!): String!
   forgotPassword(email: String!): String!
@@ -437,6 +438,12 @@ input UpdateUserInput {
 input LoginUserInput {
   email: String!
   password: String!
+}
+
+input AuthProviderInput {
+  providerName: String!
+  providerUserId: String!
+  email: String!
 }
 
 input OnBoardInput {
