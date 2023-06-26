@@ -9,12 +9,13 @@ import { AuthService } from 'src/auth/auth.service'
 import { AuthModule } from 'src/auth/auth.module'
 import { UserDeviceModule } from '../user-devices/user-devices.module'
 import { UserTagsTypeVisibleModule } from 'src/user-tags-type-visible/user-tags-type-visible.module'
+import { UserAuthProvider } from './entities/userAuthProvider.entity'
 
 const { secret, expiresIn } = configs.get('jwt')
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([User]),
+        TypeOrmModule.forFeature([User, UserAuthProvider]),
         JwtModule.register({
             secret: secret,
             signOptions: { expiresIn },

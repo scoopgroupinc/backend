@@ -36,7 +36,7 @@ export class User extends BaseEntity {
     phoneNumber: string
 
     @Field({ nullable: true })
-    @Column({ nullable: false })
+    @Column({ nullable: true })
     password: string
 
     @Field(() => String)
@@ -63,13 +63,13 @@ export class User extends BaseEntity {
     @UpdateDateColumn()
     updatedAt: Date
 
-    @Field(()=> Boolean)
-    @Column({ default: false})
+    @Field(() => Boolean)
+    @Column({ default: false })
     isOnboarded: boolean
 
-    @Field(()=> Boolean)
-    @Column({ default: false})
-    isVoteOnboarded : boolean
+    @Field(() => Boolean)
+    @Column({ default: false })
+    isVoteOnboarded: boolean
 
     async validatePassword(password: string): Promise<boolean> {
         const hash = await bcrypt.hash(password, this.salt)
