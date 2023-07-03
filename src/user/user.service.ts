@@ -69,6 +69,58 @@ export class UserService {
         }
     }
 
+    async verifyProviderEmail(email: string): Promise<any> {
+        const user = await this.findOne(email)
+
+        if (user && user.isVerified) {
+            const payload = {
+                token: this.authService.generateJwt(user.email, user.userId),
+                user,
+                message: null,
+            }
+
+            return {
+                message:
+                    'Account created successfully. Check email to activate account',
+                statusCode: 200,
+                status: 'USER_ALREADY_EXISTS',
+                data: payload,
+            }
+        } else {
+            const code = await this.generateFourDigitCode()
+            try {
+                await this.userRepository.save({
+                    email: email.toLowerCase(),
+                    password: null,
+                    code,
+                    isVerified: false,
+                })
+
+                const result = await this.sendVerificationMail(email, code)
+
+                if (result)
+                    return {
+                        message:
+                            'Account created successfully. Check email to activate account',
+                        statusCode: 200,
+                        status: 'SUCCESS',
+                    }
+                await this.userRepository.delete({ email })
+
+                throw new HttpException(
+                    'Sign Up failed',
+                    HttpStatus.EXPECTATION_FAILED
+                )
+            } catch (error) {
+                logger.debug(error)
+                throw new HttpException(
+                    'Sign Up failed',
+                    HttpStatus.EXPECTATION_FAILED
+                )
+            }
+        }
+    }
+
     async updateAccount(updateUser: UpdateUserInput): Promise<any> {
         const { email } = updateUser
         const user = await this.findOne(email)

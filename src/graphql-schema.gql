@@ -68,6 +68,13 @@ type VerifyRestPasswordCode {
   token: String!
 }
 
+type HttpStatusType {
+  message: String!
+  statusCode: Float!
+  status: String!
+  data: UserToken!
+}
+
 type LocationEntity {
   userId: ID!
   latitude: String
@@ -398,6 +405,7 @@ type Mutation {
   verifyPasswordResetCode(email: String!, code: Float!): VerifyRestPasswordCode!
   resetPassword(email: String!, password: String!): User!
   testNewMailer(email: String!, code: Float!): String!
+  verifyProviderEmail(email: String!): HttpStatusType!
   updateOnBoarding(onboardInput: OnBoardInput!): String!
   saveDeviceDetails(userdeviceInput: UserDeviceInput!): UserDevice!
   saveUserTagsTypeVisible(userTagsTypeVisibleInput: [UserTagsTypeVisibleInput!]!): [UserTagsTypeVisibleEnity!]!

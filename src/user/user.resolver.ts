@@ -14,6 +14,7 @@ import { GqlAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { UserType } from './types/delete-user.schema'
 import { VerifyRestPasswordCode } from './dto/verify-Code-output'
 import { OnBoardInput } from './dto/onBoarding.input'
+import { HttpStatusType } from './types/http-status.schema'
 
 @Resolver(() => User)
 export class UserResolver {
@@ -102,6 +103,11 @@ export class UserResolver {
         @Args('code') code: number
     ) {
         return await this.userService.sendVerificationMail(email, code)
+    }
+
+    @Mutation(() => HttpStatusType)
+    async verifyProviderEmail(@Args('email') email: string) {
+        return await this.userService.verifyProviderEmail(email)
     }
 
     @Mutation(() => String)
