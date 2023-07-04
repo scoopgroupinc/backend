@@ -33,6 +33,7 @@ $ npm install
 ```
 
 ## Running the app
+fill .env, .env.development, .env.development.local with appropriate values copying env.template
 
 ```bash
 # development
