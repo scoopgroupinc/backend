@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv'
+import * as path from 'path'
 import { Auth } from 'src/auth/entities/auth.entity'
 import { User } from '../user/entities/user.entity'
 import { UserDevice } from '../user-devices/entities/user-devices.entity'
@@ -23,47 +25,61 @@ import { GroupCodes } from 'src/group-code/entities/group.entity'
 import { UserGroupCodes } from 'src/group-code/entities/userCodes.entity'
 import { UserAuthProvider } from 'src/user/entities/userAuthProvider.entity'
 
-export const config = () => ({
-    port: parseInt(process.env.PORT, 10),
-    jwtSecret: process.env.JWT_SECRET,
-    database: {
-        type: process.env.DB_TYPE,
-        host: process.env.DB_HOST,
-        port: process.env.DB_PORT,
-        username: process.env.DB_USERNAME,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_DATABASE,
-        // synchronize: true,
-        logging: false,
-        entities: [
-            User,
-            Auth,
-            UserAuthProvider,
-            UserDevice,
-            LocationEntity,
-            UserProfile,
-            UserPreference,
-            TagsEntity,
-            Rating,
-            RatingComment,
-            RatingGroup,
-            RateCriterias,
-            Prompts,
-            UserPrompts,
-            Complaints,
-            Matches,
-            UserChoice,
-            MetaDetails,
-            FeedBack,
-            BlockedUsers,
-            UserTagsTypeVisibleEnity,
-            UserTagsEntity,
-            GroupCodes,
-            UserGroupCodes,
-        ],
-        // ssl: {
-        //     rejectUnauthorized: false,
-        // },
-    },
-    fileServer_Url: process.env.BE_FILE_SERVER_URL,
-})
+if (process.env.NODE_ENV === 'local') {
+    dotenv.config({
+        path: path.resolve(__dirname, '../../.env.development.local'),
+    })
+} else if (process.env.NODE_ENV === 'development') {
+    dotenv.config({
+        path: path.resolve(__dirname, '../../.env.development.local'),
+    })
+} else if (process.env.NODE_ENV === 'production') {
+    dotenv.config({ path: path.resolve(__dirname, '../../.env') })
+}
+
+export const config = () => {
+    return {
+        port: parseInt(process.env.PORT, 10),
+        jwtSecret: process.env.JWT_SECRET,
+        database: {
+            type: process.env.DB_TYPE,
+            host: process.env.DB_HOST,
+            port: process.env.DB_PORT,
+            username: process.env.DB_USERNAME,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_DATABASE,
+            // synchronize: true,
+            logging: false,
+            entities: [
+                User,
+                Auth,
+                UserAuthProvider,
+                UserDevice,
+                LocationEntity,
+                UserProfile,
+                UserPreference,
+                TagsEntity,
+                Rating,
+                RatingComment,
+                RatingGroup,
+                RateCriterias,
+                Prompts,
+                UserPrompts,
+                Complaints,
+                Matches,
+                UserChoice,
+                MetaDetails,
+                FeedBack,
+                BlockedUsers,
+                UserTagsTypeVisibleEnity,
+                UserTagsEntity,
+                GroupCodes,
+                UserGroupCodes,
+            ],
+            // ssl: {
+            //     rejectUnauthorized: false,
+            // },
+        },
+        fileServer_Url: process.env.BE_FILE_SERVER_URL,
+    }
+}

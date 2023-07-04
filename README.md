@@ -75,3 +75,19 @@ Nest is [MIT licensed](LICENSE).
 Use Nest CLI to generate entities
 
 -   https://docs.nestjs.com/cli/overview
+
+
+# Running a server and DB locally
+
+* Download https://www.postgresql.org/download/
+* download the installer and follow the install instructions
+* choose a superuser password, this is the database password
+* set port to 5432
+* choose default local
+* create a .env.development.local to store the contents of your local env
+* copy the contents in env.template to the .env
+* open pgAdmin 4 
+* in `src/config/config.ts` uncomment `synchronize: true` do the tables will be made
+* run `yarn start:dev` which will run script "NODE_ENV=myhost nest start --watch"
+* recomment `synchronize: true`, since you will not need to make the tables in the future
+* to run the frontend_v3 code base set: `LOCAL_CLIENT_URL: "localhost:4000"`, in the .env and run build where NODE_ENV=local
