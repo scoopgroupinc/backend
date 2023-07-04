@@ -89,6 +89,6 @@ Use Nest CLI to generate entities
 * copy the contents in env.template to the .env
 * open pgAdmin 4 
 * in `src/config/config.ts` uncomment `synchronize: true` do the tables will be made
-* run `yarn start:dev` which will run script "NODE_ENV=myhost nest start --watch"
+* run `yarn start:dev` which will run script "NODE_ENV=local nest start --watch"
 * recomment `synchronize: true`, since you will not need to make the tables in the future
 * to run the frontend_v3 code base set: `LOCAL_CLIENT_URL: "localhost:4000"`, in the .env and run build where NODE_ENV=local
