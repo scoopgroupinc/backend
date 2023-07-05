@@ -31,9 +31,9 @@ if (process.env.NODE_ENV === 'local') {
     })
 } else if (process.env.NODE_ENV === 'development') {
     dotenv.config({
-        path: path.resolve(__dirname, '../../.env.development.local'),
+        path: path.resolve(__dirname, '../../.env.development'),
     })
-} else if (process.env.NODE_ENV === 'production') {
+} else {
     dotenv.config({ path: path.resolve(__dirname, '../../.env') })
 }
 
