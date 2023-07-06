@@ -15,6 +15,15 @@ Table users as U {
   updatedAt datetime
 }
 
+Table user_auth_provider {
+  id bigint [pk, increment]
+  userId bigint [not null]
+  providerUserId varchar [not null, note: 'unique ID from of the user from the provider']
+  providerName varchar [not null,  note: 'must be one of: google, apple, facebook']
+}
+
+Ref: "users"."userId" < "user_auth_provider"."userId"
+
 Table user_devices {
   id big_int [pk, increment] // auto-increment
   userId big_int
@@ -431,8 +440,3 @@ Table user_group_codes{
 }
 Ref: "group_codes"."id" < "user_group_codes"."codeId"
 Ref: "user_group_codes"."userId" < "users"."userId"
-
-
-
-
-
