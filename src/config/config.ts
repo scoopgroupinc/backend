@@ -22,6 +22,7 @@ import { UserTagsEntity } from 'src/user-tags/entities/user-tags.entity'
 import { GroupCodes } from 'src/group-code/entities/group.entity'
 import { UserGroupCodes } from 'src/group-code/entities/userCodes.entity'
 import { UserAuthProvider } from 'src/user/entities/userAuthProvider.entity'
+import { FederatedCredential } from 'src/user/entities/federated-credential.entity'
 
 export const config = () => ({
     port: parseInt(process.env.PORT, 10),
@@ -33,12 +34,13 @@ export const config = () => ({
         username: process.env.DB_USERNAME,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_DATABASE,
-        // synchronize: true,
+        synchronize: true,
         logging: false,
         entities: [
             User,
             Auth,
             UserAuthProvider,
+            FederatedCredential,
             UserDevice,
             LocationEntity,
             UserProfile,

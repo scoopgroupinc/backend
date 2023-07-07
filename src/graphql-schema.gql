@@ -394,6 +394,8 @@ input FeedBackFilter {
 }
 
 type Mutation {
+  apple: HttpStatusType!
+  appleLoginCallback(callbackData: AppleProviderInput!): User!
   createUser(createUserInput: CreateUserInput!): String!
   updateUser(updateUserInput: UpdateUserInput!): User!
   deleteUser(userId: String!, email: String!): String!
@@ -429,6 +431,12 @@ type Mutation {
   updateDetials(metaDetailsInput: MetaDetailsInput!): MetaDetails!
   saveUserFeedBack(feedbackInput: FeedBackInput!): String!
   createCodes(code: String!, name: String!): String!
+}
+
+input AppleProviderInput {
+  id: String!
+  name: String!
+  email: String!
 }
 
 input CreateUserInput {

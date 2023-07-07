@@ -10,15 +10,30 @@ import { UpdateUserInput } from './dto/update-user.input'
 import { AuthProviderInput, LoginUserInput } from './dto/login-user.input'
 import { AuthService } from '../auth/auth.service'
 import { JwtService } from '@nestjs/jwt'
-import { GqlAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { UserType } from './types/delete-user.schema'
 import { VerifyRestPasswordCode } from './dto/verify-Code-output'
 import { OnBoardInput } from './dto/onBoarding.input'
 import { HttpStatusType } from './types/http-status.schema'
+import { AppleGuard } from 'src/auth/guards/apple-guard'
+import { GqlAuthGuard } from 'src/auth/guards/jwt-auth.guard'
+import { AppleProviderInput } from './dto/apple-provider.input'
 
 @Resolver(() => User)
 export class UserResolver {
     constructor(private userService: UserService) {}
+
+    @Mutation(() => HttpStatusType)
+    @UseGuards(AppleGuard)
+    async apple() {
+        return { status: 200 }
+    }
+
+    @Mutation(() => User)
+    async appleLoginCallback(
+        @Args('callbackData') callbackData: AppleProviderInput
+    ) {
+        return this.userService.loginWithApple(callbackData)
+    }
 
     @Mutation(() => String)
     async createUser(

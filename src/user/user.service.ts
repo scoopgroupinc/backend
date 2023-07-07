@@ -22,6 +22,7 @@ import { UserTagsTypeVisibleService } from 'src/user-tags-type-visible/user-tags
 import { tag_type, tags } from 'src/common/enums'
 import { OnBoardInput } from './dto/onBoarding.input'
 import { UserAuthProvider } from './entities/userAuthProvider.entity'
+import { FederatedCredential } from './entities/federated-credential.entity'
 
 @Injectable()
 export class UserService {
@@ -29,12 +30,45 @@ export class UserService {
         @InjectRepository(User) private userRepository: Repository<User>,
         @InjectRepository(UserAuthProvider)
         private userAuthProviderRepository: Repository<UserAuthProvider>,
+        @InjectRepository(FederatedCredential)
+        private federatedCredentialRepository: Repository<FederatedCredential>,
         private authService: AuthService,
         private deviceService: UserDeviceService,
         private mailerService: MailerService,
         private jwtService: JwtService,
         private userTagsTypeVisibleService: UserTagsTypeVisibleService
     ) {}
+
+    async findOrCreateUserWithApple(profile: any) {
+        const { id, emails, photos } = profile
+        const appleUser = await this.federatedCredentialRepository.findOne({
+            where: { providerUserId: id },
+        })
+
+        if (appleUser) {
+            const user = await this.userRepository.findOne({
+                where: { userId: appleUser.userId },
+            })
+            return user
+        }
+
+        const user = await this.userRepository.save({
+            email: emails[0].value,
+            password: null,
+            code: null,
+            isVerified: true,
+            federated_credentials: [
+                {
+                    provider: 'apple',
+                    providerUserId: id,
+                    email: emails[0].value,
+                    photoURL: photos[0].value,
+                },
+            ],
+        })
+
+        return user
+    }
 
     async create(data: LoginUserInput) {
         const { email, password } = data
@@ -127,6 +161,10 @@ export class UserService {
         if (!user) throw new NotFoundException('User not found')
 
         return await this.userRepository.save({ ...user, ...updateUser })
+    }
+
+    async loginWithApple(profile: any) {
+        console.log('profile')
     }
 
     async login(loginUserInput: LoginUserInput) {
