@@ -29,7 +29,7 @@ export class UserTagsTypeVisibleEnity {
     tagType: string
 
     @Field(() => Boolean)
-    @Column({ default: false })
+    @Column({ default: true })
     visible: boolean
 
     @Field(() => [UserTagsEntity])

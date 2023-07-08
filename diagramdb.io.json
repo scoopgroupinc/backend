@@ -167,10 +167,10 @@ Table user_visuals {
   order int  [note: 'used to indicate order of photos']
   isVisible boolean 
 }
-Ref: "user_visuals"."visualPromptId" < "visual_prompts"."id"
 
 Ref: "users"."userId" < "user_visuals"."userId"
-
+Ref: "user_visuals"."visualPromptId" < "prompts"."id"
+  
 Enum swipe_choice {
   yes
   no
@@ -253,13 +253,7 @@ Table prompts {
   id int [pk, increment]
   prompt varchar(255)
   sample_answer text [note: 'used in placeholder']
-  type varchar
-}
-
-// STATIC CONTENT
-Table visual_prompts {
-  id int [pk, increment]
-  prompt varchar(255)
+  type varchar [note: 'prompts or visual_prompts']
 }
 
 // ---------- RATING ------------
@@ -440,3 +434,6 @@ Table user_group_codes{
 }
 Ref: "group_codes"."id" < "user_group_codes"."codeId"
 Ref: "user_group_codes"."userId" < "users"."userId"
+
+
+

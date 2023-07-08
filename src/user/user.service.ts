@@ -155,7 +155,7 @@ export class UserService {
         const minutesAgo = moment(Date.now()).diff(user.updatedAt, 'minutes')
         const isInvalid = minutesAgo > 15
 
-        if (!(user && user.code === code) || isInvalid) {
+        if (!(user && user.code === code) || !isInvalid) {
             throw new BadRequestException(
                 'Unable to activate account. Invalid Code'
             )

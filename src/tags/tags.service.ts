@@ -90,13 +90,14 @@ export class TagsService {
             const tags = []
             rows.forEach((row) => {
                 const tag = {
-                    type: row[0],
-                    name: row[1],
-                    order: row[2],
-                    visible: row[3],
+                    id: row[0],
+                    type: row[1],
+                    name: row[2],
+                    order: row[3],
+                    visible: row[4],
                     emoji:
-                        row[4] !== null
-                            ? this.convertFromEmojiToHexa(row[4])
+                        row[5] !== null
+                            ? this.convertFromEmojiToHexa(row[5])
                             : null,
                 }
 
