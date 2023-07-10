@@ -320,6 +320,59 @@ export class UserService {
         return payload
     }
 
+    async loginWithProvider(body: AuthProviderInput) {
+        const { providerName, providerUserId, email } = body
+        const user = await this.findOne(email)
+        if (!user) {
+            const userCreateResp = await this.userRepository.save({
+                email: email.toLowerCase(),
+                isVerified: true,
+            })
+
+            await this.userAuthProviderRepository.save({
+                userId: userCreateResp.userId,
+                providerUserId,
+                providerName,
+            })
+            const payload = {
+                token: this.authService.generateJwt(
+                    email,
+                    userCreateResp.userId
+                ),
+                user,
+                message: null,
+            }
+
+            return payload
+        } else {
+            const userAuth = await this.userAuthProviderRepository.findOne({
+                where: { providerUserId },
+            })
+            if (!userAuth) {
+                await this.userAuthProviderRepository.save({
+                    userId: user.userId,
+                    providerUserId,
+                    providerName,
+                })
+                const payload = {
+                    token: this.authService.generateJwt(email, user.userId),
+                    user,
+                    message: null,
+                }
+
+                return payload
+            } else {
+                const payload = {
+                    token: this.authService.generateJwt(email, user.userId),
+                    user,
+                    message: null,
+                }
+
+                return payload
+            }
+        }
+    }
+
     async activateAccount(code: number, email: string) {
         const user = await this.findOne(email)
         const minutesAgo = moment(Date.now()).diff(user.updatedAt, 'minutes')
