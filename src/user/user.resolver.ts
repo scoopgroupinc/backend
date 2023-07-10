@@ -74,7 +74,15 @@ export class UserResolver {
     async loginWithProvider(
         @Args('authProviderInput') authProviderInput: AuthProviderInput
     ) {
-        return await this.userService.loginWithProvider(authProviderInput)
+        const { provider } = authProviderInput
+        if (provider === 'google')
+            return await this.userService.findOrCreateUserWithGoogle(
+                authProviderInput
+            )
+        if (provider === 'apple')
+            return await this.userService.findOrCreateUserWithApple(
+                authProviderInput
+            )
     }
 
     @Mutation(() => UserToken)
