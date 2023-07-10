@@ -18,11 +18,17 @@ export class LoginUserInput {
 @InputType()
 export class AuthProviderInput {
     @Field({ nullable: false })
-    providerName: string
-
-    @Field({ nullable: false })
-    providerUserId: string
-
-    @Field({ nullable: false })
     email: string
+
+    @Field({ nullable: false })
+    provider: string
+
+    @Field({ nullable: false })
+    id: string
+
+    @Field({ nullable: false })
+    family_name: string
+
+    @Field({ nullable: false })
+    given_name: string
 }

@@ -457,9 +457,11 @@ input LoginUserInput {
 }
 
 input AuthProviderInput {
-  providerName: String!
-  providerUserId: String!
   email: String!
+  provider: String!
+  id: String!
+  family_name: String!
+  given_name: String!
 }
 
 input OnBoardInput {
