@@ -6,11 +6,11 @@ on:
       - development
       - main
 
+jobs:
+  build-dev:
     runs:
       using: 'node16'
 
-jobs:
-  build-dev:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/development'
 
@@ -38,6 +38,9 @@ jobs:
           docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/myapp:${{ github.sha }}
 
   build-prod:
+    runs:
+      using: 'node16'
+      
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
 
