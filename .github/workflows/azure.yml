@@ -29,7 +29,7 @@ jobs:
 
       - name: Build and push Docker image (Development)
         run: |
-          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/myapp:${{ github.sha }} ./backend 
+          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/myapp:${{ github.sha }} .
           docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/myapp:${{ github.sha }}
 
   build-prod:
@@ -41,7 +41,6 @@ jobs:
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          path: ./backend
 
       - uses: actions/setup-node@v3
         with:
@@ -55,7 +54,7 @@ jobs:
 
       - name: Build and push Docker image (Production)
         run: |
-          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/myapp:${{ github.sha }} ./backend
+          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/myapp:${{ github.sha }} .
           docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/myapp:${{ github.sha }}
 
   deploy-dev:
