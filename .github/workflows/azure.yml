@@ -6,13 +6,13 @@ on:
       - development
       - main
 
+    runs:
+      using: 'node16'
+
 jobs:
   build-dev:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/development'
-
-    runs:
-      using: 'node16'
 
     steps:
       - name: Checkout repository
@@ -40,9 +40,6 @@ jobs:
   build-prod:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    
-    runs:
-      using: 'node16'
 
     steps:
       - name: Checkout repository
