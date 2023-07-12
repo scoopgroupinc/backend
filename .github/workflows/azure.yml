@@ -19,16 +19,15 @@ jobs:
                   token: ${{ secrets.GITHUB_TOKEN }}
                   path: ./backend
 
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: '16'
+
             - uses: azure/docker-login@v1
               with:
                   login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
                   username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
                   password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
-
-            - name: Set up Node.js version
-              uses: actions/setup-node@v1
-              with:
-                  node-version: '16'
 
             - name: Build and push Docker image (Development)
               working-directory: ./backend
@@ -48,16 +47,15 @@ jobs:
                   token: ${{ secrets.GITHUB_TOKEN }}
                   path: ./backend
 
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: '16'
+
             - uses: azure/docker-login@v1
               with:
                   login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
                   username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
                   password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_PROD }}
-
-            - name: Set up Node.js version
-              uses: actions/setup-node@v1
-              with:
-                  node-version: '16'
 
             - name: Build and push Docker image (Production)
               working-directory: ./backend
