@@ -5,7 +5,7 @@ on:
     branches:
       - development
       - main
-      
+
 jobs:
   build-dev:
     runs-on: ubuntu-latest
@@ -29,9 +29,8 @@ jobs:
           password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
 
       - name: Build and push Docker image (Development)
-        working-directory: ./backend
         run: |
-          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/myapp:${{ github.sha }} .
+          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/myapp:${{ github.sha }} ./backend
           docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/myapp:${{ github.sha }}
 
   build-prod:
@@ -56,9 +55,8 @@ jobs:
           password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_PROD }}
 
       - name: Build and push Docker image (Production)
-        working-directory: ./backend
         run: |
-          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/myapp:${{ github.sha }} .
+          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/myapp:${{ github.sha }} ./backend
           docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/myapp:${{ github.sha }}
 
   deploy-dev:
