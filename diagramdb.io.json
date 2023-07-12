@@ -1,6 +1,5 @@
-
 Table users as U {
-  id big_int [pk, increment] // auto-increment
+  userId big_int [pk, increment] // auto-increment
   createdAt datetime
   email varchar(255)
   phoneNumber varchar(15)
@@ -9,7 +8,21 @@ Table users as U {
   password varchar(max)
   firstName varchar(50)
   lastName varchar(50)
+  isVerified boolean
+  resetCode int(4) [note: 'verification code sent by email to verify user']
+  isBoarded boolean [note: 'whether user has finished onboarding']
+  isVoteOnboarded boolean [note: 'whether user has finished the voting onboarding screens']
+  updatedAt datetime
 }
+
+Table user_auth_provider {
+  id bigint [pk, increment]
+  userId bigint [not null]
+  providerUserId varchar [not null, note: 'unique ID from of the user from the provider']
+  providerName varchar [not null,  note: 'must be one of: google, apple, facebook']
+}
+
+Ref: "users"."userId" < "user_auth_provider"."userId"
 
 Table user_devices {
   id big_int [pk, increment] // auto-increment
@@ -19,8 +32,9 @@ Table user_devices {
   macAddress varchar
   version varchar
   lastLogin datetime
+  notificationToken string
 }
-Ref: "users"."id" < "user_devices"."userId"
+Ref: "users"."userId" < "user_devices"."userId"
 
 // Enum for 'gender' table below
 Enum gender {
@@ -32,49 +46,28 @@ Table user_profile {
   userId big_int [pk, increment] // auto-increment
   createdAt datetime
   profilePhoto string
-  jobTitle varchar(50)
-  company varchar(50)
-  homeTown varchar(30)
-  school varchar(50)
-}
-Ref: "users"."id" - "user_profile"."userId"
-
-// Enum for 'education_level' table below
-Enum education_level {
-  high_school
-  graduate
-  post_graduate
-  prefer_not_to_say
-}
-
-// TODO: get ethnicity
-Enum ethnicity {
-  asian
-}
-
-Table user_data {
-  userId big_int [pk, unique]
-  createdAt datetime
   birthday date
   height int
   gender gender
   locationId int
-  educationLevel education_level
-  ethnicity ethnicity[]
-  sports int[]
+  jobTitle varchar(50)
+  company varchar(50)
+  homeTown varchar(30)
+  school varchar(50)
+  
 }
-Ref: "users"."id" - "user_data"."userId"
-Ref: "user_data"."sports" < "tags"."id"
-
+Ref: "users"."userId" - "user_profile"."userId"
+Ref: "user_profile"."locationId" < "location"."id"
 
 // if the user is blocked, then they can't be seen by the other user (does not appear as vote, match, or chat)
 Table user_blocked_by {
   id big_int
   blockedUserId big_int
   blockerId big_int
+  createdAt datetime
 }
-Ref: "users"."id" < "user_blocked_by"."blockedUserId"
-Ref: "users"."id" < "user_blocked_by"."blockerId"
+Ref: "users"."userId" < "user_blocked_by"."blockedUserId"
+Ref: "users"."userId" < "user_blocked_by"."blockerId"
 
 Table location {
   id int
@@ -86,7 +79,6 @@ Table location {
   country varchar(30)
   zipPostal varchar(30)
 }
-Ref: "user_data"."locationId" < "location"."id"
 
 Table user_preferences {
   userId big_int [pk, not null, unique]
@@ -98,43 +90,69 @@ Table user_preferences {
   ethnicityPreferences ethnicity[]
   sportsPreferences int[]
 }
-Ref: "users"."id" - "user_preferences"."userId"
+Ref: "users"."userId" - "user_preferences"."userId"
 Ref: "user_preferences"."sportsPreferences" < "tags"."id"
 
 Enum tag_type {
-  sport
+  job
+  company
+  homeTown
+  school
+
+  physical_activity
+  zodiac
+  education
+  religion
+  ethnicity
+  drug_usage
+  cannibis_usage
+  alcohol_usage
+  relationship_type
+  relationship_goal
+  parenting_goal
+  politics
+  creative
+  going_out
+  staying_in
+  film_genre
+  book_genre
+  music_genre
+  drink
+  diet
+  travel_goals
+  pet
+  date_options
+  gender
+  laguage
+  meyer_briggs
+  peronsality
 }
 
 Table tags {
   id int
   name varchar(30)
-  type tagYype
+  type tag_type
+  order decimal
+  emoji varchar(5)
 }
 
 Table user_display {
-  userId int [pk, increment]
-  userPromptIds int[6]
-  userVisualsVisible int[6]
-  userVisualsHidden int[6]
+  userId big_int [pk, increment]
+  userPromptIds big_int[6] [note: 'order of prompts being shown in user profile view']
+ 
 }
 Ref: "user_display"."userPromptIds" < "user_prompts"."id"
 
-Ref: "user_display"."userVisualsVisible" < "user_visuals"."id"
-
-Ref: "user_display"."userVisualsHidden" < "user_visuals"."id"
-
-
-
+// note: everytime the user updates/adds a prompt a new user_prompts is created.
 Table user_prompts {
   id bigint [pk, increment]
   createdAt datetime
-  userId big_int [not null]
+  userId big_int [not null, note: 'should be able to query user_prompts by userId, and find all unique userPromptIds where createdAt is the latest'] 
   promptId int [not null]
   answer varchar(max) [note: 'if a new answer is input, we will generate a new prompt id']
-  audio string [note: 'future feature where audio can be converted to text, and user can play audio']
 }
 
-Ref: "users"."id" < "user_prompts"."userId"
+Ref: "users"."userId" < "user_prompts"."userId"
 
 Ref: "user_prompts"."promptId" < "prompts"."id"
 
@@ -146,11 +164,13 @@ Table user_visuals {
   visualPromptId int
   deletedAt datetime
   description varchar(100)
+  order int  [note: 'used to indicate order of photos']
+  isVisible boolean 
 }
-Ref: "user_visuals"."visualPromptId" < "visual_prompts"."id"
 
-Ref: "users"."id" < "user_visuals"."userId"
-
+Ref: "users"."userId" < "user_visuals"."userId"
+Ref: "user_visuals"."visualPromptId" < "prompts"."id"
+  
 Enum swipe_choice {
   yes
   no
@@ -163,10 +183,11 @@ Table user_shown {
   swiperId big_int [not null]
   shownUserId big_int [not null]
   swipeChoice swipe_choice
+  swipedAt datetime
 }
-Ref: "users"."id" < "user_shown"."shownUserId"
+Ref: "users"."userId" < "user_shown"."shownUserId"
 
-Ref: "users"."id" < "user_shown"."swiperId"
+Ref: "users"."userId" < "user_shown"."swiperId"
 
 
 // created when where 
@@ -181,51 +202,58 @@ Table matches {
   secondSwiper big_int [not null]
   active boolean [default: true]
 }
-Ref: "users"."id" < "matches"."firstSwiper"
+Ref: "users"."userId" < "matches"."firstSwiper"
 
-Ref: "users"."id" < "matches"."secondSwiper"
+Ref: "users"."userId" < "matches"."secondSwiper"
 
 
 // note: deleted_at filled if user blocks or reports a user
+Enum content_types{
+  text
+  video
+  audio
+}
 Table message {
   id big_int [pk, increment]
   createdAt datetime
   senderId big_int [not null]
   recieverId big_int [not null]
+  contentType content_types
   sendAt datetime
   content varchar(max)
-  mediaFile string
-  deleted_at datetime [default: null] 
+  deletedAt datetime [default: null] 
 }
-Ref: "users"."id" < "message"."senderId"
+Ref: "users"."userId" < "message"."senderId"
 
-Ref: "users"."id" < "message"."recieverId"
+Ref: "users"."userId" < "message"."recieverId"
 
-Table message_prompt {
+Table connected_users {
   id big_int [pk, increment]
+  userId big_int
+  socketId varchar
   createdAt datetime
-  messageId big_int
-  type content_type
-  contentId big_int
+  lastActive datetime
+  ec2InstanceId varchar
 }
-Ref: "message"."id" < "message_prompt"."messageId"
+Ref: "users"."userId" < "connected_users"."userId"
 
-Ref: "message_prompt"."contentId" < "user_visuals"."id"
+Table user_chats {
+  id big_int [pk, increment]
+  userID big_int
+  toUserID big_int
+  createdAt datetime
+  lastRead datetime
+  lastDeleted datetime
+}
+Ref: "users"."userId" < "user_chats"."userID"
 
-Ref: "message_prompt"."contentId" < "user_prompts"."id"
-
-
+Ref: "users"."userId" < "user_chats"."toUserID"
 // STATIC CONTENT
 Table prompts {
   id int [pk, increment]
   prompt varchar(255)
   sample_answer text [note: 'used in placeholder']
-}
-
-// STATIC CONTENT
-Table visual_prompts {
-  id int [pk, increment]
-  prompt varchar(255)
+  type varchar [note: 'prompts or visual_prompts']
 }
 
 // ---------- RATING ------------
@@ -234,6 +262,7 @@ Table rate_criterias {
   id int [pk, increment]
   title varchar(30)
   description varchar(255)
+  type content_type
 }
 
 Enum content_type {
@@ -244,33 +273,38 @@ Enum content_type {
 Table rating {
    id bigint [pk, increment]
    createdAt datetime
-   raterId big_int [not null]
-   contentOwnerId big_int
    criteriaId int [not null]
    rating decimal [not null]
-   type content_type
    contentId int [note: 'user_visuals.id or user_prompts.id']
-   groupId int [note: 'rating and rating_comment with same groupId were rated at the same time']
-}
-Ref: "users"."id" < "rating"."raterId"
-Ref: "users"."id" < "rating"."contentOwnerId"
+   type content_type
+   raterId big_int
+   final boolean
+  }
 Ref: "rating"."contentId" < "user_visuals"."id"
 Ref: "rating"."contentId" < "user_prompts"."id"
 
 Table rating_comment {
    id bigint [pk, increment]
-   createdAt datetime
-   raterId big_int [not null]
+   ratingGroupId  bigint
+   startTime datetime [note: 'focus in time']
+   endTime datetim [note: 'focus out time']
    comment varchar(max)
-   type content_type
-   contentId int [note: 'user_visuals.id or user_prompts.id']
-   groupId int [note: 'rating and rating_comment with same groupId were rated at the same time']
+   final boolean
 }
-Ref: "rating_comment"."contentId" < "user_visuals"."id"
-Ref: "rating_comment"."contentId" < "user_prompts"."id"
-Ref: "users"."id" < "rating_comment"."raterId"
-Ref: "rate_criterias"."id" < "rating"."criteriaId"
 
+Table rating_group {
+  id bigint [pk, increment]
+  raterId big_int [not null]
+  type content_type
+  contentId int [note: 'user_visuals.id or user_prompts.id']
+  startTime datetime
+  endTime datetime [note: 'submit time']
+}
+
+Ref: "rating_group"."contentId" < "user_visuals"."id"
+Ref: "rating_group"."contentId" < "user_prompts"."id"
+Ref: "rate_criterias"."id" < "rating"."criteriaId"
+Ref: "rating_group"."id" < "rating_comment"."ratingGroupId"
 
 // --------- COMPLAINTS ------------
 
@@ -283,23 +317,25 @@ Enum complaint_type {
   user_visuals
   user_prompts
   messages
+  block_user
+  report_user
 }
-Table complaints {
+Table user_complaints {
    id bigint [pk, increment]
    createdAt datetime
    reporterId big_int [note: 'user filing a complaint']
    accusedId big_int [note: 'user being accused of inappropriate behaviour']
-   reason compliant_reason
+   reason varchar
    comment varchar(max)
    type complaint_type
-   contentId int
+   contentId int [note: 'contentId is null when type is block_user or report_user']
    media_file string [note: 's3 bucket link to audio, photo or video']
 }
-Ref: "users"."id" < "complaints"."reporterId"
-Ref: "users"."id" < "complaints"."accusedId"
-Ref: "complaints"."contentId" < "message"."id"
-Ref: "complaints"."contentId" < "user_prompts"."id"
-Ref: "complaints"."contentId" < "user_visuals"."id"
+Ref: "users"."userId" < "user_complaints"."reporterId"
+Ref: "users"."userId" < "user_complaints"."accusedId"
+Ref: "user_complaints"."contentId" < "message"."id"
+Ref: "user_complaints"."contentId" < "user_prompts"."id"
+Ref: "user_complaints"."contentId" < "user_visuals"."id"
 
 // --------- META DATA ------------
 Table meta {
@@ -317,3 +353,87 @@ Table meta {
    updateButtonIos varchar [default: 'update now']
    closeUpdateButtonIos varchar [default: 'update later']
 }
+
+
+
+Ref: "user_preferences"."userId" < "user_preferences"."gender"
+
+Ref: "users"."userId" < "rating_group"."raterId" 
+
+Table notifications {
+  id bigint [pk, increment]
+  userId bigint [not null]
+  isRead boolean [default: false]
+  title varchar[100]
+  body varchar[300]
+  notificationType varchar[50]
+  image varchar[500]
+  payload json
+  createdAt datetime
+}
+
+Ref: "notifications"."userId" < "users"."userId"
+
+
+Ref: "users"."userId" < "user_display"."userId"
+
+// ethnicity, sports, smoking, cannabis, alcohol, drugs, diet, languages, musicGenre, creativeOulet, religions, religiousPractice, zodiac, meyerBriggs, characteristics, politics, parentingGoal, relationshipGoals, relationshipTypes, pets
+Table user_tags {
+id  bigint [pk, increment]
+userId  bigint
+tagId  bigint 
+tagName varchar(30)
+tagType tag_type
+userTagsTypeVisible user_tag_type_visibility[]
+}
+
+Ref: "tags"."id" < "user_tags"."tagId"
+
+Table user_tag_type_visibility {
+id  bigint [pk, increment]
+userId  bigint
+visible boolean [note: 'is the property visible on the users profile']
+type tag_type [note: 'ex ethnicity, sports, smoking, cannabis...']
+userTags user_tags[]
+}
+
+
+Ref: "user_profile"."userId" < "user_tag_type_visibility"."userId"
+
+Ref: "user_profile"."userId" < "user_tags"."userId"
+
+Ref: "notifications"."title" < "notifications"."isRead"
+
+Table feedback{
+  id bigint [pk, increment]
+  userId bigint [not null]
+  deviceOS varchar[100]
+  appVersion varchar[100]
+  rating decimal[300]
+  issue varchar[350]
+  text varchar[500]
+  image varchar [default: null]
+  createdAt datetime
+}
+
+Ref: "feedback"."userId" < "users"."userId"
+
+Table group_codes {
+  id bigint [pk, increment]
+  name varchar
+  code varchar
+  active boolean
+  createdAt datetime
+}
+
+Table user_group_codes{
+  id bigint [pk, increment]
+  codeId bigint
+  userId bigint
+  createdAt datetime  
+}
+Ref: "group_codes"."id" < "user_group_codes"."codeId"
+Ref: "user_group_codes"."userId" < "users"."userId"
+
+
+
