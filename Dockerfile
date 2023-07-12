@@ -1,5 +1,5 @@
 # Specify the base image with Node.js version
-FROM node:16
+FROM node:16.15.0
 
 # Set the working directory in the container
 WORKDIR /backend
