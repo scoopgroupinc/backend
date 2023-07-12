@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/development'
 
+    runs:
+      using: 'node16'
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -37,6 +40,9 @@ jobs:
   build-prod:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+    
+    runs:
+      using: 'node16'
 
     steps:
       - name: Checkout repository
