@@ -51,21 +51,16 @@ export class PromptsService {
         }
 
         const filePath = path.resolve('dist/tags.xlsx')
-        const sheetNames = {
-            prompts: 'prompts',
-            photo_prompts: 'photo_prompts',
-        }
-       
-        for (const sheet in sheetNames ){
-        readXlsxFile(filePath, { sheet }).then(async (rows) => {
+        readXlsxFile(filePath, { sheet: 'prompts' }).then(async (rows) => {
             rows.shift()
 
             const prompts = []
             rows.forEach((rows) => {
                 const prompt = {
-                    prompt: rows[0],
-                    sample_answer: rows[1],
-                    type: sheet==='photo_prompts'?'visual_prompts':sheet,
+                    id: rows[0],
+                    prompt: rows[1],
+                    sample_answer: rows[2],
+                    type: rows[3],
                 }
                 prompts.push(prompt)
             })
@@ -78,7 +73,7 @@ export class PromptsService {
                     HttpStatus.EXPECTATION_FAILED
                 )
         })
-     }
+     
         return 'Upload successful'
     }
 
