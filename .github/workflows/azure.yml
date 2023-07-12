@@ -30,7 +30,7 @@ jobs:
 
       - name: Build and push Docker image (Development)
         run: |
-          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/myapp:${{ github.sha }} 
+          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/myapp:${{ github.sha }} ./ 
           docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/myapp:${{ github.sha }}
 
   build-prod:
@@ -56,7 +56,7 @@ jobs:
 
       - name: Build and push Docker image (Production)
         run: |
-          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/myapp:${{ github.sha }}
+          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/myapp:${{ github.sha }} ./
           docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/myapp:${{ github.sha }}
 
   deploy-dev:
