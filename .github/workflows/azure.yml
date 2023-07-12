@@ -7,8 +7,9 @@ on:
       - main
 
 jobs:
-  build:
+  build-dev:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/development'
 
     steps:
       - name: Checkout repository
@@ -27,17 +28,46 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v1
         with:
-          node-version: '16.x'
+          node-version: '16'
 
-      - name: Build and push Docker image
+      - name: Build and push Docker image (Development)
         working-directory: ./backend
         run: |
           docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/myapp:$GITHUB_SHA .
           docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/myapp:$GITHUB_SHA
 
+  build-prod:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          repository: nataliepan/backend
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./backend
+
+      - uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
+          username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
+          password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_PROD }}
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16'
+
+      - name: Build and push Docker image (Production)
+        working-directory: ./backend
+        run: |
+          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/myapp:$GITHUB_SHA .
+          docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/myapp:$GITHUB_SHA
+
   deploy-dev:
     runs-on: ubuntu-latest
-    needs: build
+    needs: build-dev
     if: github.ref == 'refs/heads/development'
 
     steps:
@@ -57,16 +87,10 @@ jobs:
 
   deploy-prod:
     runs-on: ubuntu-latest
-    needs: build
+    needs: build-prod
     if: github.ref == 'refs/heads/main'
 
     steps:
-      - uses: azure/docker-login@v1
-        with:
-          login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
-          username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
-          password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_PROD }}
-
       - name: Deploy to Azure Container Instances (Production)
         uses: azure/aci-deploy@v1
         with:
