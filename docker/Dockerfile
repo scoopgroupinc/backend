@@ -13,14 +13,8 @@ RUN yarn install --production
 # Copy the rest of the application files to the working directory
 COPY . .
 
-# Change to the 'docker' directory
-WORKDIR /app/backend/docker
-
-# Copy .env file to the container
-COPY ../.env .env
-
-# Change the working directory to the 'src' directory
-WORKDIR /app
+# Copy .env.development file to the container
+COPY .env .env
 
 # Build the application
 RUN yarn build
