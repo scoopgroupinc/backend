@@ -2,7 +2,7 @@
 FROM node:16.15.0
 
 # Set the working directory in the container
-WORKDIR ../backend
+WORKDIR ../
 
 # Copy the package.json and yarn.lock files to the working directory
 COPY package*.json yarn.lock ./
