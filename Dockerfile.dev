@@ -13,11 +13,8 @@ RUN yarn install --production
 # Copy the rest of the application files to the working directory
 COPY . .
 
-# Change the working directory to the dev directory
-WORKDIR /app/docker
-
 # Copy .env.development file to the container
-COPY ../.env.development .env
+COPY .env.development .env
 
 # Build the application
 RUN yarn build
