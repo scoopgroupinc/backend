@@ -53,6 +53,7 @@ export const config = () => {
             entities: [
                 User,
                 Auth,
+                FederatedCredential,
                 UserDevice,
                 LocationEntity,
                 UserProfile,
