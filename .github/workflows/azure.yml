@@ -26,7 +26,7 @@ jobs:
           DB_PASSWORD_DEV: ${{ secrets.DB_PASSWORD_DEV }}
           JWT_SECRET_DEV: ${{ secrets.JWT_SECRET_DEV }}
           PORT_DEV: ${{ vars.PORT_DEV }}
-          
+
       - name: Print env variables
         run: |
           echo "DB_DATABASE_DEV=$DB_DATABASE_DEV"
