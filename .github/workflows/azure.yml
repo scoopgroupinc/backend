@@ -1,128 +1,128 @@
 name: Build and deploy Node.js app to Azure Container Registry - scoopDevContainerRegistry
 
 on:
-  push:
-    branches:
-      - development
-      - main
+    push:
+        branches:
+            - development
+            - main
 
 jobs:
-  build-dev:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/development'
+    build-dev:
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/development'
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set secrets as build arguments
-        env:
-          DB_DATABASE_DEV: ${{ secrets.DB_DATABASE_DEV }}
-          DB_HOST_DEV: ${{ secrets.DB_HOST_DEV }}
-          DB_USERNAME_DEV: ${{ secrets.DB_USERNAME_DEV }}
-          DB_PORT_DEV: ${{ vars.DB_PORT_DEV }}
-          DB_PASSWORD_DEV: ${{ secrets.DB_PASSWORD_DEV }}
-          JWT_SECRET_DEV: ${{ secrets.JWT_SECRET_DEV }}
-          PORT_DEV: ${{ vars.PORT_DEV }}
-          
-      - name: Print env variables
-        run: |
-          echo "DB_DATABASE_DEV=$DB_DATABASE_DEV"
-          echo "DB_HOST_DEV=$DB_HOST_DEV"
-          echo "DB_USERNAME_DEV=$DB_USERNAME_DEV"
-          echo "DB_PORT_DEV=$DB_PORT_DEV"
-          echo "DB_PASSWORD_DEV=$DB_PASSWORD_DEV"
-          echo "JWT_SECRET_DEV=$JWT_SECRET_DEV"
-          echo "PORT_DEV=$PORT_DEV"
+            - name: Set secrets as build arguments
+              env:
+                  DB_DATABASE_DEV: ${{ secrets.DB_DATABASE_DEV }}
+                  DB_HOST_DEV: ${{ secrets.DB_HOST_DEV }}
+                  DB_USERNAME_DEV: ${{ secrets.DB_USERNAME_DEV }}
+                  DB_PORT_DEV: ${{ vars.DB_PORT_DEV }}
+                  DB_PASSWORD_DEV: ${{ secrets.DB_PASSWORD_DEV }}
+                  JWT_SECRET_DEV: ${{ secrets.JWT_SECRET_DEV }}
+                  PORT_DEV: ${{ vars.PORT_DEV }}
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '16'
+            - name: Print env variables
+              run: |
+                  echo "DB_DATABASE_DEV=$DB_DATABASE_DEV"
+                  echo "DB_HOST_DEV=$DB_HOST_DEV"
+                  echo "DB_USERNAME_DEV=$DB_USERNAME_DEV"
+                  echo "DB_PORT_DEV=$DB_PORT_DEV"
+                  echo "DB_PASSWORD_DEV=$DB_PASSWORD_DEV"
+                  echo "JWT_SECRET_DEV=$JWT_SECRET_DEV"
+                  echo "PORT_DEV=$PORT_DEV"
 
-      - uses: azure/docker-login@v1
-        with:
-          login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
-          username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
-          password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: '16'
 
-      - name: Build and push Docker image (Development)
-        run: |
-          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }} -f Dockerfile.dev --build-arg DB_DATABASE_DEV="${DB_DATABASE_DEV}" --build-arg DB_HOST_DEV="${DB_HOST_DEV}" --build-arg DB_USERNAME_DEV="${DB_USERNAME_DEV}" --build-arg DB_PORT_DEV="${DB_PORT_DEV}" --build-arg DB_PASSWORD_DEV="${DB_PASSWORD_DEV}" --build-arg JWT_SECRET_DEV="${JWT_SECRET_DEV}" --build-arg PORT_DEV="${PORT_DEV}" .
-          docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
+            - uses: azure/docker-login@v1
+              with:
+                  login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
+                  username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
+                  password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
 
-  build-prod:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+            - name: Build and push Docker image (Development)
+              run: |
+                  docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }} -f Dockerfile.dev --build-arg DB_DATABASE_DEV="${DB_DATABASE_DEV}" --build-arg DB_HOST_DEV="${DB_HOST_DEV}" --build-arg DB_USERNAME_DEV="${DB_USERNAME_DEV}" --build-arg DB_PORT_DEV="${DB_PORT_DEV}" --build-arg DB_PASSWORD_DEV="${DB_PASSWORD_DEV}" --build-arg JWT_SECRET_DEV="${JWT_SECRET_DEV}" --build-arg PORT_DEV="${PORT_DEV}" .
+                  docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+    build-prod:
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/main'
 
-      - name: Set secrets as build arguments
-        env:
-          DB_DATABASE_PROD: ${{ secrets.DB_DATABASE_PROD }}
-          DB_HOST_PROD: ${{ secrets.DB_HOST_PROD }}
-          DB_USERNAME_PROD: ${{ secrets.DB_USERNAME_PROD }}
-          DB_PORT_PROD: ${{ vars.DB_PORT_PROD }}
-          DB_PASSWORD_PROD: ${{ secrets.DB_PASSWORD_PROD }}
-          JWT_SECRET_PROD: ${{ secrets.JWT_SECRET_PROD }}
-          PORT_PROD: ${{ vars.PORT_PROD }}
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '16'
+            - name: Set secrets as build arguments
+              env:
+                  DB_DATABASE_PROD: ${{ secrets.DB_DATABASE_PROD }}
+                  DB_HOST_PROD: ${{ secrets.DB_HOST_PROD }}
+                  DB_USERNAME_PROD: ${{ secrets.DB_USERNAME_PROD }}
+                  DB_PORT_PROD: ${{ vars.DB_PORT_PROD }}
+                  DB_PASSWORD_PROD: ${{ secrets.DB_PASSWORD_PROD }}
+                  JWT_SECRET_PROD: ${{ secrets.JWT_SECRET_PROD }}
+                  PORT_PROD: ${{ vars.PORT_PROD }}
 
-      - uses: azure/docker-login@v1
-        with:
-          login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
-          username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
-          password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_PROD }}
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: '16'
 
-      - name: Build and push Docker image (Production)
-        run: |
-          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }} -f Dockerfile.prod --build-arg DB_DATABASE_PROD="${DB_DATABASE_PROD}" --build-arg DB_HOST_PROD="${DB_HOST_PROD}" --build-arg DB_USERNAME_PROD="${DB_USERNAME_PROD}" --build-arg DB_PORT_PROD="${DB_PORT_PROD}" --build-arg DB_PASSWORD_PROD="${DB_PASSWORD_PROD}" --build-arg JWT_SECRET_PROD="${JWT_SECRET_PROD}" --build-arg PORT_PROD="${PORT_PROD}" .
-          docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
+            - uses: azure/docker-login@v1
+              with:
+                  login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
+                  username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
+                  password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_PROD }}
 
-  deploy-dev:
-    runs-on: ubuntu-latest
-    needs: build-dev
-    if: github.ref == 'refs/heads/development'
+            - name: Build and push Docker image (Production)
+              run: |
+                  docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }} -f Dockerfile.prod --build-arg DB_DATABASE_PROD="${DB_DATABASE_PROD}" --build-arg DB_HOST_PROD="${DB_HOST_PROD}" --build-arg DB_USERNAME_PROD="${DB_USERNAME_PROD}" --build-arg DB_PORT_PROD="${DB_PORT_PROD}" --build-arg DB_PASSWORD_PROD="${DB_PASSWORD_PROD}" --build-arg JWT_SECRET_PROD="${JWT_SECRET_PROD}" --build-arg PORT_PROD="${PORT_PROD}" .
+                  docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
 
-    steps:
-      - name: Deploy to Azure Container Instances (Development)
-        uses: azure/aci-deploy@v1
-        with:
-          resource-group: scoop-dev-rg
-          dns-name-label: dev-backend
-          image: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
-          registry-login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
-          registry-username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
-          registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
-          os-type: linux
-          cpu: 1
-          memory: 1.5
-          location: eastus
+    deploy-dev:
+        runs-on: ubuntu-latest
+        needs: build-dev
+        if: github.ref == 'refs/heads/development'
 
-  deploy-prod:
-    runs-on: ubuntu-latest
-    needs: build-prod
-    if: github.ref == 'refs/heads/main'
+        steps:
+            - name: Deploy to Azure Container Instances (Development)
+              uses: azure/aci-deploy@v1
+              with:
+                  resource-group: scoop-dev-rg
+                  dns-name-label: dev-backend
+                  image: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
+                  registry-login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
+                  registry-username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
+                  registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
+                  os-type: linux
+                  cpu: 1
+                  memory: 1.5
+                  location: eastus
 
-    steps:
-      - name: Deploy to Azure Container Instances (Production)
-        uses: azure/aci-deploy@v1
-        with:
-          resource-group: scoop-prod-rg
-          dns-name-label: prod-backend
-          image: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
-          registry-login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
-          registry-username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
-          registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_PROD }}
-          os-type: linux
-          cpu: 1
-          memory: 1.5
-          location: eastus
+    deploy-prod:
+        runs-on: ubuntu-latest
+        needs: build-prod
+        if: github.ref == 'refs/heads/main'
+
+        steps:
+            - name: Deploy to Azure Container Instances (Production)
+              uses: azure/aci-deploy@v1
+              with:
+                  resource-group: scoop-prod-rg
+                  dns-name-label: prod-backend
+                  image: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
+                  registry-login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
+                  registry-username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
+                  registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_PROD }}
+                  os-type: linux
+                  cpu: 1
+                  memory: 1.5
+                  location: eastus
