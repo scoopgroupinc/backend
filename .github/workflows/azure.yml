@@ -34,13 +34,7 @@ jobs:
           echo "DB_PASSWORD_DEV=${DB_PASSWORD_DEV}" >> $GITHUB_ENV
           echo "JWT_SECRET_DEV=${JWT_SECRET_DEV}" >> $GITHUB_ENV
           echo "PORT_DEV=${PORT_DEV}" >> $GITHUB_ENV
-          echo "DB_DATABASE_DEV=${DB_DATABASE_DEV}"
-          echo "DB_HOST_DEV=${DB_HOST_DEV}"
-          echo "DB_USERNAME_DEV=${DB_USERNAME_DEV}"
-          echo "DB_PORT_DEV=${DB_PORT_DEV}"
-          echo "DB_PASSWORD_DEV=${DB_PASSWORD_DEV}"
-          echo "JWT_SECRET_DEV=${JWT_SECRET_DEV}"
-          echo "PORT_DEV=${PORT_DEV}"
+          
       - uses: actions/setup-node@v3
         with:
           node-version: '16'
