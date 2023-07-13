@@ -1,0 +1,53 @@
+# Specify the base image with Node.js version
+FROM node:16.15.0
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the package.json and yarn.lock files to the working directory
+COPY package*.json yarn.lock ./
+
+# Install dependencies
+RUN yarn install --production
+
+# Copy the rest of the application files to the working directory
+COPY . .
+
+# Display the contents of the build context
+RUN ls -a
+
+# Build the application
+ARG DB_DATABASE_DEV
+ARG DB_HOST_DEV
+ARG DB_USERNAME_DEV
+ARG DB_PORT_DEV
+ARG DB_PASSWORD_DEV
+ARG JWT_SECRET_DEV
+ARG PORT_DEV
+
+# Set environment variables
+ENV DB_DATABASE=${DB_DATABASE_DEV}
+ENV DB_HOST=${DB_HOST_DEV}
+ENV DB_USERNAME=${DB_USERNAME_DEV}
+ENV DB_PORT=${DB_PORT_DEV}
+ENV DB_PASSWORD=${DB_PASSWORD_DEV}
+ENV JWT_SECRET=${JWT_SECRET_DEV}
+ENV PORT=${PORT_DEV}
+
+# Debugging: Print the environment variables
+RUN echo "DB_DATABASE_DEV: ${DB_DATABASE_DEV}"
+RUN echo "DB_HOST_DEV: ${DB_HOST_DEV}"
+RUN echo "DB_USERNAME_DEV: ${DB_USERNAME_DEV}"
+RUN echo "DB_PORT_DEV: ${DB_PORT_DEV}"
+RUN echo "DB_PASSWORD_DEV: ${DB_PASSWORD_DEV}"
+RUN echo "JWT_SECRET_DEV: ${JWT_SECRET_DEV}"
+RUN echo "PORT_DEV: ${PORT_DEV}"
+
+# Build the application
+RUN yarn build
+
+# Expose a port if your application needs to listen on a specific port
+EXPOSE 3000
+
+# Define the command to start your Node.js application
+CMD [ "yarn", "start:prod" ]

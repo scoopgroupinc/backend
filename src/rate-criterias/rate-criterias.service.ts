@@ -43,10 +43,10 @@ export class RateCriteriasService {
             const criterias = []
             rows.forEach((row) => {
                 const criteria = {
-                    title: row[0],
-                    description: row[1],
-                    type: row[2],
-                    criteriaId: row[3].toString(),
+                    id: row[0],
+                    title: row[1],
+                    description: row[2],
+                    type: row[3],
                 }
 
                 criterias.push(criteria)
