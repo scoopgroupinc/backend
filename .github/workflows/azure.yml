@@ -29,7 +29,7 @@ jobs:
 
       - name: Build and push Docker image (Development)
         run: |
-          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }} docker/Dockerfile.dev
+          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }} ./docker/dev
           docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
 
   build-prod:
@@ -54,7 +54,7 @@ jobs:
 
       - name: Build and push Docker image (Production)
         run: |
-          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }} docker/Dockerfile
+          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }} ./docker
           docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
 
   deploy-dev:
