@@ -13,11 +13,17 @@ RUN yarn install --production
 # Copy the rest of the application files to the working directory
 COPY . .
 
+# Change the working directory to the dev directory
+WORKDIR /app/docker/dev
+
 # Copy .env.development file to the container
-COPY .env.development .env
+COPY ../../.env.development .env
 
 # Build the application
 RUN yarn build
+
+# Change the working directory back to the root of the application
+WORKDIR /app
 
 # Expose a port if your application needs to listen on a specific port
 EXPOSE 3000
