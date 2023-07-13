@@ -25,7 +25,15 @@ jobs:
           DB_PORT_DEV: ${{ vars.DB_PORT_DEV }}
           DB_PASSWORD_DEV: ${{ secrets.DB_PASSWORD_DEV }}
           JWT_SECRET_DEV: ${{ secrets.JWT_SECRET_DEV }}
-          PORT_DEV: ${{ vars.PORT_DEV }}
+          PORT_DEV: ${{ vars.PORT_DEV }} 
+        run: |
+          echo "DB_DATABASE_DEV=${DB_DATABASE_DEV}" >> $GITHUB_ENV
+          echo "DB_HOST_DEV=${DB_HOST_DEV}" >> $GITHUB_ENV
+          echo "DB_USERNAME_DEV=${DB_USERNAME_DEV}" >> $GITHUB_ENV
+          echo "DB_PORT_DEV=${DB_PORT_DEV}" >> $GITHUB_ENV
+          echo "DB_PASSWORD_DEV=${DB_PASSWORD_DEV}" >> $GITHUB_ENV
+          echo "JWT_SECRET_DEV=${JWT_SECRET_DEV}" >> $GITHUB_ENV
+          echo "PORT_DEV=${PORT_DEV}" >> $GITHUB_ENV
 
       - name: Print env variables
         run: |
@@ -71,6 +79,14 @@ jobs:
           DB_PASSWORD_PROD: ${{ secrets.DB_PASSWORD_PROD }}
           JWT_SECRET_PROD: ${{ secrets.JWT_SECRET_PROD }}
           PORT_PROD: ${{ vars.PORT_PROD }}
+        run: |
+          echo "DB_DATABASE_PROD=${DB_DATABASE_PROD}" >> $GITHUB_ENV
+          echo "DB_HOST_PROD=${DB_HOST_PROD}" >> $GITHUB_ENV
+          echo "DB_USERNAME_PROD=${DB_USERNAME_PROD}" >> $GITHUB_ENV
+          echo "DB_PORT_PROD=${DB_PORT_PROD}" >> $GITHUB_ENV
+          echo "DB_PASSWORD_PROD=${DB_PASSWORD_PROD}" >> $GITHUB_ENV
+          echo "JWT_SECRET_PROD=${JWT_SECRET_PROD}" >> $GITHUB_ENV
+          echo "PORT_PROD=${PORT_PROD}" >> $GITHUB_ENV
 
       - uses: actions/setup-node@v3
         with:
@@ -126,3 +142,6 @@ jobs:
           cpu: 1
           memory: 1.5
           location: eastus
+
+
+
