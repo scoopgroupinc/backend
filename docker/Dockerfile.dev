@@ -14,10 +14,10 @@ RUN yarn install --production
 COPY . .
 
 # Change the working directory to the dev directory
-WORKDIR /app/docker/dev
+WORKDIR /app/docker
 
 # Copy .env.development file to the container
-COPY ../../.env.development .env
+COPY ../.env.development .env
 
 # Build the application
 RUN yarn build
