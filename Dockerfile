@@ -13,8 +13,26 @@ RUN yarn install --production
 # Copy the rest of the application files to the working directory
 COPY . .
 
-# Copy .env.development file to the container
-COPY .env .env
+# Display the contents of the build context
+RUN ls -a
+
+# Build the application
+ARG DB_DATABASE_PROD
+ARG DB_HOST_PROD
+ARG DB_USERNAME_PROD
+ARG DB_PORT_PROD
+ARG DB_PASSWORD_PROD
+ARG JWT_SECRET_PROD
+ARG PORT_PROD
+
+# Set DB_DATABASE to the value of DB_DATABASE_PROD
+ENV DB_DATABASE=${DB_DATABASE_PROD}
+ENV DB_HOST=${DB_HOST_PROD}
+ENV DB_USERNAME=${DB_USERNAME_PROD}
+ENV DB_PORT=${DB_PORT_PROD}
+ENV DB_PASSWORD=${DB_PASSWORD_PROD}
+ENV JWT_SECRET=${JWT_SECRET_PROD}
+ENV PORT=${PORT_PROD}
 
 # Build the application
 RUN yarn build
