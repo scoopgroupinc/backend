@@ -16,8 +16,23 @@ COPY . .
 # Display the contents of the build context
 RUN ls -a
 
-# Copy .env.development file to the container
-COPY .env.development .env
+# Build the application
+ARG DB_DATABASE_DEV
+ARG DB_HOST_DEV
+ARG DB_USERNAME_DEV
+ARG DB_PORT_DEV
+ARG DB_PASSWORD_DEV
+ARG JWT_SECRET_DEV
+ARG PORT_DEV
+
+# Set DB_DATABASE to the value of DB_DATABASE_DEV
+ENV DB_DATABASE=${DB_DATABASE_DEV}
+ENV DB_HOST=${DB_HOST_DEV}
+ENV DB_USERNAME=${DB_USERNAME_DEV}
+ENV DB_PORT=${DB_PORT_DEV}
+ENV DB_PASSWORD=${DB_PASSWORD_DEV}
+ENV JWT_SECRET=${JWT_SECRET_DEV}
+ENV PORT=${PORT_DEV}
 
 # Build the application
 RUN yarn build
