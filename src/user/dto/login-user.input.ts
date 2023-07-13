@@ -17,7 +17,7 @@ export class LoginUserInput {
 
 @InputType()
 export class AuthProviderInput {
-    @Field({ nullable: false })
+    @Field({ nullable: true })
     email: string
 
     @Field({ nullable: false })
@@ -25,10 +25,4 @@ export class AuthProviderInput {
 
     @Field({ nullable: false })
     id: string
-
-    @Field({ nullable: false })
-    family_name: string
-
-    @Field({ nullable: false })
-    given_name: string
 }

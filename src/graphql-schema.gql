@@ -68,13 +68,6 @@ type VerifyRestPasswordCode {
   token: String!
 }
 
-type HttpStatusType {
-  message: String!
-  statusCode: Float!
-  status: String!
-  data: UserToken!
-}
-
 type LocationEntity {
   userId: ID!
   latitude: String
@@ -394,8 +387,6 @@ input FeedBackFilter {
 }
 
 type Mutation {
-  apple: HttpStatusType!
-  appleLoginCallback(callbackData: AppleProviderInput!): User!
   createUser(createUserInput: CreateUserInput!): String!
   updateUser(updateUserInput: UpdateUserInput!): User!
   deleteUser(userId: String!, email: String!): String!
@@ -407,7 +398,6 @@ type Mutation {
   verifyPasswordResetCode(email: String!, code: Float!): VerifyRestPasswordCode!
   resetPassword(email: String!, password: String!): User!
   testNewMailer(email: String!, code: Float!): String!
-  verifyProviderEmail(email: String!): HttpStatusType!
   updateOnBoarding(onboardInput: OnBoardInput!): String!
   saveDeviceDetails(userdeviceInput: UserDeviceInput!): UserDevice!
   saveUserTagsTypeVisible(userTagsTypeVisibleInput: [UserTagsTypeVisibleInput!]!): [UserTagsTypeVisibleEnity!]!
@@ -433,12 +423,6 @@ type Mutation {
   createCodes(code: String!, name: String!): String!
 }
 
-input AppleProviderInput {
-  id: String!
-  name: String!
-  email: String!
-}
-
 input CreateUserInput {
   email: String
   password: String
@@ -457,11 +441,9 @@ input LoginUserInput {
 }
 
 input AuthProviderInput {
-  email: String!
+  email: String
   provider: String!
   id: String!
-  family_name: String!
-  given_name: String!
 }
 
 input OnBoardInput {

@@ -1,4 +1,3 @@
-import { BadRequestException } from '@nestjs/common'
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql'
 
 import { UseGuards } from '@nestjs/common'
@@ -8,9 +7,6 @@ import { UserToken } from './types/user-token.schema'
 import { CreateUserInput } from './dto/create-user.input'
 import { UpdateUserInput } from './dto/update-user.input'
 import { AuthProviderInput, LoginUserInput } from './dto/login-user.input'
-import { AuthService } from '../auth/auth.service'
-import { JwtService } from '@nestjs/jwt'
-import { UserType } from './types/delete-user.schema'
 import { VerifyRestPasswordCode } from './dto/verify-Code-output'
 import { OnBoardInput } from './dto/onBoarding.input'
 import { HttpStatusType } from './types/http-status.schema'
@@ -21,19 +17,6 @@ import { AppleProviderInput } from './dto/apple-provider.input'
 @Resolver(() => User)
 export class UserResolver {
     constructor(private userService: UserService) {}
-
-    @Mutation(() => HttpStatusType)
-    @UseGuards(AppleGuard)
-    async apple() {
-        return { status: 200 }
-    }
-
-    @Mutation(() => User)
-    async appleLoginCallback(
-        @Args('callbackData') callbackData: AppleProviderInput
-    ) {
-        return this.userService.loginWithApple(callbackData)
-    }
 
     @Mutation(() => String)
     async createUser(
@@ -127,12 +110,6 @@ export class UserResolver {
     ) {
         return await this.userService.sendVerificationMail(email, code)
     }
-
-    @Mutation(() => HttpStatusType)
-    async verifyProviderEmail(@Args('email') email: string) {
-        return await this.userService.verifyProviderEmail(email)
-    }
-
     @Mutation(() => String)
     async updateOnBoarding(@Args('onboardInput') onboardInput: OnBoardInput) {
         return await this.userService.updateOnBoarding(onboardInput)

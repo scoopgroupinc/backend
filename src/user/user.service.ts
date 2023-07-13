@@ -10,7 +10,7 @@ import { MailerService } from '@nestjs-modules/mailer'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { User } from './entities/user.entity'
-import { AuthProviderInput, LoginUserInput } from './dto/login-user.input'
+import { LoginUserInput } from './dto/login-user.input'
 import { AuthService } from '../auth/auth.service'
 import { UserDeviceService } from '../user-devices/user-devices.service'
 import { UpdateUserInput } from './dto/update-user.input'
@@ -21,15 +21,12 @@ import { VerifyRestPasswordCode } from './dto/verify-Code-output'
 import { UserTagsTypeVisibleService } from 'src/user-tags-type-visible/user-tags-type-visible.service'
 import { tag_type, tags } from 'src/common/enums'
 import { OnBoardInput } from './dto/onBoarding.input'
-import { UserAuthProvider } from './entities/userAuthProvider.entity'
 import { FederatedCredential } from './entities/federated-credential.entity'
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(User) private userRepository: Repository<User>,
-        @InjectRepository(UserAuthProvider)
-        private userAuthProviderRepository: Repository<UserAuthProvider>,
         @InjectRepository(FederatedCredential)
         private federatedCredentialRepository: Repository<FederatedCredential>,
         private authService: AuthService,
@@ -40,14 +37,15 @@ export class UserService {
     ) {}
 
     async findOrCreateUserWithApple(profile: any) {
-        const { id, email, given_name, family_name, provider } = profile
+        const { id, email, provider } = profile
+
         const appleUser = await this.federatedCredentialRepository.findOne({
-            where: { providerUserId: id, provider, email },
+            where: { providerUserId: id, provider },
         })
 
         if (appleUser) {
             const user = await this.userRepository.findOne({
-                where: { userId: appleUser.userId, email },
+                where: { userId: appleUser.userId },
             })
 
             if (user) {
@@ -90,8 +88,6 @@ export class UserService {
             } else {
                 const user = await this.userRepository.save({
                     email,
-                    firstName: given_name,
-                    lastName: family_name,
                     password: null,
                     code: null,
                     isVerified: true,
@@ -122,7 +118,7 @@ export class UserService {
     }
 
     async findOrCreateUserWithGoogle(profile: any) {
-        const { id, email, given_name, family_name, provider } = profile
+        const { id, email, provider } = profile
         const googleUser = await this.federatedCredentialRepository.findOne({
             where: { providerUserId: id, provider, email },
         })
@@ -172,8 +168,6 @@ export class UserService {
             } else {
                 const user = await this.userRepository.save({
                     email,
-                    firstName: given_name,
-                    lastName: family_name,
                     password: null,
                     code: null,
                     isVerified: true,
@@ -236,68 +230,12 @@ export class UserService {
         }
     }
 
-    async verifyProviderEmail(email: string): Promise<any> {
-        const user = await this.findOne(email)
-
-        if (user && user.isVerified) {
-            const payload = {
-                token: this.authService.generateJwt(user.email, user.userId),
-                user,
-                message: null,
-            }
-
-            return {
-                message:
-                    'Account created successfully. Check email to activate account',
-                statusCode: 200,
-                status: 'USER_ALREADY_EXISTS',
-                data: payload,
-            }
-        } else {
-            const code = await this.generateFourDigitCode()
-            try {
-                await this.userRepository.save({
-                    email: email.toLowerCase(),
-                    password: null,
-                    code,
-                    isVerified: false,
-                })
-
-                const result = await this.sendVerificationMail(email, code)
-
-                if (result)
-                    return {
-                        message:
-                            'Account created successfully. Check email to activate account',
-                        statusCode: 200,
-                        status: 'SUCCESS',
-                    }
-                await this.userRepository.delete({ email })
-
-                throw new HttpException(
-                    'Sign Up failed',
-                    HttpStatus.EXPECTATION_FAILED
-                )
-            } catch (error) {
-                logger.debug(error)
-                throw new HttpException(
-                    'Sign Up failed',
-                    HttpStatus.EXPECTATION_FAILED
-                )
-            }
-        }
-    }
-
     async updateAccount(updateUser: UpdateUserInput): Promise<any> {
         const { email } = updateUser
         const user = await this.findOne(email)
         if (!user) throw new NotFoundException('User not found')
 
         return await this.userRepository.save({ ...user, ...updateUser })
-    }
-
-    async loginWithApple(profile: any) {
-        console.log('profile')
     }
 
     async login(loginUserInput: LoginUserInput) {
@@ -318,59 +256,6 @@ export class UserService {
 
         // this.deviceService.updateLastLogin(macAddress)
         return payload
-    }
-
-    async loginWithProvider(body: AuthProviderInput) {
-        const { providerName, providerUserId, email } = body
-        const user = await this.findOne(email)
-        if (!user) {
-            const userCreateResp = await this.userRepository.save({
-                email: email.toLowerCase(),
-                isVerified: true,
-            })
-
-            await this.userAuthProviderRepository.save({
-                userId: userCreateResp.userId,
-                providerUserId,
-                providerName,
-            })
-            const payload = {
-                token: this.authService.generateJwt(
-                    email,
-                    userCreateResp.userId
-                ),
-                user,
-                message: null,
-            }
-
-            return payload
-        } else {
-            const userAuth = await this.userAuthProviderRepository.findOne({
-                where: { providerUserId },
-            })
-            if (!userAuth) {
-                await this.userAuthProviderRepository.save({
-                    userId: user.userId,
-                    providerUserId,
-                    providerName,
-                })
-                const payload = {
-                    token: this.authService.generateJwt(email, user.userId),
-                    user,
-                    message: null,
-                }
-
-                return payload
-            } else {
-                const payload = {
-                    token: this.authService.generateJwt(email, user.userId),
-                    user,
-                    message: null,
-                }
-
-                return payload
-            }
-        }
     }
 
     async activateAccount(code: number, email: string) {
