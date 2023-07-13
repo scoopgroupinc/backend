@@ -19,31 +19,31 @@ jobs:
 
       - name: Set secrets as build arguments
         env:
-          DB_DATABASE_DEV: ${{ secrets.DB_DATABASE_DEV }}
-          DB_HOST_DEV: ${{ secrets.DB_HOST_DEV }}
-          DB_USERNAME_DEV: ${{ secrets.DB_USERNAME_DEV }}
-          DB_PORT_DEV: ${{ vars.DB_PORT_DEV }}
-          DB_PASSWORD_DEV: ${{ secrets.DB_PASSWORD_DEV }}
-          JWT_SECRET_DEV: ${{ secrets.JWT_SECRET_DEV }}
-          PORT_DEV: ${{ vars.PORT_DEV }} 
+          DB_DATABASE: ${{ secrets.DB_DATABASE_DEV }}
+          DB_HOST: ${{ secrets.DB_HOST_DEV }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME_DEV }}
+          DB_PORT: ${{ vars.DB_PORT_DEV }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD_DEV }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET_DEV }}
+          PORT: ${{ vars.PORT_DEV }} 
         run: |
-          echo "DB_DATABASE_DEV=${DB_DATABASE_DEV}" >> $GITHUB_ENV
-          echo "DB_HOST_DEV=${DB_HOST_DEV}" >> $GITHUB_ENV
-          echo "DB_USERNAME_DEV=${DB_USERNAME_DEV}" >> $GITHUB_ENV
-          echo "DB_PORT_DEV=${DB_PORT_DEV}" >> $GITHUB_ENV
-          echo "DB_PASSWORD_DEV=${DB_PASSWORD_DEV}" >> $GITHUB_ENV
-          echo "JWT_SECRET_DEV=${JWT_SECRET_DEV}" >> $GITHUB_ENV
-          echo "PORT_DEV=${PORT_DEV}" >> $GITHUB_ENV
+          echo "DB_DATABASE=${DB_DATABASE}" >> $GITHUB_ENV
+          echo "DB_HOST=${DB_HOST}" >> $GITHUB_ENV
+          echo "DB_USERNAME=${DB_USERNAME}" >> $GITHUB_ENV
+          echo "DB_PORT=${DB_PORT}" >> $GITHUB_ENV
+          echo "DB_PASSWORD=${DB_PASSWORD}" >> $GITHUB_ENV
+          echo "JWT_SECRET=${JWT_SECRET}" >> $GITHUB_ENV
+          echo "PORT=${PORT}" >> $GITHUB_ENV
 
       - name: Print env variables
         run: |
-          echo "DB_DATABASE_DEV=$DB_DATABASE_DEV"
-          echo "DB_HOST_DEV=$DB_HOST_DEV"
-          echo "DB_USERNAME_DEV=$DB_USERNAME_DEV"
-          echo "DB_PORT_DEV=$DB_PORT_DEV"
-          echo "DB_PASSWORD_DEV=$DB_PASSWORD_DEV"
-          echo "JWT_SECRET_DEV=$JWT_SECRET_DEV"
-          echo "PORT_DEV=$PORT_DEV"
+          echo "DB_DATABASE=$DB_DATABASE"
+          echo "DB_HOST=$DB_HOST"
+          echo "DB_USERNAME=$DB_USERNAME"
+          echo "DB_PORT=$DB_PORT"
+          echo "DB_PASSWORD=$DB_PASSWORD"
+          echo "JWT_SECRET=$JWT_SECRET"
+          echo "PORT=$PORT"
 
       - uses: actions/setup-node@v3
         with:
@@ -57,7 +57,7 @@ jobs:
 
       - name: Build and push Docker image (Development)
         run: |
-          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }} -f Dockerfile.dev --build-arg DB_DATABASE_DEV="${DB_DATABASE_DEV}" --build-arg DB_HOST_DEV="${DB_HOST_DEV}" --build-arg DB_USERNAME_DEV="${DB_USERNAME_DEV}" --build-arg DB_PORT_DEV="${DB_PORT_DEV}" --build-arg DB_PASSWORD_DEV="${DB_PASSWORD_DEV}" --build-arg JWT_SECRET_DEV="${JWT_SECRET_DEV}" --build-arg PORT_DEV="${PORT_DEV}" .
+          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }} -f Dockerfile.dev --build-arg DB_DATABASE="${DB_DATABASE}" --build-arg DB_HOST="${DB_HOST}" --build-arg DB_USERNAME="${DB_USERNAME}" --build-arg DB_PORT="${DB_PORT}" --build-arg DB_PASSWORD="${DB_PASSWORD}" --build-arg JWT_SECRET="${JWT_SECRET}" --build-arg PORT="${PORT}" .
           docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
 
   build-prod:
@@ -72,21 +72,21 @@ jobs:
 
       - name: Set secrets as build arguments
         env:
-          DB_DATABASE_PROD: ${{ secrets.DB_DATABASE_PROD }}
-          DB_HOST_PROD: ${{ secrets.DB_HOST_PROD }}
-          DB_USERNAME_PROD: ${{ secrets.DB_USERNAME_PROD }}
-          DB_PORT_PROD: ${{ vars.DB_PORT_PROD }}
-          DB_PASSWORD_PROD: ${{ secrets.DB_PASSWORD_PROD }}
-          JWT_SECRET_PROD: ${{ secrets.JWT_SECRET_PROD }}
-          PORT_PROD: ${{ vars.PORT_PROD }}
+          DB_DATABASE: ${{ secrets.DB_DATABASE_PROD }}
+          DB_HOST: ${{ secrets.DB_HOST_PROD }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME_PROD }}
+          DB_PORT: ${{ vars.DB_PORT_PROD }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD_PROD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET_PROD }}
+          PORT: ${{ vars.PORT_PROD }}
         run: |
-          echo "DB_DATABASE_PROD=${DB_DATABASE_PROD}" >> $GITHUB_ENV
-          echo "DB_HOST_PROD=${DB_HOST_PROD}" >> $GITHUB_ENV
-          echo "DB_USERNAME_PROD=${DB_USERNAME_PROD}" >> $GITHUB_ENV
-          echo "DB_PORT_PROD=${DB_PORT_PROD}" >> $GITHUB_ENV
-          echo "DB_PASSWORD_PROD=${DB_PASSWORD_PROD}" >> $GITHUB_ENV
-          echo "JWT_SECRET_PROD=${JWT_SECRET_PROD}" >> $GITHUB_ENV
-          echo "PORT_PROD=${PORT_PROD}" >> $GITHUB_ENV
+          echo "DB_DATABASE=${DB_DATABASE}" >> $GITHUB_ENV
+          echo "DB_HOST=${DB_HOST}" >> $GITHUB_ENV
+          echo "DB_USERNAME=${DB_USERNAME}" >> $GITHUB_ENV
+          echo "DB_PORT=${DB_PORT}" >> $GITHUB_ENV
+          echo "DB_PASSWORD=${DB_PASSWORD}" >> $GITHUB_ENV
+          echo "JWT_SECRET=${JWT_SECRET}" >> $GITHUB_ENV
+          echo "PORT=${PORT}" >> $GITHUB_ENV
 
       - uses: actions/setup-node@v3
         with:
@@ -100,7 +100,7 @@ jobs:
 
       - name: Build and push Docker image (Production)
         run: |
-          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }} -f Dockerfile.prod --build-arg DB_DATABASE_PROD="${DB_DATABASE_PROD}" --build-arg DB_HOST_PROD="${DB_HOST_PROD}" --build-arg DB_USERNAME_PROD="${DB_USERNAME_PROD}" --build-arg DB_PORT_PROD="${DB_PORT_PROD}" --build-arg DB_PASSWORD_PROD="${DB_PASSWORD_PROD}" --build-arg JWT_SECRET_PROD="${JWT_SECRET_PROD}" --build-arg PORT_PROD="${PORT_PROD}" .
+          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }} -f Dockerfile.prod --build-arg DB_DATABASE="${DB_DATABASE}" --build-arg DB_HOST="${DB_HOST}" --build-arg DB_USERNAME="${DB_USERNAME}" --build-arg DB_PORT="${DB_PORT}" --build-arg DB_PASSWORD="${DB_PASSWORD}" --build-arg JWT_SECRET="${JWT_SECRET}" --build-arg PORT="${PORT}" .
           docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
 
   deploy-dev:
