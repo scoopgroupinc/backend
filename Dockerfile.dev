@@ -34,14 +34,14 @@ ENV DB_PASSWORD=$DB_PASSWORD_DEV
 ENV JWT_SECRET=$JWT_SECRET_DEV
 ENV PORT=$PORT_DEV
 
-# Debugging: Print the environment variables
-RUN echo "DB_DATABASE_DEV: $DB_DATABASE_DEV"
-RUN echo "DB_HOST_DEV: $DB_HOST_DEV"
-RUN echo "DB_USERNAME_DEV: $DB_USERNAME_DEV"
-RUN echo "DB_PORT_DEV: $DB_PORT_DEV"
-RUN echo "DB_PASSWORD_DEV: $DB_PASSWORD_DEV"
-RUN echo "JWT_SECRET_DEV: $JWT_SECRET_DEV"
-RUN echo "PORT_DEV: $PORT_DEV"
+# Define the command to start your Node.js application
+CMD echo "DB_DATABASE: $DB_DATABASE" && \
+    echo "DB_HOST: $DB_HOST" && \
+    echo "DB_USERNAME: $DB_USERNAME" && \
+    echo "DB_PORT: $DB_PORT" && \
+    echo "DB_PASSWORD: $DB_PASSWORD" && \
+    echo "JWT_SECRET: $JWT_SECRET" && \
+    echo "PORT: $PORT"
 
 # Build the application
 RUN yarn build
