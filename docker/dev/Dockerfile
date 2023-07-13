@@ -19,6 +19,9 @@ WORKDIR /app/backend/docker/dev
 # Copy .env file to the container
 COPY ../../.env.development .env
 
+# Change the working directory to the 'src' directory
+WORKDIR /app
+
 # Build the application
 RUN yarn build
 
