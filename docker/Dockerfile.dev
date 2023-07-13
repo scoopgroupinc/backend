@@ -13,6 +13,9 @@ RUN yarn install --production
 # Copy the rest of the application files to the working directory
 COPY . .
 
+# Copy .env file to the container
+COPY .env.development .env
+
 # Build the application
 RUN yarn build
 
