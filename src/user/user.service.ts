@@ -10,7 +10,7 @@ import { MailerService } from '@nestjs-modules/mailer'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { User } from './entities/user.entity'
-import { AuthProviderInput, LoginUserInput } from './dto/login-user.input'
+import { LoginUserInput } from './dto/login-user.input'
 import { AuthService } from '../auth/auth.service'
 import { UserDeviceService } from '../user-devices/user-devices.service'
 import { UpdateUserInput } from './dto/update-user.input'
@@ -21,20 +21,181 @@ import { VerifyRestPasswordCode } from './dto/verify-Code-output'
 import { UserTagsTypeVisibleService } from 'src/user-tags-type-visible/user-tags-type-visible.service'
 import { tag_type, tags } from 'src/common/enums'
 import { OnBoardInput } from './dto/onBoarding.input'
-import { UserAuthProvider } from './entities/userAuthProvider.entity'
+import { FederatedCredential } from './entities/federated-credential.entity'
 
 @Injectable()
 export class UserService {
     constructor(
         @InjectRepository(User) private userRepository: Repository<User>,
-        @InjectRepository(UserAuthProvider)
-        private userAuthProviderRepository: Repository<UserAuthProvider>,
+        @InjectRepository(FederatedCredential)
+        private federatedCredentialRepository: Repository<FederatedCredential>,
         private authService: AuthService,
         private deviceService: UserDeviceService,
         private mailerService: MailerService,
         private jwtService: JwtService,
         private userTagsTypeVisibleService: UserTagsTypeVisibleService
     ) {}
+
+    async findOrCreateUserWithApple(profile: any) {
+        const { id, email, provider } = profile
+
+        const appleUser = await this.federatedCredentialRepository.findOne({
+            where: { providerUserId: id, provider },
+        })
+
+        if (appleUser) {
+            const user = await this.userRepository.findOne({
+                where: { userId: appleUser.userId },
+            })
+
+            if (user) {
+                return {
+                    token: this.authService.generateJwt(
+                        user.email,
+                        user.userId
+                    ),
+                    user,
+                    message: null,
+                }
+            } else {
+                await this.federatedCredentialRepository.delete({
+                    providerUserId: id,
+                    provider,
+                    email,
+                })
+                throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+            }
+        } else {
+            const user = await this.userRepository.findOne({
+                where: { email },
+            })
+
+            if (user) {
+                await this.federatedCredentialRepository.save({
+                    provider,
+                    providerUserId: id,
+                    email,
+                    userId: user.userId,
+                })
+                return {
+                    token: this.authService.generateJwt(
+                        user.email,
+                        user.userId
+                    ),
+                    user,
+                    message: null,
+                }
+            } else {
+                const user = await this.userRepository.save({
+                    email,
+                    password: null,
+                    code: null,
+                    isVerified: true,
+                })
+
+                if (user) {
+                    await this.federatedCredentialRepository.save({
+                        provider,
+                        providerUserId: id,
+                        email,
+                        userId: user.userId,
+                    })
+                    this.prePopulateUserTags(user)
+                } else {
+                    await this.userRepository.delete({ email })
+                }
+
+                return {
+                    token: this.authService.generateJwt(
+                        user.email,
+                        user.userId
+                    ),
+                    user,
+                    message: null,
+                }
+            }
+        }
+    }
+
+    async findOrCreateUserWithGoogle(profile: any) {
+        const { id, email, provider } = profile
+        const googleUser = await this.federatedCredentialRepository.findOne({
+            where: { providerUserId: id, provider, email },
+        })
+
+        if (googleUser) {
+            const user = await this.userRepository.findOne({
+                where: { userId: googleUser.userId, email },
+            })
+
+            if (user) {
+                return {
+                    token: this.authService.generateJwt(
+                        user.email,
+                        user.userId
+                    ),
+                    user,
+                    message: null,
+                }
+            } else {
+                await this.federatedCredentialRepository.delete({
+                    providerUserId: id,
+                    provider,
+                    email,
+                })
+                throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+            }
+        } else {
+            const user = await this.userRepository.findOne({
+                where: { email },
+            })
+
+            if (user) {
+                await this.federatedCredentialRepository.save({
+                    provider,
+                    providerUserId: id,
+                    email,
+                    userId: user.userId,
+                })
+                return {
+                    token: this.authService.generateJwt(
+                        user.email,
+                        user.userId
+                    ),
+                    user,
+                    message: null,
+                }
+            } else {
+                const user = await this.userRepository.save({
+                    email,
+                    password: null,
+                    code: null,
+                    isVerified: true,
+                })
+
+                if (user) {
+                    await this.federatedCredentialRepository.save({
+                        provider,
+                        providerUserId: id,
+                        email,
+                        userId: user.userId,
+                    })
+                    this.prePopulateUserTags(user)
+                } else {
+                    await this.userRepository.delete({ email })
+                }
+
+                return {
+                    token: this.authService.generateJwt(
+                        user.email,
+                        user.userId
+                    ),
+                    user,
+                    message: null,
+                }
+            }
+        }
+    }
 
     async create(data: LoginUserInput) {
         const { email, password } = data
@@ -97,59 +258,6 @@ export class UserService {
         return payload
     }
 
-    async loginWithProvider(body: AuthProviderInput) {
-        const { providerName, providerUserId, email } = body
-        const user = await this.findOne(email)
-        if (!user) {
-            const userCreateResp = await this.userRepository.save({
-                email: email.toLowerCase(),
-                isVerified: true,
-            })
-
-            await this.userAuthProviderRepository.save({
-                userId: userCreateResp.userId,
-                providerUserId,
-                providerName,
-            })
-            const payload = {
-                token: this.authService.generateJwt(
-                    email,
-                    userCreateResp.userId
-                ),
-                user,
-                message: null,
-            }
-
-            return payload
-        } else {
-            const userAuth = await this.userAuthProviderRepository.findOne({
-                where: { providerUserId },
-            })
-            if (!userAuth) {
-                await this.userAuthProviderRepository.save({
-                    userId: user.userId,
-                    providerUserId,
-                    providerName,
-                })
-                const payload = {
-                    token: this.authService.generateJwt(email, user.userId),
-                    user,
-                    message: null,
-                }
-
-                return payload
-            } else {
-                const payload = {
-                    token: this.authService.generateJwt(email, user.userId),
-                    user,
-                    message: null,
-                }
-
-                return payload
-            }
-        }
-    }
-
     async activateAccount(code: number, email: string) {
         const user = await this.findOne(email)
         const minutesAgo = moment(Date.now()).diff(user.updatedAt, 'minutes')
@@ -168,16 +276,7 @@ export class UserService {
             isVerified: true,
         })
         if (result) {
-            const userTagsTypeVisible = tags.map((tag) => ({
-                userId: result.userId,
-                visible: true,
-                emoji: '',
-                tagType: tag_type[tag],
-                userTags: [],
-            }))
-            await this.userTagsTypeVisibleService.saveUserTagsTypeVisible(
-                userTagsTypeVisible
-            )
+            this.prePopulateUserTags(result)
 
             const payload = {
                 token: this.authService.generateJwt(
@@ -334,5 +433,18 @@ export class UserService {
             { isOnboarded, isVoteOnboarded }
         )
         return 'Saved'
+    }
+
+    async prePopulateUserTags(result: any) {
+        const userTagsTypeVisible = tags.map((tag) => ({
+            userId: result.userId,
+            visible: true,
+            emoji: '',
+            tagType: tag_type[tag],
+            userTags: [],
+        }))
+        await this.userTagsTypeVisibleService.saveUserTagsTypeVisible(
+            userTagsTypeVisible
+        )
     }
 }

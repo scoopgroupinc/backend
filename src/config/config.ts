@@ -23,7 +23,7 @@ import { UserTagsTypeVisibleEnity } from 'src/user-tags-type-visible/entities/us
 import { UserTagsEntity } from 'src/user-tags/entities/user-tags.entity'
 import { GroupCodes } from 'src/group-code/entities/group.entity'
 import { UserGroupCodes } from 'src/group-code/entities/userCodes.entity'
-import { UserAuthProvider } from 'src/user/entities/userAuthProvider.entity'
+import { FederatedCredential } from 'src/user/entities/federated-credential.entity'
 
 if (process.env.NODE_ENV === 'local') {
     dotenv.config({

@@ -8,6 +8,9 @@ import { PassportModule } from '@nestjs/passport'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { User } from '../user/entities/user.entity'
 import { AuthService } from './auth.service'
+import { AppleAuthStrategy } from './strategies/apple.strategy'
+import { AppleGuard } from './guards/apple-guard'
+import { UserService } from 'src/user/user.service'
 
 const { secret, expiresIn } = configs.get('jwt')
 
@@ -20,7 +23,14 @@ const { secret, expiresIn } = configs.get('jwt')
         }),
         TypeOrmModule.forFeature([User]),
     ],
-    providers: [AuthResolver, JwtStrategy, GqlAuthGuard, AuthService],
+    providers: [
+        AuthResolver,
+        JwtStrategy,
+        GqlAuthGuard,
+        AuthService,
+        AppleGuard,
+        AppleAuthStrategy,
+    ],
     exports: [AuthService, GqlAuthGuard, JwtStrategy, PassportModule],
 })
 export class AuthModule {}

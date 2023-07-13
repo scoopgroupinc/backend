@@ -441,9 +441,9 @@ input LoginUserInput {
 }
 
 input AuthProviderInput {
-  providerName: String!
-  providerUserId: String!
-  email: String!
+  email: String
+  provider: String!
+  id: String!
 }
 
 input OnBoardInput {
