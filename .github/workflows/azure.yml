@@ -1,98 +1,98 @@
 name: Build and deploy Node.js app to Azure Container Registry - scoopDevContainerRegistry
 
 on:
-  push:
-    branches:
-      - development
-      - main
+    push:
+        branches:
+            - development
+            - main
 
 jobs:
-  build-dev:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/development'
+    build-dev:
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/development'
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '16'
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: '16'
 
-      - uses: azure/docker-login@v1
-        with:
-          login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
-          username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
-          password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
+            - uses: azure/docker-login@v1
+              with:
+                  login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
+                  username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
+                  password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
 
-      - name: Build and push Docker image (Development)
-        run: |
-          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }} -f docker/dev/Dockerfile.dev .
-          docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
+            - name: Build and push Docker image (Development)
+              run: |
+                  docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }} -f docker/Dockerfile.dev .
+                  docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
 
-  build-prod:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    build-prod:
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/main'
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '16'
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: '16'
 
-      - uses: azure/docker-login@v1
-        with:
-          login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
-          username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
-          password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_PROD }}
+            - uses: azure/docker-login@v1
+              with:
+                  login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
+                  username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
+                  password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_PROD }}
 
-      - name: Build and push Docker image (Production)
-        run: |
-          docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }} ./docker
-          docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
+            - name: Build and push Docker image (Production)
+              run: |
+                  docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }} ./docker
+                  docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
 
-  deploy-dev:
-    runs-on: ubuntu-latest
-    needs: build-dev
-    if: github.ref == 'refs/heads/development'
+    deploy-dev:
+        runs-on: ubuntu-latest
+        needs: build-dev
+        if: github.ref == 'refs/heads/development'
 
-    steps:
-      - name: Deploy to Azure Container Instances (Development)
-        uses: azure/aci-deploy@v1
-        with:
-          resource-group: scoop-dev-rg
-          dns-name-label: dev-backend
-          image: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
-          registry-login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
-          registry-username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
-          registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
-          os-type: linux
-          cpu: 1
-          memory: 1.5
-          location: eastus
+        steps:
+            - name: Deploy to Azure Container Instances (Development)
+              uses: azure/aci-deploy@v1
+              with:
+                  resource-group: scoop-dev-rg
+                  dns-name-label: dev-backend
+                  image: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
+                  registry-login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
+                  registry-username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
+                  registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
+                  os-type: linux
+                  cpu: 1
+                  memory: 1.5
+                  location: eastus
 
-  deploy-prod:
-    runs-on: ubuntu-latest
-    needs: build-prod
-    if: github.ref == 'refs/heads/main'
+    deploy-prod:
+        runs-on: ubuntu-latest
+        needs: build-prod
+        if: github.ref == 'refs/heads/main'
 
-    steps:
-      - name: Deploy to Azure Container Instances (Production)
-        uses: azure/aci-deploy@v1
-        with:
-          resource-group: scoop-prod-rg
-          dns-name-label: prod-backend
-          image: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
-          registry-login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
-          registry-username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
-          registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_PROD }}
-          os-type: linux
-          cpu: 1
-          memory: 1.5
-          location: eastus
+        steps:
+            - name: Deploy to Azure Container Instances (Production)
+              uses: azure/aci-deploy@v1
+              with:
+                  resource-group: scoop-prod-rg
+                  dns-name-label: prod-backend
+                  image: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
+                  registry-login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
+                  registry-username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
+                  registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_PROD }}
+                  os-type: linux
+                  cpu: 1
+                  memory: 1.5
+                  location: eastus
