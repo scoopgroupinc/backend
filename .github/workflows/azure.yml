@@ -68,7 +68,7 @@ jobs:
         with:
           resource-group: scoop-dev-rg
           dns-name-label: dev-backend
-          image: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/myapp:${{ github.sha }}
+          image: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
           registry-login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
           registry-username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
           registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
@@ -88,7 +88,7 @@ jobs:
         with:
           resource-group: scoop-prod-rg
           dns-name-label: prod-backend
-          image: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/myapp:${{ github.sha }}
+          image: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
           registry-login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
           registry-username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
           registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_PROD }}
