@@ -2,7 +2,7 @@
 FROM node:16.15.0
 
 # Set the working directory in the container
-WORKDIR ./../
+WORKDIR /app
 
 # Copy the package.json and yarn.lock files to the working directory
 COPY package*.json yarn.lock ./
@@ -13,8 +13,11 @@ RUN yarn install --production
 # Copy the rest of the application files to the working directory
 COPY . .
 
+# Change to the 'docker' directory
+WORKDIR /app/backend/docker
+
 # Copy .env file to the container
-COPY .env .env
+COPY ../.env .env
 
 # Build the application
 RUN yarn build
