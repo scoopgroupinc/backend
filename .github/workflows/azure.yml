@@ -19,7 +19,7 @@ jobs:
 
             - name: Set secrets as build arguments
               env:
-                  DB_DATABASE: ${{ secrets.DB_DATABASE_DEV }}
+                  DB_DATABASE: ${{ vars.DB_DATABASE_DEV }}
                   DB_HOST: ${{ vars.DB_HOST_DEV }}
                   DB_USERNAME: ${{ secrets.DB_USERNAME_DEV }}
                   DB_PORT: ${{ vars.DB_PORT_DEV }}
@@ -108,6 +108,11 @@ jobs:
               uses: azure/login@v1
               with:
                   creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
+
+            # - name: Delete existing Azure Container Instance
+            #   run: |
+            #     az container delete --name <container-name> --resource-group <resource-group-name> --yes
+            # Continue with the deployment steps for the new container instance
 
             - name: Deploy to Azure Container Instances (Development)
               uses: azure/aci-deploy@v1
