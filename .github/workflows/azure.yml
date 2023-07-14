@@ -128,10 +128,7 @@ jobs:
                   cpu: 1
                   memory: 1.5
                   location: eastus
-                  debug: true
-                  rollback-on-error: true
-                  template-file: ./azure/dev/template.json
-                  parameters: ./azure/dev/parameters.json
+                  restart-policy: Never
 
     # deploy-prod:
     #     runs-on: ubuntu-latest
