@@ -109,6 +109,11 @@ jobs:
         if: github.ref == 'refs/heads/development'
 
         steps:
+            - name: Set up Python and Azure CLI
+              uses: actions/setup-python@v2
+              with:
+                  python-version: '3.x'
+
             - name: Login to Azure
               uses: azure/login@v1
               with:
@@ -134,6 +139,11 @@ jobs:
         if: github.ref == 'refs/heads/main'
 
         steps:
+            - name: Set up Python and Azure CLI
+              uses: actions/setup-python@v2
+              with:
+                  python-version: '3.x'
+
             - name: Login to Azure
               uses: azure/login@v1
               with:
