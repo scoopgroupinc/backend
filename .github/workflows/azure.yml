@@ -114,23 +114,24 @@ jobs:
               with:
                   python-version: '3.x'
 
-            - name: Login to Azure
-              uses: azure/login@v1
-              with:
-                  creds: '{ "clientId": "9c8b9d97-c61c-4cdd-8a67-cafcb8ad9e3b", "clientSecret": "lX68Q~FHbHRRPhDN7n7mUbCFt6MM3lfS3W_CldBe", "subscriptionId": "8a7e83da-3056-4eb5-ba93-a6ca58a52b8c", "tenantId": "c708bb4a-df34-44bf-af6e-cbbfcb55a8ac", "activeDirectoryEndpointUrl": "https://login.microsoftonline.com", "resourceManagerEndpointUrl": "https://management.azure.com/", "activeDirectoryGraphResourceId": "https://graph.windows.net/", "sqlManagementEndpointUrl": "https://management.core.windows.net:8443/", "galleryEndpointUrl": "https://gallery.azure.com/", "managementEndpointUrl": "https://management.core.windows.net/"}'
-
             - name: Print variables
               run: |
                   echo "{{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}"
                   echo "{{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}"
                   echo "{{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
+
+            - name: Login to Azure
+              uses: azure/login@v1
+              with:
+                  creds: '{ "clientId": "9c8b9d97-c61c-4cdd-8a67-cafcb8ad9e3b", "clientSecret": "lX68Q~FHbHRRPhDN7n7mUbCFt6MM3lfS3W_CldBe", "subscriptionId": "8a7e83da-3056-4eb5-ba93-a6ca58a52b8c", "tenantId": "c708bb4a-df34-44bf-af6e-cbbfcb55a8ac", "activeDirectoryEndpointUrl": "https://login.microsoftonline.com", "resourceManagerEndpointUrl": "https://management.azure.com/", "activeDirectoryGraphResourceId": "https://graph.windows.net/", "sqlManagementEndpointUrl": "https://management.core.windows.net:8443/", "galleryEndpointUrl": "https://gallery.azure.com/", "managementEndpointUrl": "https://management.core.windows.net/"}'
+
             - name: Deploy to Azure Container Instances (Development)
               uses: azure/aci-deploy@v1
               with:
                   resource-group: scoop-dev-rg
                   dns-name-label: scoop-dev.h4atavatenajbtd5.eastus.azurecontainer.io
                   images: |
-                    ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
+                      ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
                   registry-login-server: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
                   registry-username: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
                   registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
