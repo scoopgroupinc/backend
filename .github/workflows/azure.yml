@@ -119,14 +119,20 @@ jobs:
               with:
                   creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
 
+            - name: Print variables
+              run: |
+                  echo "{{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}"
+                  echo "{{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}"
+                  echo "{{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
             - name: Deploy to Azure Container Instances (Development)
               uses: azure/aci-deploy@v1
               with:
                   resource-group: scoop-dev-rg
                   dns-name-label: scoop-dev.h4atavatenajbtd5.eastus.azurecontainer.io
-                  image: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
-                  registry-login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
-                  registry-username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
+                  images: |
+                    ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
+                  registry-login-server: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
+                  registry-username: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
                   registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
                   os-type: linux
                   cpu: 1
