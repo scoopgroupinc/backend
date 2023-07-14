@@ -35,16 +35,6 @@ jobs:
                   echo "JWT_SECRET=${JWT_SECRET}" >> $GITHUB_ENV
                   echo "PORT=${PORT}" >> $GITHUB_ENV
 
-            - name: Print env variables
-              run: |
-                  echo "DB_DATABASE=$DB_DATABASE"
-                  echo "DB_HOST=$DB_HOST"
-                  echo "DB_USERNAME=$DB_USERNAME"
-                  echo "DB_PORT=$DB_PORT"
-                  echo "DB_PASSWORD=$DB_PASSWORD"
-                  echo "JWT_SECRET=$JWT_SECRET"
-                  echo "PORT=$PORT"
-
             - uses: actions/setup-node@v3
               with:
                   node-version: '16'
@@ -129,7 +119,7 @@ jobs:
                   registry-login-server: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
                   registry-username: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
                   registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
-                  os-type: linux
+                  os-type: Linux
                   cpu: 1
                   memory: 1.5
                   location: eastus
@@ -160,7 +150,7 @@ jobs:
                   registry-login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
                   registry-username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
                   registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_PROD }}
-                  os-type: linux
+                  os-type: Linux
                   cpu: 1
                   memory: 1.5
                   location: eastus
