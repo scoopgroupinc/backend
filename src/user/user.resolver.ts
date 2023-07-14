@@ -10,7 +10,6 @@ import { AuthProviderInput, LoginUserInput } from './dto/login-user.input'
 import { VerifyRestPasswordCode } from './dto/verify-Code-output'
 import { OnBoardInput } from './dto/onBoarding.input'
 import { HttpStatusType } from './types/http-status.schema'
-import { AppleGuard } from 'src/auth/guards/apple-guard'
 import { GqlAuthGuard } from 'src/auth/guards/jwt-auth.guard'
 import { AppleProviderInput } from './dto/apple-provider.input'
 
