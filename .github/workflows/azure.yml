@@ -114,12 +114,6 @@ jobs:
               with:
                   python-version: '3.x'
 
-            - name: Print variables
-              run: |
-                  echo "${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}"
-                  echo "${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}"
-                  echo "${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}"
-
             - name: Login to Azure
               uses: azure/login@v1
               with:
@@ -130,6 +124,7 @@ jobs:
               with:
                   resource-group: scoop-dev-rg
                   dns-name-label: scoop-dev.h4atavatenajbtd5.eastus.azurecontainer.io
+                  name: backend
                   image: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
                   registry-login-server: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
                   registry-username: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
@@ -160,6 +155,7 @@ jobs:
               with:
                   resource-group: scoop-prod-rg
                   dns-name-label: prod-backend
+                  name: backend
                   image: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
                   registry-login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
                   registry-username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
