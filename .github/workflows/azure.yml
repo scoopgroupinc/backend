@@ -114,7 +114,7 @@ jobs:
               with:
                   resource-group: scoop-dev-rg
                   dns-name-label: scoop-dev.h4atavatenajbtd5.eastus.azurecontainer.io
-                  name: backend
+                  name: scoop-dev-container-instance
                   image: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:latest
                   registry-login-server: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
                   registry-username: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
