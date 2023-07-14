@@ -117,7 +117,7 @@ jobs:
             - name: Login to Azure
               uses: azure/login@v1
               with:
-                  creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
+                  creds: '{ "clientId": "9c8b9d97-c61c-4cdd-8a67-cafcb8ad9e3b", "clientSecret": "lX68Q~FHbHRRPhDN7n7mUbCFt6MM3lfS3W_CldBe", "subscriptionId": "8a7e83da-3056-4eb5-ba93-a6ca58a52b8c", "tenantId": "c708bb4a-df34-44bf-af6e-cbbfcb55a8ac", "activeDirectoryEndpointUrl": "https://login.microsoftonline.com", "resourceManagerEndpointUrl": "https://management.azure.com/", "activeDirectoryGraphResourceId": "https://graph.windows.net/", "sqlManagementEndpointUrl": "https://management.core.windows.net:8443/", "galleryEndpointUrl": "https://gallery.azure.com/", "managementEndpointUrl": "https://management.core.windows.net/"}'
 
             - name: Print variables
               run: |
