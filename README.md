@@ -78,7 +78,7 @@ Use Nest CLI to generate entities
 
 -   https://docs.nestjs.com/cli/overview
 
-# Running a server and DB locally
+# Running a server and DB locally.
 
 -   Download https://www.postgresql.org/download/
 -   download the installer and follow the install instructions
