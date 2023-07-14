@@ -117,7 +117,7 @@ jobs:
             - name: Login to Azure
               uses: azure/login@v1
               with:
-                  credentials: ${{ secrets.AZURE_CREDENTIALS_DEV }}
+                  creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
 
             - name: Deploy to Azure Container Instances (Development)
               uses: azure/aci-deploy@v1
@@ -147,7 +147,7 @@ jobs:
             - name: Login to Azure
               uses: azure/login@v1
               with:
-                  credentials: ${{ secrets.AZURE_CREDENTIALS_PROD }}
+                  creds: ${{ secrets.AZURE_CREDENTIALS_PROD }}
 
             - name: Deploy to Azure Container Instances (Production)
               uses: azure/aci-deploy@v1
