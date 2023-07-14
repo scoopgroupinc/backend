@@ -113,7 +113,7 @@ jobs:
               uses: azure/aci-deploy@v1
               with:
                   resource-group: scoop-dev-rg
-                  dns-name-label: scoop-backend-dns
+                  dns-name-label: scoop-dev-backend-dns
                   name: scoop-dev-backend-ci
                   image: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:latest
                   registry-login-server: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
@@ -123,6 +123,10 @@ jobs:
                   cpu: 1
                   memory: 1.5
                   location: eastus
+                  debug: true
+                  rollback-on-error: true
+                  template-file: ./azure/dev/template.json
+                  parameters: ./azure/dev/parameters.json
 
     # deploy-prod:
     #     runs-on: ubuntu-latest
