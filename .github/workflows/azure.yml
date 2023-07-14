@@ -113,8 +113,8 @@ jobs:
               uses: azure/aci-deploy@v1
               with:
                   resource-group: scoop-dev-rg
-                  dns-name-label: scoop-dev.h4atavatenajbtd5.eastus.azurecontainer.io
-                  name: scoop-dev-container-instance
+                  dns-name-label: scoop-dev-backend
+                  name: backend
                   image: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:latest
                   registry-login-server: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
                   registry-username: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
