@@ -116,9 +116,9 @@ jobs:
 
             - name: Print variables
               run: |
-                  echo "{{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}"
-                  echo "{{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}"
-                  echo "{{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
+                  echo "${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}"
+                  echo "${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}"
+                  echo "${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}"
 
             - name: Login to Azure
               uses: azure/login@v1
