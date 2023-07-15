@@ -64,9 +64,9 @@ jobs:
 
     #         - name: Set secrets as build arguments
     #           env:
-    #               DB_DATABASE: ${{ secrets.DB_DATABASE_PROD }}
+    #               DB_DATABASE: ${{ vars.DB_DATABASE_PROD }}
     #               DB_HOST: ${{ secrets.DB_HOST_PROD }}
-    #               DB_USERNAME: ${{ secrets.DB_USERNAME_PROD }}
+    #               DB_USERNAME: ${{ vars.DB_USERNAME_PROD }}
     #               DB_PORT: ${{ vars.DB_PORT_PROD }}
     #               DB_PASSWORD: ${{ secrets.DB_PASSWORD_PROD }}
     #               JWT_SECRET: ${{ secrets.JWT_SECRET_PROD }}
@@ -94,6 +94,8 @@ jobs:
     #           run: |
     #               docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }} -f Dockerfile.prod --build-arg DB_DATABASE="${DB_DATABASE}" --build-arg DB_HOST="${DB_HOST}" --build-arg DB_USERNAME="${DB_USERNAME}" --build-arg DB_PORT="${DB_PORT}" --build-arg DB_PASSWORD="${DB_PASSWORD}" --build-arg JWT_SECRET="${JWT_SECRET}" --build-arg PORT="${PORT}" .
     #               docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
+    #               docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:latest -f Dockerfile.prod --build-arg DB_DATABASE="${DB_DATABASE}" --build-arg DB_HOST="${DB_HOST}" --build-arg DB_USERNAME="${DB_USERNAME}" --build-arg DB_PORT="${DB_PORT}" --build-arg DB_PASSWORD="${DB_PASSWORD}" --build-arg JWT_SECRET="${JWT_SECRET}" --build-arg PORT="${PORT}" .
+    #               docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:latest
 
     deploy-dev:
         runs-on: ubuntu-latest
@@ -152,8 +154,8 @@ jobs:
     #           uses: azure/aci-deploy@v1
     #           with:
     #               resource-group: scoop-prod-rg
-    #               dns-name-label: prod-backend
-    #               name: backend
+    #               dns-name-label: scoop-prod-backend-dns
+    #               name: scoop-prod-backend-ci
     #               image: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
     #               registry-login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
     #               registry-username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
@@ -162,3 +164,4 @@ jobs:
     #               cpu: 1
     #               memory: 1.5
     #               location: eastus
+    #               restart-policy: Never
