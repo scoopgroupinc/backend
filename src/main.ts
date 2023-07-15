@@ -18,8 +18,8 @@ async function bootstrap() {
     app.useGlobalPipes(new ValidationPipe())
     app.setViewEngine('ejs')
     const configService = app.get(ConfigService)
-    const port = configService.get('PORT')
+    const port = configService.get('port')
     console.log(port)
-    await app.listen(process.env.PORT||port)
+    await app.listen(port || process.env.PORT)
 }
 bootstrap()

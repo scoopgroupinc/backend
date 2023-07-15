@@ -39,15 +39,16 @@ if (process.env.NODE_ENV === 'local') {
 
 export const config = () => {
     return {
-        port: parseInt(process.env.PORT, 10),
+        port: parseInt(process.env.PORT, 10) || 4000,
         jwtSecret: process.env.JWT_SECRET,
+        jwtExpiresIn: parseInt(process.env.JWT_EXPIRES_IN, 10) || 86400,
         database: {
-            type: process.env.DB_TYPE,
+            type: process.env.DB_TYPE || 'postgres',
             host: process.env.DB_HOST,
-            port: process.env.DB_PORT,
-            username: process.env.DB_USERNAME,
+            port: parseInt(process.env.DB_PORT, 10) || 5432,
+            username: process.env.DB_USERNAME || 'postgres',
             password: process.env.DB_PASSWORD,
-            database: process.env.DB_DATABASE,
+            database: process.env.DB_DATABASE || 'postgres',
             // synchronize: true,
             logging: false,
             entities: [
@@ -76,9 +77,9 @@ export const config = () => {
                 GroupCodes,
                 UserGroupCodes,
             ],
-            // ssl: {
-            //     rejectUnauthorized: false,
-            // },
+            ssl: {
+                rejectUnauthorized: false,
+            },
         },
         fileServer_Url: process.env.BE_FILE_SERVER_URL,
     }

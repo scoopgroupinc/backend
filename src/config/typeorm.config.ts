@@ -13,8 +13,7 @@ import { RatingComment } from '../rating-comment/entities/rating-comment.entity'
 import { RatingGroup } from '../rating-group/entities/rating-group.entity'
 import * as path from 'path'
 
-const { type, host, port, username, password, database, synchronize } =
-    config.get('DB')
+const { type, host, port, username, password, database, synchronize } = config.get('DB')
 console.log(host)
 export const typeOrmConfig: TypeOrmModuleOptions = {
     type: type,

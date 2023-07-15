@@ -6,7 +6,6 @@ import { GraphQLModule } from '@nestjs/graphql'
 import { MailerModule } from '@nestjs-modules/mailer'
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter'
 import { join } from 'path'
-import { DatabaseConfig } from './config/database.config'
 import * as configs from 'config'
 import { AuthModule } from './auth/auth.module'
 import { config } from './config/config'
@@ -47,9 +46,11 @@ const { user, pass, host, port } = configs.get('mail')
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
-            useFactory: (database: ConfigService) => database.get('database'),
+            useFactory: (configService: ConfigService) => {
+                console.log(configService.get('database'))
+                return configService.get('database')
+            },
         }),
-
         MailerModule.forRoot({
             // transport: 'smtps://user@domain.com:pass@smtp.domain.com',
             transport: {
