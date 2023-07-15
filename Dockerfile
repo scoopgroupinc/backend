@@ -37,7 +37,7 @@ RUN echo "DB_TYPE: $DB_TYPE" && \
     echo "DB_PASSWORD: $DB_PASSWORD" && \
     echo "JWT_SECRET: $JWT_SECRET" && \
     echo "JWT_EXPIRES_IN: $JWT_EXPIRES_IN" && \
-    echo "PORT: $PORT"
+    echo "PORT: $PORT" && \
     echo "BE_FILE_SERVER_URL: $BE_FILE_SERVER_URL"
 
 # Set environment variables
