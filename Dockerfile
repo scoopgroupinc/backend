@@ -26,7 +26,8 @@ ARG JWT_SECRET
 ARG PORT
 
 # Print environment variables during build
-RUN echo "DB_DATABASE: $DB_DATABASE" && \
+RUN echo "DB_TYPE: $DB_TYPE" && \
+    echo "DB_DATABASE: $DB_DATABASE" && \
     echo "DB_HOST: $DB_HOST" && \
     echo "DB_USERNAME: $DB_USERNAME" && \
     echo "DB_PORT: $DB_PORT" && \
@@ -35,6 +36,7 @@ RUN echo "DB_DATABASE: $DB_DATABASE" && \
     echo "PORT: $PORT"
 
 # Set environment variables
+ENV DB_TYPE=$DB_TYPE
 ENV DB_DATABASE=$DB_DATABASE
 ENV DB_HOST=$DB_HOST
 ENV DB_USERNAME=$DB_USERNAME
@@ -47,7 +49,7 @@ ENV PORT=$PORT
 RUN yarn build
 
 # Expose a port if your application needs to listen on a specific port
-EXPOSE 4000
+EXPOSE $PORT
 
 # Define the command to start your Node.js application
 CMD [ "yarn", "start:prod" ]
