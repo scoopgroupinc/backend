@@ -43,13 +43,13 @@ export const config = () => {
         jwtSecret: process.env.JWT_SECRET,
         jwtExpiresIn: parseInt(process.env.JWT_EXPIRES_IN, 10) || 86400,
         database: {
-            type: process.env.DB_TYPE || 'postgres',
-            host: process.env.DB_HOST,
-            port: parseInt(process.env.DB_PORT, 10) || 5432,
-            username: process.env.DB_USERNAME || 'postgres',
-            password: process.env.DB_PASSWORD,
-            database: process.env.DB_DATABASE || 'postgres',
-            // synchronize: true,
+            type: 'postgres',
+            host: 'scoop-dev-db-flexible-server.postgres.database.azure.com',
+            port: 5432,
+            username: 'postgres',
+            password: '123Scoop2022',
+            database: 'postgres',
+            synchronize: true, //true if setting up
             logging: false,
             entities: [
                 User,
