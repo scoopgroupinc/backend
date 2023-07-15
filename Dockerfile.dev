@@ -17,6 +17,7 @@ COPY . .
 RUN ls -a
 
 # Build the application
+ARG DB_TYPE
 ARG DB_DATABASE
 ARG DB_HOST
 ARG DB_USERNAME
