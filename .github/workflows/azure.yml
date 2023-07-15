@@ -37,6 +37,17 @@ jobs:
                   echo "JWT_SECRET=${JWT_SECRET}" >> $GITHUB_ENV
                   echo "PORT=${PORT}" >> $GITHUB_ENV
 
+            - name: Print env variables
+              run: |
+                  echo "DB_TYPE=${DB_TYPE}" 
+                  echo "DB_DATABASE=$DB_DATABASE"
+                  echo "DB_HOST=$DB_HOST"
+                  echo "DB_USERNAME=$DB_USERNAME"
+                  echo "DB_PORT=$DB_PORT"
+                  echo "DB_PASSWORD=$DB_PASSWORD"
+                  echo "JWT_SECRET=$JWT_SECRET"
+                  echo "PORT=$PORT"
+
             - uses: actions/setup-node@v3
               with:
                   node-version: '16'
