@@ -54,10 +54,11 @@ Table user_profile {
   company varchar(50)
   homeTown varchar(30)
   school varchar(50)
-  
+  promptIds big_int[6] [note: 'order of prompts being shown in user profile view']
 }
 Ref: "users"."userId" - "user_profile"."userId"
 Ref: "user_profile"."locationId" < "location"."id"
+Ref: "user_profile"."promptIds" < "user_prompts"."id"
 
 // if the user is blocked, then they can't be seen by the other user (does not appear as vote, match, or chat)
 Table user_blocked_by {
@@ -136,13 +137,6 @@ Table tags {
   emoji varchar(5)
 }
 
-Table user_display {
-  userId big_int [pk, increment]
-  userPromptIds big_int[6] [note: 'order of prompts being shown in user profile view']
- 
-}
-Ref: "user_display"."userPromptIds" < "user_prompts"."id"
-
 // note: everytime the user updates/adds a prompt a new user_prompts is created.
 Table user_prompts {
   id bigint [pk, increment]
@@ -169,8 +163,13 @@ Table user_visuals {
 }
 
 Ref: "users"."userId" < "user_visuals"."userId"
-Ref: "user_visuals"."visualPromptId" < "prompts"."id"
-  
+Ref: "user_visuals"."visualPromptId" < "visual_prompts"."id"
+
+Table visual_prompts {
+  id bigint [pk, increment]
+  prompt varchar
+}
+
 Enum swipe_choice {
   yes
   no
@@ -375,8 +374,6 @@ Table notifications {
 Ref: "notifications"."userId" < "users"."userId"
 
 
-Ref: "users"."userId" < "user_display"."userId"
-
 // ethnicity, sports, smoking, cannabis, alcohol, drugs, diet, languages, musicGenre, creativeOulet, religions, religiousPractice, zodiac, meyerBriggs, characteristics, politics, parentingGoal, relationshipGoals, relationshipTypes, pets
 Table user_tags {
 id  bigint [pk, increment]
@@ -434,6 +431,3 @@ Table user_group_codes{
 }
 Ref: "group_codes"."id" < "user_group_codes"."codeId"
 Ref: "user_group_codes"."userId" < "users"."userId"
-
-
-

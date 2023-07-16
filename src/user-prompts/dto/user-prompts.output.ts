@@ -1,20 +1,20 @@
-import { Field, ID, InputType, ObjectType } from '@nestjs/graphql'
+import { Field, ID, ObjectType } from '@nestjs/graphql'
 import { IsNotEmpty, IsString } from 'class-validator'
 
 @ObjectType()
 export class UserPromptsOutput {
     @Field(() => ID)
-    id?: string
+    id: string
 
     @Field()
     createdAt?: string
 
-    @Field(() => String, { nullable: true })
+    @Field(() => String)
     @IsNotEmpty()
     @IsString()
     userId: string
 
-    @Field(() => String, { nullable: true })
+    @Field(() => String)
     @IsNotEmpty()
     @IsString()
     promptId: string
@@ -23,7 +23,18 @@ export class UserPromptsOutput {
     @IsString()
     prompt?: string
 
-    @Field(() => String, { nullable: true })
+    @Field(() => String)
     @IsNotEmpty()
     answer: string
+}
+
+type UserPromptMap = { [key: string]: UserPromptsOutput }
+
+@ObjectType()
+export class GetUserPromptsOutput {
+    @Field(() => ObjectType, { nullable: true })
+    userPrompts: UserPromptMap
+
+    @Field(() => [String])
+    promptIds: string[]
 }

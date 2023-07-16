@@ -91,6 +91,7 @@ type UserProfile {
   company: String
   homeTown: String
   school: String
+  promptIds: [String!]
 }
 
 type UserPreference {
@@ -193,10 +194,10 @@ type AverageOutput {
 type UserPromptsOutput {
   id: ID!
   createdAt: String!
-  userId: String
-  promptId: String
+  userId: String!
+  promptId: String!
   prompt: String
-  answer: String
+  answer: String!
 }
 
 type BlockUserOutput {
@@ -343,7 +344,7 @@ type Query {
   """
   uploadPrompts(promptType: String!): String!
   getUserPromptsOrder(userPromptsOrder: IGetPromptOrder!): [UserPromptsOutput!]!
-  getUserPrompts(userId: String!): [UserPromptsOutput!]!
+  getUserPrompts(userId: String!): String!
   getAllOpenComplaints(complaintsFilter: ComplaintsFilter!): [ComplaintsOutput!]!
   getAComplaint(complaintId: String!): ComplaintsOutput!
   isUserBlocked(userId: String!, userIds: [String!]!): [BlockUserOutput!]!
@@ -411,7 +412,7 @@ type Mutation {
   addNewPrompt(promptInput: PromptsInput!): Prompts!
   saveUserPrompt(UserPromptInput: UserPromptsInput!): UserPromptsOutput!
   saveUserPrompts(UserPromptInput: [UserPromptsInput!]!): [UserPromptsOutput!]!
-  saveUserPromptsOrder(userPromptsOrder: UserPromptsOrder!): String!
+  saveUserPromptsOrder(userPromptsOrder: UserPromptsOrderInput!): String!
   saveNewCompliants(complaintsInput: ComplaintsInput!): String!
   updateComplaint(complaintsInput: ComplaintsInput!): String!
   closeComplaints(complaintId: String!): String!
@@ -598,9 +599,9 @@ input UserPromptsInput {
   answer: String!
 }
 
-input UserPromptsOrder {
+input UserPromptsOrderInput {
   userId: String!
-  userPromptIds: [String!]!
+  promptIds: [String!]!
 }
 
 input ComplaintsInput {

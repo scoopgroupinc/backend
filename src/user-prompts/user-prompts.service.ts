@@ -1,29 +1,20 @@
-import { HttpService } from '@nestjs/axios'
-import {
-    BadRequestException,
-    HttpException,
-    HttpStatus,
-    Injectable,
-} from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Not, Repository } from 'typeorm'
+import { Repository } from 'typeorm'
 import { UserPromptsInput } from './dto/user-prompts.input'
 import { UserPrompts } from './entities/user-prompts.entity'
-import { ConfigService } from '@nestjs/config'
-import { lastValueFrom, map } from 'rxjs'
-import { PromptsService } from 'src/prompts/prompts.service'
-import { IGetPromptOrder, UserPromptsOrder } from './dto/user-prompts-order'
-import { UserPromptsOutput } from './dto/user-prompts.output'
+import { IGetPromptOrder } from './dto/user-prompts-order'
 import { RatingService } from 'src/rating/rating.service'
+import { UserProfileService } from 'src/user-profile/user-profile.service'
+import { UserPromptsOrderInput } from 'src/user-profile/dto/user-prompts-order.input'
 
 @Injectable()
 export class UserPromptsService {
     constructor(
         @InjectRepository(UserPrompts)
         private userPromptsRepository: Repository<UserPrompts>,
-        private httpService: HttpService,
-        private promptService: PromptsService,
-        private ratingeService: RatingService
+        private ratingeService: RatingService,
+        private userProfileService: UserProfileService
     ) {}
 
     async saveUserPrompt(userPromptsInput: UserPromptsInput): Promise<any> {
@@ -34,36 +25,70 @@ export class UserPromptsService {
         }
     }
 
+    async saveUserPromptsOrder({
+        userId,
+        promptIds,
+    }: UserPromptsOrderInput): Promise<any> {
+        try {
+            const userPrompts = {}
+            const ids = []
+            await Promise.all(
+                promptIds.map(async (promptId) => {
+                    const prompt = await this.userPromptsRepository.findOne({
+                        userId,
+                        promptId,
+                    })
+                    if (prompt) {
+                        ids.push(prompt.promptId)
+                        userPrompts[prompt.promptId] = prompt
+                    }
+                })
+            )
+            await this.userProfileService.saveUserPromptsOrder({
+                userId,
+                promptIds: ids,
+            })
+            return {
+                userPrompts,
+                promptIds: ids,
+            }
+        } catch (error) {
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    // saves a new prompt, so that history of changes are all kept
     async saveUserPrompts(userPromptsInput: UserPromptsInput[]): Promise<any> {
         try {
-            const results = []
+            const userPrompts = {}
+            const promptIds = []
             await Promise.all(
                 userPromptsInput.map(async (userPrompt) => {
+                    promptIds.push(userPrompt.promptId)
+                    userPrompts[userPrompt.promptId] = userPrompt
                     const existingUserPrompt =
                         await this.userPromptsRepository.findOne({
                             userId: userPrompt.userId,
                             promptId: userPrompt.promptId,
                         })
                     if (
-                        existingUserPrompt?.answer.toLowerCase() ===
-                        userPrompt?.answer.toLowerCase()
-                    )
-                        return
-                    if (existingUserPrompt) {
-                        existingUserPrompt.answer = userPrompt.answer
-                        results.push(
-                            await this.userPromptsRepository.save(
-                                existingUserPrompt
-                            )
-                        )
-                    } else {
-                        results.push(
-                            await this.userPromptsRepository.save(userPrompt)
-                        )
+                        !existingUserPrompt ||
+                        existingUserPrompt?.answer.toLowerCase() !==
+                            userPrompt?.answer.toLowerCase()
+                    ) {
+                        await this.userPromptsRepository.save(userPrompt)
                     }
                 })
             )
-            return results
+            await this.userProfileService.saveUserPromptsOrder({
+                userId: userPromptsInput[0].userId,
+                promptIds,
+            })
+
+            return {
+                userPrompts,
+                promptIds,
+            }
         } catch (error) {
             console.log(error)
             throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
@@ -74,68 +99,63 @@ export class UserPromptsService {
         userId,
         raterId,
     }: IGetPromptOrder): Promise<any> {
-        const userPromptIds = await lastValueFrom(
-            this.httpService.get(userId).pipe(map((response) => response.data))
+        // const userPromptIds = await lastValueFrom(
+        //     this.httpService.get(userId).pipe(map((response) => response.data))
+        // )
+
+        const userPromptIds = await this.userProfileService.getUserPromptsOrder(
+            userId
         )
         if (!userPromptIds || !userPromptIds.length) {
             return []
         }
 
-        const userDisplay = await this.userPromptsRepository
-            .createQueryBuilder('userprompts')
-            .where('userprompts.id IN (:...userPromptIds)', {
-                userPromptIds,
-            })
-            .getMany()
-        const results = []
-        await Promise.all(
-            userDisplay.map(async (display) => {
-                results.push({
-                    ...display,
-                    prompt: await (
-                        await this.promptService.findOne(display.promptId)
-                    ).prompt,
-                })
-            })
-        )
-        if (raterId) {
-            /*make request to check if contents have been rated before and 
-              return random unrated prompt by user
-            */
-            return await this.getRaterContent(raterId, userPromptIds, results)
-        }
-        return results.sort(
-            (a, b) => userPromptIds.indexOf(a.id) - userPromptIds.indexOf(b.id)
-        )
+        // if (raterId) {
+        //     /*make request to check if contents have been rated before and
+        //       return random unrated prompt by user
+        //     */
+        //     return await this.getRaterContent(raterId, userPromptIds, results)
+        // }
+        // return results.sort(
+        //     (a, b) => userPromptIds.indexOf(a.id) - userPromptIds.indexOf(b.id)
+        // )
     }
 
     async getUserPrompts(userId: string) {
         if (userId) {
-            const prompts = await this.userPromptsRepository.find({ userId })
-            const results = []
-            await Promise.all(
-                prompts.map(async (prmpt) => {
-                    results.push({
-                        ...prmpt,
-                        prompt: await (
-                            await this.promptService.findOne(prmpt.promptId)
-                        )?.prompt,
+            try {
+                const userPromptIds =
+                    await this.userProfileService.getUserPromptsOrder(userId)
+                const results = {}
+                await Promise.all(
+                    userPromptIds.map(async (promptId) => {
+                        try {
+                            const userPrompt = await this.userPromptsRepository
+                                .createQueryBuilder('userprompts')
+                                .where('userprompts.userId = :userId', {
+                                    userId,
+                                })
+                                .andWhere('userprompts.promptId = :promptId', {
+                                    promptId,
+                                })
+                                .orderBy('userprompts.createdAt', 'DESC')
+                                .take(1)
+                                .getOne()
+                            results[promptId] = userPrompt
+                        } catch (error) {
+                            // Handle specific error for fetching user prompt by promptId
+                        }
                     })
-                })
-            )
-            return results
+                )
+                return {
+                    userPrompts: results,
+                    promptIds: userPromptIds,
+                }
+            } catch (error) {
+                // Handle error for fetching user prompt ids
+                throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+            }
         }
-    }
-
-    // calls file service
-    async saveUserPromptsOrder(userPromptsOrder: UserPromptsOrder) {
-        if (userPromptsOrder.userPromptIds.length > 6)
-            return new BadRequestException('Select a maximum of six(6) prompts')
-        return await lastValueFrom(
-            this.httpService
-                .post('', { userPromptsOrder })
-                .pipe(map((response) => response.data))
-        )
     }
 
     async findOne(id: string): Promise<UserPrompts> {
