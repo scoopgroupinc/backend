@@ -17,3 +17,16 @@ export class UserPromptsInput {
     @IsNotEmpty()
     answer: string
 }
+
+@InputType()
+export class UserPromptsFindLatestInput {
+    @Field(() => String)
+    @IsNotEmpty()
+    @IsString()
+    userId: string
+
+    @Field(() => String)
+    @IsNotEmpty()
+    @IsString()
+    promptId: string
+}
