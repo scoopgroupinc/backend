@@ -29,6 +29,15 @@ export class UserChoiceService {
     ) {}
 
     async getUserChoices(userId: string) {
+        // handle fetching of user preference if they havent onboarded yet
+        const userpreference = await this.userPreferenceService.findOne(userId)
+        if (
+            !userpreference ||
+            !userpreference.gender ||
+            userpreference.gender.length === 0
+        )
+            return null
+
         let choices = await this.userChoiceRepository.find({
             swiperId: userId,
             swiperChoice: swiper_choice.unknown,
@@ -39,60 +48,70 @@ export class UserChoiceService {
         })
         /// optionally we can add choices where the swiperchoice is unknown
         //check if user has backlogs of unknowns first before generating the new choices
-        if (!choices || choices.length === 0 || choices.length < 5)
+        if (!choices || choices.length === 0 || choices.length < 5) {
             choices = await this.genUserChoices(userId)
+        }
 
-        const allChoices = []
-        for (const choice of choices) {
-            const user = await this.userService.findOneByID(choice.shownUserId)
-            if (user) {
-                const profile = await this.userProfileService.findOne(
+        if (Array.isArray(choices)) {
+            const allChoices = []
+            for (const choice of choices) {
+                const user = await this.userService.findOneByID(
                     choice.shownUserId
                 )
-                allChoices.push({
-                    ...choice,
-                    choiceName: `${user.firstName} ${user.lastName}`,
-                    gender: profile.gender,
-                    age: moment().diff(profile.birthday, 'years', false),
-                })
+                if (user) {
+                    const profile = await this.userProfileService.findOne(
+                        choice.shownUserId
+                    )
+                    allChoices.push({
+                        ...choice,
+                        choiceName: `${user.firstName} ${user.lastName}`,
+                        gender: profile.gender,
+                        age: moment().diff(profile.birthday, 'years', false),
+                    })
+                }
             }
-        }
-        let uniqueMatches = []
-        allChoices.forEach((item) => {
-            if (
-                !uniqueMatches.find(
-                    (itm) => itm.shownUserId === item.shownUserId
+            let uniqueMatches = []
+            allChoices.forEach((item) => {
+                if (
+                    !uniqueMatches.find(
+                        (itm) => itm.shownUserId === item.shownUserId
+                    )
                 )
-            )
-                uniqueMatches.push(item)
-        })
-        if (uniqueMatches.length > 5) uniqueMatches = uniqueMatches.slice(0, 5)
-        const response = []
-        await Promise.all(
-            uniqueMatches.map(async (match) => {
-                const visuals = await lastValueFrom(
-                    this.httpService
-                        .get(match.shownUserId)
-                        .pipe(map((response) => response.data))
-                )
-                const max = visuals.length
-                const randomIndex = Math.floor(Math.random() * max)
-                const selected = visuals[randomIndex]
-                response.push({
-                    ...match,
-                    prompt: await this.userPromptsService.getUserPromptsOrder({
-                        userId: match.shownUserId,
-                        raterId: userId,
-                    }),
-                    profile:
-                        await this.userTagsTypeVisibleService.allUserTagsTypeVisible(
-                            match.shownUserId
-                        ),
-                    visual: selected,
-                })
+                    uniqueMatches.push(item)
             })
-        )
-        return response
+            if (uniqueMatches.length > 5)
+                uniqueMatches = uniqueMatches.slice(0, 5)
+            const response = []
+            await Promise.all(
+                uniqueMatches.map(async (match) => {
+                    const visuals = await lastValueFrom(
+                        this.httpService
+                            .get(match.shownUserId)
+                            .pipe(map((response) => response.data))
+                    )
+                    const max = visuals.length
+                    const randomIndex = Math.floor(Math.random() * max)
+                    const selected = visuals[randomIndex]
+                    response.push({
+                        ...match,
+                        prompt: await this.userPromptsService.getUserPromptsOrder(
+                            {
+                                userId: match.shownUserId,
+                                raterId: userId,
+                            }
+                        ),
+                        profile:
+                            await this.userTagsTypeVisibleService.allUserTagsTypeVisible(
+                                match.shownUserId
+                            ),
+                        visual: selected,
+                    })
+                })
+            )
+
+            return response
+        }
+        return null
     }
 
     async genUserChoices(userId: string) {
