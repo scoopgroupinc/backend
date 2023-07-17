@@ -1,15 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import {
-    UserPromptsFindLatestInput,
-    UserPromptsInput,
-} from './dto/user-prompts.input'
+import { IUserPromptsFindLatest, IUserPrompt } from './dto/user-prompts.input'
 import { UserPrompts } from './entities/user-prompts.entity'
 import { IGetPromptOrder } from './dto/user-prompts-order'
 import { RatingService } from 'src/rating/rating.service'
 import { UserProfileService } from 'src/user-profile/user-profile.service'
-import { UserPromptsOrderInput } from 'src/user-profile/dto/user-prompts-order.input'
+import { IUserPromptsOrder } from 'src/user-profile/dto/user-prompts-order.input'
 
 @Injectable()
 export class UserPromptsService {
@@ -20,9 +17,7 @@ export class UserPromptsService {
         private userProfileService: UserProfileService
     ) {}
 
-    async handleSaveUserPrompt(
-        userPromptsInput: UserPromptsInput
-    ): Promise<any> {
+    async handleSaveUserPrompt(userPromptsInput: IUserPrompt): Promise<any> {
         try {
             const existingUserPrompt = await this.findLatestPrompt(
                 userPromptsInput
@@ -43,7 +38,7 @@ export class UserPromptsService {
     async findLatestPrompt({
         userId,
         promptId,
-    }: UserPromptsFindLatestInput): Promise<any> {
+    }: IUserPromptsFindLatest): Promise<any> {
         try {
             return await this.userPromptsRepository
                 .createQueryBuilder('userprompts')
@@ -64,7 +59,7 @@ export class UserPromptsService {
     async saveUserPromptsOrder({
         userId,
         promptIds,
-    }: UserPromptsOrderInput): Promise<any> {
+    }: IUserPromptsOrder): Promise<any> {
         try {
             const userPrompts = {}
             const ids = []
@@ -97,7 +92,7 @@ export class UserPromptsService {
     }
 
     // saves a new prompt, so that history of changes are all kept
-    async saveUserPrompts(userPromptsInput: UserPromptsInput[]): Promise<any> {
+    async saveUserPrompts(userPromptsInput: IUserPrompt[]): Promise<any> {
         try {
             const userPrompts = {}
             const promptIds = []
@@ -138,6 +133,8 @@ export class UserPromptsService {
             return []
         }
 
+        return userPromptIds
+
         // if (raterId) {
         //     /*make request to check if contents have been rated before and
         //       return random unrated prompt by user
@@ -149,9 +146,26 @@ export class UserPromptsService {
         // )
     }
 
-    async getUserAnsweredPrompts(userId: string): Promise<any> {
+    async getAllUserPromptsData(userId: string): Promise<any> {
         try {
-            return await this.userPromptsRepository
+            const userPrompts = await this.getUserAnsweredPrompts(userId)
+            const userPromptIds =
+                await this.userProfileService.getUserPromptsOrder(userId)
+            return {
+                userPrompts,
+                promptIds: userPromptIds,
+            }
+        } catch (error) {
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    async getUserAnsweredPrompts(userId: string) {
+        try {
+            const promptIds = await this.userProfileService.getUserPromptsOrder(
+                userId
+            )
+            const answered = await this.userPromptsRepository
                 .createQueryBuilder('userprompts')
                 .where('userprompts.userId = :userId', { userId })
                 .andWhere(
@@ -160,6 +174,14 @@ export class UserPromptsService {
                     (SELECT MAX(p.createdAt) FROM userprompts p WHERE p.userId = :userId AND p.promptId = userprompts.promptId)`
                 )
                 .getMany()
+            const results = {}
+            answered.forEach((userPrompt) => {
+                results[userPrompt.promptId] = userPrompt
+            })
+            return {
+                userPrompts: results,
+                promptIds,
+            }
         } catch (error) {
             throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
         }

@@ -343,8 +343,11 @@ type Query {
   Always specify the prompt type (prompts and visual_prompts) to upload. Pass the prompt type as parameter.
   """
   uploadPrompts(promptType: String!): String!
-  getUserPromptsOrder(userPromptsOrder: IGetPromptOrder!): [UserPromptsOutput!]!
-  getUserPrompts(userId: String!): String!
+  getAllUserPromptsData(userId: String!): [UserPromptsOutput!]!
+  getUserAnsweredPrompts(userId: String!): [UserPromptsOutput!]!
+
+  """method retrieves displayed prompts for a given user."""
+  getUserPromptsDisplayed(userId: String!): String!
   getAllOpenComplaints(complaintsFilter: ComplaintsFilter!): [ComplaintsOutput!]!
   getAComplaint(complaintId: String!): ComplaintsOutput!
   isUserBlocked(userId: String!, userIds: [String!]!): [BlockUserOutput!]!
@@ -359,11 +362,6 @@ type Query {
 input IGetRatingInput {
   contentId: String!
   type: String!
-}
-
-input IGetPromptOrder {
-  userId: String!
-  raterId: String
 }
 
 input ComplaintsFilter {
@@ -410,9 +408,21 @@ type Mutation {
   saveTag(tagInput: TagsInput!): TagsEntity!
   saveRatingGroup(ratingGroupInput: SaveRatingInput!): String!
   addNewPrompt(promptInput: PromptsInput!): Prompts!
-  saveUserPrompt(UserPromptInput: UserPromptsInput!): UserPromptsOutput!
-  saveUserPrompts(UserPromptInput: [UserPromptsInput!]!): [UserPromptsOutput!]!
-  saveUserPromptsOrder(userPromptsOrder: UserPromptsOrderInput!): String!
+
+  """
+  method handles saving a user prompt. It checks if there is an existing prompt with the same answer and saves the new prompt if it's different.
+  """
+  handleSaveUserPrompt(UserPromptInput: IUserPrompt!): UserPromptsOutput!
+
+  """
+  method saves new or changed user prompts. It also saves the order of the prompts and returns the saved prompts and their IDs.
+  """
+  saveUserPrompts(UserPromptInput: [IUserPrompt!]!): [UserPromptsOutput!]!
+
+  """
+  method saves the order of user prompts. It checks if the user has answered each prompt before saving the order. Usecase for saving prompt order changes, where prompt answers have not changed.
+  """
+  saveUserPromptsOrder(userPromptsOrder: IUserPromptsOrder!): String!
   saveNewCompliants(complaintsInput: ComplaintsInput!): String!
   updateComplaint(complaintsInput: ComplaintsInput!): String!
   closeComplaints(complaintId: String!): String!
@@ -593,13 +603,13 @@ input PromptsInput {
   sample_answer: String
 }
 
-input UserPromptsInput {
+input IUserPrompt {
   userId: String!
   promptId: String!
   answer: String!
 }
 
-input UserPromptsOrderInput {
+input IUserPromptsOrder {
   userId: String!
   promptIds: [String!]!
 }
