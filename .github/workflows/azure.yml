@@ -45,7 +45,7 @@ jobs:
 
             - name: Print env variables
               run: |
-                  echo "DB_TYPE=${DB_TYPE}" 
+                  echo "DB_TYPE=$DB_TYPE" 
                   echo "DB_DATABASE=$DB_DATABASE"
                   echo "DB_HOST=$DB_HOST"
                   echo "DB_USERNAME=$DB_USERNAME"
