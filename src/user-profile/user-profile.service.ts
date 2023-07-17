@@ -9,7 +9,7 @@ import { UserProfile } from './entities/user-profile.entity'
 import { Repository } from 'typeorm'
 import { UserProfileInput } from './dto/user-profile.input'
 import logger from 'src/utils/logger'
-import { UserPromptsOrderInput } from './dto/user-prompts-order.input'
+import { IUserPromptsOrder } from './dto/user-prompts-order.input'
 
 @Injectable()
 export class UserProfileService {
@@ -69,7 +69,7 @@ export class UserProfileService {
         try {
             const user = await this.userProfileRespository.findOne({ userId })
             if (user) {
-                return await user.promptIds || []
+                return (await user.promptIds) || []
             }
         } catch (error) {
             logger.debug(error)
@@ -77,8 +77,10 @@ export class UserProfileService {
         }
     }
 
-    async saveUserPromptsOrder(userPromptsOrderInput: UserPromptsOrderInput): Promise<any> {
-        try { 
+    async saveUserPromptsOrder(
+        userPromptsOrderInput: IUserPromptsOrder
+    ): Promise<any> {
+        try {
             const { userId, promptIds } = userPromptsOrderInput
             const profile = await this.findOne(userId)
             if (!profile)
