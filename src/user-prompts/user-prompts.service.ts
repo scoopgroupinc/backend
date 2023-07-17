@@ -7,6 +7,7 @@ import { IGetPromptOrder } from './dto/user-prompts-order'
 import { RatingService } from 'src/rating/rating.service'
 import { UserProfileService } from 'src/user-profile/user-profile.service'
 import { IUserPromptsOrder } from 'src/user-profile/dto/user-prompts-order.input'
+import { GetUserPromptsOutput } from './dto/user-prompts.output'
 
 @Injectable()
 export class UserPromptsService {
@@ -59,9 +60,9 @@ export class UserPromptsService {
     async saveUserPromptsOrder({
         userId,
         promptIds,
-    }: IUserPromptsOrder): Promise<any> {
+    }: IUserPromptsOrder): Promise<GetUserPromptsOutput> {
         try {
-            const userPrompts = {}
+            const userPrompts = []
             const ids = []
             // checks that the user has answered the prompt before saving the order
             await Promise.all(
@@ -72,7 +73,7 @@ export class UserPromptsService {
                     })
                     if (prompt) {
                         ids.push(prompt.promptId)
-                        userPrompts[prompt.promptId] = prompt
+                        userPrompts.push(prompt)
                     }
                 })
             )
@@ -92,14 +93,16 @@ export class UserPromptsService {
     }
 
     // saves a new prompt, so that history of changes are all kept
-    async saveUserPrompts(userPromptsInput: IUserPrompt[]): Promise<any> {
+    async saveUserPrompts(
+        userPromptsInput: IUserPrompt[]
+    ): Promise<GetUserPromptsOutput> {
         try {
-            const userPrompts = {}
+            const userPrompts = []
             const promptIds = []
             await Promise.all(
                 userPromptsInput.map(async (userPrompt) => {
                     promptIds.push(userPrompt.promptId)
-                    userPrompts[userPrompt.promptId] = userPrompt
+                    userPrompts.push(prompt)
                     await this.handleSaveUserPrompt(userPrompt)
                 })
             )
@@ -149,11 +152,12 @@ export class UserPromptsService {
     async getAllUserPromptsData(userId: string): Promise<any> {
         try {
             const userPrompts = await this.getUserAnsweredPrompts(userId)
-            const userPromptIds =
-                await this.userProfileService.getUserPromptsOrder(userId)
+            const promptIds = await this.userProfileService.getUserPromptsOrder(
+                userId
+            )
             return {
                 userPrompts,
-                promptIds: userPromptIds,
+                promptIds,
             }
         } catch (error) {
             throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
@@ -165,7 +169,7 @@ export class UserPromptsService {
             const promptIds = await this.userProfileService.getUserPromptsOrder(
                 userId
             )
-            const answered = await this.userPromptsRepository
+            const userPrompts = await this.userPromptsRepository
                 .createQueryBuilder('userprompts')
                 .where('userprompts.userId = :userId', { userId })
                 .andWhere(
@@ -174,12 +178,9 @@ export class UserPromptsService {
                     (SELECT MAX(p.createdAt) FROM userprompts p WHERE p.userId = :userId AND p.promptId = userprompts.promptId)`
                 )
                 .getMany()
-            const results = {}
-            answered.forEach((userPrompt) => {
-                results[userPrompt.promptId] = userPrompt
-            })
+
             return {
-                userPrompts: results,
+                userPrompts,
                 promptIds,
             }
         } catch (error) {
@@ -192,22 +193,22 @@ export class UserPromptsService {
             try {
                 const userPromptIds =
                     await this.userProfileService.getUserPromptsOrder(userId)
-                const results = {}
+                const userPrompts = []
                 await Promise.all(
                     userPromptIds.map(async (promptId) => {
                         try {
-                            const userPrompt = await this.findLatestPrompt({
+                            const prompt = await this.findLatestPrompt({
                                 userId,
                                 promptId,
                             })
-                            results[promptId] = userPrompt
+                            userPrompts.push(prompt)
                         } catch (error) {
                             // Handle specific error for fetching user prompt by promptId
                         }
                     })
                 )
                 return {
-                    userPrompts: results,
+                    userPrompts,
                     promptIds: userPromptIds,
                 }
             } catch (error) {
