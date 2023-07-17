@@ -1,5 +1,6 @@
 import * as dotenv from 'dotenv'
 import * as path from 'path'
+import * as fs from 'fs'
 import { Auth } from 'src/auth/entities/auth.entity'
 import { User } from '../user/entities/user.entity'
 import { UserDevice } from '../user-devices/entities/user-devices.entity'
@@ -99,7 +100,10 @@ export const config = () => {
                 GroupCodes,
                 UserGroupCodes,
             ],
-            ssl: false,
+            ssl: {
+                rejectUnauthorized: false,
+                ca: process.env.DB_SSL_CA_CERT
+            },
         },
         fileServer_Url: process.env.BE_FILE_SERVER_URL,
     }
