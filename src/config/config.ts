@@ -37,19 +37,41 @@ if (process.env.NODE_ENV === 'local') {
     dotenv.config({ path: path.resolve(__dirname, '../../.env') })
 }
 
+console.log(
+    'type:',
+    process.env.DB_TYPE,
+    'host: ',
+    process.env.DB_HOST,
+    'port: ',
+    process.env.DB_PORT,
+    'username: ',
+    process.env.DB_USERNAME,
+    'password: ',
+    process.env.DB_PASSWORD,
+    'database: ',
+    process.env.DB_DATABASE
+)
+
 export const config = () => {
     return {
         port: parseInt(process.env.PORT, 10) || 4000,
         jwtSecret: process.env.JWT_SECRET,
         jwtExpiresIn: parseInt(process.env.JWT_EXPIRES_IN, 10) || 86400,
         database: {
-            type: 'postgres',
-            host: 'scoop-dev-db-flexible-server.postgres.database.azure.com',
-            port: 5432,
-            username: 'postgres',
-            password: '123Scoop2022',
-            database: 'postgres',
-            synchronize: true, //true if setting up
+            // type: 'postgres',
+            // host: 'scoop-dev-db-flexible-server.postgres.database.azure.com',
+            // port: 5432,
+            // username: 'postgres',
+            // password: '123Scoop2022',
+            // database: 'postgres',
+            // synchronize: true, //true if setting up
+            type: process.env.DB_TYPE,
+            host: process.env.DB_HOST,
+            port: process.env.DB_PORT,
+            username: process.env.DB_USERNAME,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_DATABASE,
+            synchronize: true,
             logging: false,
             entities: [
                 User,
@@ -77,9 +99,7 @@ export const config = () => {
                 GroupCodes,
                 UserGroupCodes,
             ],
-            ssl: {
-                rejectUnauthorized: false,
-            },
+            ssl: false,
         },
         fileServer_Url: process.env.BE_FILE_SERVER_URL,
     }
