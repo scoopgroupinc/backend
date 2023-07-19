@@ -137,6 +137,14 @@ type Prompts {
   sample_answer: String
 }
 
+type UserPrompts {
+  id: ID!
+  createdAt: String!
+  userId: String!
+  promptId: String!
+  answer: String!
+}
+
 type MetaDetails {
   id: ID!
   forceUpdateAndroid: String!
@@ -348,8 +356,8 @@ type Query {
   Always specify the prompt type (prompts and visual_prompts) to upload. Pass the prompt type as parameter.
   """
   uploadPrompts(promptType: String!): String!
-  getAllUserPromptsData(userId: String!): GetUserPromptsOutput!
   getUserAnsweredPrompts(userId: String!): GetUserPromptsOutput!
+  getUserAnsweredPromptsArray(userId: String!): [UserPrompts!]!
 
   """method retrieves displayed prompts for a given user."""
   getUserPromptsDisplayed(userId: String!): GetUserPromptsOutput!

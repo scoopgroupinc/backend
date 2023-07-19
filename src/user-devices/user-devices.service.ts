@@ -1,8 +1,14 @@
-import { Injectable, BadRequestException } from '@nestjs/common'
+import {
+    Injectable,
+    BadRequestException,
+    HttpException,
+    HttpStatus,
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { UserDevice } from './entities/user-devices.entity'
 import { Repository } from 'typeorm'
 import { UserDeviceInput } from './dto/user-devices.inputs'
+import logger from 'src/utils/logger'
 
 @Injectable()
 export class UserDeviceService {
@@ -13,33 +19,55 @@ export class UserDeviceService {
 
     async saveDeviceDetails(userDeviceInput: UserDeviceInput) {
         const { macAddress } = userDeviceInput
-        const device = await this.findOne(macAddress)
 
-        if (device) {
-            return await this.updateLastLogin(macAddress)
+        try {
+            const device = await this.findOne(macAddress)
+
+            if (device) {
+                return await this.updateLastLogin(macAddress)
+            }
+
+            return await this.createOne(userDeviceInput)
+        } catch (error) {
+            logger.debug(error)
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
         }
-
-        return await this.createOne(userDeviceInput)
     }
 
     async findOne(macAddress: string): Promise<UserDevice> {
-        const device = await this.userdeviceRepository.findOne({
-            where: { macAddress },
-        })
+        try {
+            const device = await this.userdeviceRepository.findOne({
+                where: { macAddress },
+            })
 
-        return device
+            return device
+        } catch (error) {
+            logger.debug(error)
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+        }
     }
 
     async createOne(userDeviceInput: UserDeviceInput): Promise<any> {
-        return await this.userdeviceRepository.save(userDeviceInput)
+        try {
+            return await this.userdeviceRepository.save(userDeviceInput)
+        } catch (error) {
+            // Handle the error appropriately (log, rethrow, etc.)
+            logger.debug(error)
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+        }
     }
 
     async updateLastLogin(macAddress: string): Promise<any> {
-        const device = await this.findOne(macAddress)
-        if (!device) throw new BadRequestException('user device not found')
-        return await this.userdeviceRepository.save({
-            ...device,
-            lastLogin: new Date().toISOString().toString(),
-        })
+        try {
+            const device = await this.findOne(macAddress)
+            if (!device) throw new BadRequestException('user device not found')
+            return await this.userdeviceRepository.save({
+                ...device,
+                lastLogin: new Date().toISOString().toString(),
+            })
+        } catch (error) {
+            logger.debug(error)
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+        }
     }
 }

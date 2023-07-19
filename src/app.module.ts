@@ -28,6 +28,7 @@ import { BlockedUserModule } from './blocked-users/blocked-users.module'
 import { UserTagsTypeVisibleModule } from './user-tags-type-visible/user-tags-type-visible.module'
 import { GroupCodesModule } from './group-code/group-code.module'
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
+import logger from './utils/logger'
 
 const { user, pass, host, port } = configs.get('mail')
 @Module({
@@ -47,7 +48,6 @@ const { user, pass, host, port } = configs.get('mail')
             imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: (configService: ConfigService) => {
-                console.log(configService.get('database'))
                 return configService.get('database')
             },
         }),
