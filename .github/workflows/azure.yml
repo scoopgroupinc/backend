@@ -157,7 +157,7 @@ jobs:
                   resource-group: scoop-dev-rg
                   dns-name-label: scoop-dev-backend-dns
                   name: scoop-dev-backend-ci
-                  image: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:2ddcba93e3b884c71068c76b31fc42e940abcaf2
+                  image: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
                   registry-login-server: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
                   registry-username: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
                   registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
