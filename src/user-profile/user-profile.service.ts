@@ -3,12 +3,15 @@ import {
     Injectable,
     BadRequestException,
     NotFoundException,
+    HttpException,
+    HttpStatus,
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { UserProfile } from './entities/user-profile.entity'
 import { Repository } from 'typeorm'
 import { UserProfileInput } from './dto/user-profile.input'
 import logger from 'src/utils/logger'
+import { IUserPromptsOrder } from './dto/user-prompts-order.input'
 
 @Injectable()
 export class UserProfileService {
@@ -18,6 +21,7 @@ export class UserProfileService {
     ) {}
 
     async saveUserProfile(userProfileInput: UserProfileInput) {
+        console.log('saveUserProfile', userProfileInput)
         try {
             const { userId } = userProfileInput
 
@@ -29,7 +33,7 @@ export class UserProfileService {
             return await this.createProfile(userProfileInput)
         } catch (error) {
             logger.debug(error)
-            return error
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
         }
     }
 
@@ -40,14 +44,21 @@ export class UserProfileService {
     }
 
     async updateOne(userProfileInput: UserProfileInput): Promise<any> {
-        const { userId } = userProfileInput
-        const profile = await this.userProfileRespository.findOne({ userId })
-        if (!profile)
-            return new BadRequestException('User profile does not exist')
-        return await this.userProfileRespository.save({
-            ...profile,
-            ...userProfileInput,
-        })
+        try {
+            const { userId } = userProfileInput
+            const profile = await this.userProfileRespository.findOne({
+                userId,
+            })
+            if (!profile)
+                return new BadRequestException('User profile does not exist')
+            return await this.userProfileRespository.save({
+                ...profile,
+                ...userProfileInput,
+            })
+        } catch (error) {
+            logger.debug(error)
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+        }
     }
 
     async createProfile(userProfileInput: UserProfileInput): Promise<any> {
@@ -55,12 +66,47 @@ export class UserProfileService {
     }
 
     async updateProfilePhoto(userId: string, key: string): Promise<any> {
-        const profile = await this.findOne(userId)
-        if (!profile)
-            return new BadRequestException('User profile does not exist')
-        return await this.userProfileRespository.save({
-            ...profile,
-            profilePhoto: key,
-        })
+        try {
+            const profile = await this.findOne(userId)
+            if (!profile)
+                return new BadRequestException('User profile does not exist')
+            return await this.userProfileRespository.save({
+                ...profile,
+                profilePhoto: key,
+            })
+        } catch (error) {
+            logger.debug(error)
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    async getUserPromptsOrder(userId: string): Promise<any> {
+        try {
+            const user = await this.userProfileRespository.findOne({ userId })
+            if (user) {
+                return (await user.promptIds) || []
+            }
+        } catch (error) {
+            logger.debug(error)
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    async saveUserPromptsOrder(
+        userPromptsOrderInput: IUserPromptsOrder
+    ): Promise<any> {
+        try {
+            const { userId, promptIds } = userPromptsOrderInput
+            const profile = await this.findOne(userId)
+            if (!profile)
+                return new BadRequestException('User profile does not exist')
+            return await this.userProfileRespository.save({
+                ...profile,
+                promptIds,
+            })
+        } catch (error) {
+            logger.debug(error)
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+        }
     }
 }

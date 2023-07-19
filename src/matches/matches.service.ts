@@ -2,14 +2,14 @@ import { MailerService } from '@nestjs-modules/mailer'
 import { HttpService } from '@nestjs/axios'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { isNotEmpty } from 'class-validator'
 import * as moment from 'moment'
 import { lastValueFrom, map } from 'rxjs'
 import { UserProfileService } from 'src/user-profile/user-profile.service'
 import { UserService } from 'src/user/user.service'
-import { Between, Repository } from 'typeorm'
+import { Repository } from 'typeorm'
 import { MatchesOutput } from './dto/matches.output'
 import { Matches } from './entities/matches.entity'
+import logger from 'src/utils/logger'
 
 @Injectable()
 export class MatchesService {
@@ -90,7 +90,7 @@ export class MatchesService {
             await this.matchesRpository.update({ id }, { active: false })
             return 'saved'
         } catch (error) {
-            console.log(error)
+            logger.debug(error)
             throw new HttpException('something went wrong', HttpStatus.CONFLICT)
         }
     }

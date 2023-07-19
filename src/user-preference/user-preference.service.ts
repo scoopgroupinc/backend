@@ -12,35 +12,65 @@ export class UserPreferenceService {
     ) {}
 
     async saveUserPreference(userPreferenceInput: UserPreferenceInput) {
-        const { userId } = userPreferenceInput
-        if (await this.findOne(userId))
-            return await this.UpdateOne(userPreferenceInput)
+        try {
+            const { userId } = userPreferenceInput
+            if (await this.findOne(userId)) {
+                return await this.updateOne(userPreferenceInput)
+            }
 
-        return await this.createOne(userPreferenceInput)
+            return await this.createOne(userPreferenceInput)
+        } catch (error) {
+            // Handle the error and throw a custom exception
+            throw new BadRequestException('Failed to save user preference')
+        }
     }
 
     async findOne(userId: string): Promise<UserPreference> {
-        return await this.userPreferenceRepository.findOne({ userId })
+        try {
+            return await this.userPreferenceRepository.findOne({ userId })
+        } catch (error) {
+            // Handle the error and throw a custom exception
+            throw new BadRequestException('Failed to find user preference')
+        }
     }
 
-    async UpdateOne(userPreferenceInput: UserPreferenceInput): Promise<any> {
-        const { userId } = userPreferenceInput
-        const preference = await this.findOne(userId)
-        if (!preference) throw new BadRequestException('User not found')
-        return await this.userPreferenceRepository.save({
-            ...preference,
-            ...userPreferenceInput,
-        })
+    async updateOne(userPreferenceInput: UserPreferenceInput): Promise<any> {
+        try {
+            const { userId } = userPreferenceInput
+            const preference = await this.findOne(userId)
+            if (!preference) {
+                throw new BadRequestException('User not found')
+            }
+            return await this.userPreferenceRepository.save({
+                ...preference,
+                ...userPreferenceInput,
+            })
+        } catch (error) {
+            // Handle the error and throw a custom exception
+            throw new BadRequestException('Failed to update user preference')
+        }
     }
 
     async findManyByGender(gender: string[]): Promise<UserPreference[]> {
-        return await this.userPreferenceRepository
-            .createQueryBuilder('user_preference')
-            .where('user_preference.gender IN(:...gender)', { gender })
-            .getMany()
+        try {
+            return await this.userPreferenceRepository
+                .createQueryBuilder('user_preference')
+                .where('user_preference.gender IN(:...gender)', { gender })
+                .getMany()
+        } catch (error) {
+            // Handle the error and throw a custom exception
+            throw new BadRequestException(
+                'Failed to find user preferences by gender'
+            )
+        }
     }
 
     async createOne(userPreferenceInput: UserPreferenceInput): Promise<any> {
-        return await this.userPreferenceRepository.save(userPreferenceInput)
+        try {
+            return await this.userPreferenceRepository.save(userPreferenceInput)
+        } catch (error) {
+            // Handle the error and throw a custom exception
+            throw new BadRequestException('Failed to create user preference')
+        }
     }
 }
