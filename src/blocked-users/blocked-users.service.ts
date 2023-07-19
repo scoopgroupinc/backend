@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { BlockUserInput } from './dto/blocked-users.input'
 import { BlockedUsers } from './entities/blocked-users.entity'
+import logger from 'src/utils/logger'
 
 @Injectable()
 export class BlockUserService {
@@ -12,40 +13,55 @@ export class BlockUserService {
     ) {}
 
     async blockUser(blockUserInput: BlockUserInput) {
-        await this.blockedUserRepository.save(blockUserInput)
+        try {
+            await this.blockedUserRepository.save(blockUserInput)
+        } catch (error) {
+            logger.debug(error)
+            throw error
+        }
     }
 
     async findOne(blockUserInput: BlockUserInput) {
-        const { blockedUserId, blockerId } = blockUserInput
-        return await this.blockedUserRepository.findOne({
-            blockedUserId,
-            blockerId,
-        })
+        try {
+            const { blockedUserId, blockerId } = blockUserInput
+            return await this.blockedUserRepository.findOne({
+                blockedUserId,
+                blockerId,
+            })
+        } catch (error) {
+            logger.debug(error)
+            throw error
+        }
     }
 
     async checkUserBlocked(userId: string, userIds: string[]) {
-        const result = []
-        for (const id of userIds) {
-            const isBlocked = await this.blockedUserRepository.find({
-                where: [
-                    {
-                        blockerId: userId,
-                        blockedUserId: id,
-                    },
-                    {
-                        blockerId: id,
-                        blockedUserId: userId,
-                    },
-                ],
-            })
-
-            if (isBlocked.length === 0) {
-                result.push({
-                    userId: id,
-                    blocked: false,
+        try {
+            const result = []
+            for (const id of userIds) {
+                const isBlocked = await this.blockedUserRepository.find({
+                    where: [
+                        {
+                            blockerId: userId,
+                            blockedUserId: id,
+                        },
+                        {
+                            blockerId: id,
+                            blockedUserId: userId,
+                        },
+                    ],
                 })
+
+                if (isBlocked.length === 0) {
+                    result.push({
+                        userId: id,
+                        blocked: false,
+                    })
+                }
             }
+            return result
+        } catch (error) {
+            logger.debug(error)
+            throw error
         }
-        return result
     }
 }

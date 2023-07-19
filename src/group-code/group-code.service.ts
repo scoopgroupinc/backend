@@ -74,7 +74,7 @@ export class GroupCodesService {
             codeId: In(codeGroups),
         })
         const groupByCode = groupBy(results, ({ codeId }) => codeId)
-        // console.log(groupByCode)
+        // logger.debug(groupByCode)
         const groupKeys = Object.keys(groupByCode)
         const members = []
         for (const id of groupKeys) {

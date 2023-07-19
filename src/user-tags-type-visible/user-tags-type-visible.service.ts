@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+    HttpException,
+    HttpStatus,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { tagEmoji, tag_type } from 'src/common/enums'
 import { UserTagsService } from 'src/user-tags/user-tags.service'
@@ -62,28 +67,38 @@ export class UserTagsTypeVisibleService {
     }
 
     async saveOneUserTagsTypeVisible(input: UserTagsTypeVisibleInput) {
-        return await this.userTagsService.saveUserTags(input)
+        try {
+            return await this.userTagsService.saveUserTags(input)
+        } catch (error) {
+            logger.debug(error)
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+        }
     }
 
     async allUserTagsTypeVisible(userId: string) {
-        const results = await this.userTagsTypeVisibleRepository.find({
-            userId,
-        })
+        try {
+            const results = await this.userTagsTypeVisibleRepository.find({
+                userId,
+            })
 
-        if (results.length === 0)
-            return new NotFoundException(
-                `User with Id ${userId} has no tag types`
-            )
+            if (results.length === 0)
+                return new NotFoundException(
+                    `User with Id ${userId} has no tag types`
+                )
 
-        // convert emoji
-        const modifiedOutput = results.map((result) => {
-            return {
-                ...result,
-                emoji: this.convertFromHexaToEmoji(result.emoji),
-            }
-        })
+            // convert emoji
+            const modifiedOutput = results.map((result) => {
+                return {
+                    ...result,
+                    emoji: this.convertFromHexaToEmoji(result.emoji),
+                }
+            })
 
-        return modifiedOutput
+            return modifiedOutput
+        } catch (error) {
+            logger.debug(error)
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+        }
     }
 
     convertFromEmojiToHexa(emoji) {

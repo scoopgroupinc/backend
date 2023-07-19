@@ -91,6 +91,7 @@ type UserProfile {
   company: String
   homeTown: String
   school: String
+  promptIds: [String!]
 }
 
 type UserPreference {
@@ -134,6 +135,14 @@ type Prompts {
   prompt: String!
   type: String!
   sample_answer: String
+}
+
+type UserPrompts {
+  id: ID!
+  createdAt: String!
+  userId: String!
+  promptId: String!
+  answer: String!
 }
 
 type MetaDetails {
@@ -190,13 +199,18 @@ type AverageOutput {
   count: Float
 }
 
-type UserPromptsOutput {
+type UserPromptOutput {
   id: ID!
   createdAt: String!
-  userId: String
-  promptId: String
+  userId: String!
+  promptId: String!
   prompt: String
-  answer: String
+  answer: String!
+}
+
+type GetUserPromptsOutput {
+  userPrompts: [UserPromptOutput!]
+  promptIds: [String!]!
 }
 
 type BlockUserOutput {
@@ -235,7 +249,7 @@ type UserChoiceOutput {
   createdAt: DateTime!
   gender: String!
   choiceName: String!
-  prompt: UserPromptsOutput!
+  prompt: UserPromptOutput!
   profile: [UserTagsTypeVisibleEnity!]!
   visual: IVisual
 }
@@ -292,7 +306,7 @@ type Query {
   getUserPreference(userId: String!): UserPreference!
 
   """fetch user location details"""
-  getUserLocation(userId: String!): LocationEntity!
+  getUserLocation(userId: String!): LocationEntity
 
   """fetch a tag"""
   getSpecificTag(id: String!): TagsEntity!
@@ -342,8 +356,11 @@ type Query {
   Always specify the prompt type (prompts and visual_prompts) to upload. Pass the prompt type as parameter.
   """
   uploadPrompts(promptType: String!): String!
-  getUserPromptsOrder(userPromptsOrder: IGetPromptOrder!): [UserPromptsOutput!]!
-  getUserPrompts(userId: String!): [UserPromptsOutput!]!
+  getUserAnsweredPrompts(userId: String!): GetUserPromptsOutput!
+  getUserAnsweredPromptsArray(userId: String!): [UserPrompts!]!
+
+  """method retrieves displayed prompts for a given user."""
+  getUserPromptsDisplayed(userId: String!): GetUserPromptsOutput!
   getAllOpenComplaints(complaintsFilter: ComplaintsFilter!): [ComplaintsOutput!]!
   getAComplaint(complaintId: String!): ComplaintsOutput!
   isUserBlocked(userId: String!, userIds: [String!]!): [BlockUserOutput!]!
@@ -358,11 +375,6 @@ type Query {
 input IGetRatingInput {
   contentId: String!
   type: String!
-}
-
-input IGetPromptOrder {
-  userId: String!
-  raterId: String
 }
 
 input ComplaintsFilter {
@@ -409,9 +421,21 @@ type Mutation {
   saveTag(tagInput: TagsInput!): TagsEntity!
   saveRatingGroup(ratingGroupInput: SaveRatingInput!): String!
   addNewPrompt(promptInput: PromptsInput!): Prompts!
-  saveUserPrompt(UserPromptInput: UserPromptsInput!): UserPromptsOutput!
-  saveUserPrompts(UserPromptInput: [UserPromptsInput!]!): [UserPromptsOutput!]!
-  saveUserPromptsOrder(userPromptsOrder: UserPromptsOrder!): String!
+
+  """
+  method handles saving a user prompt. It checks if there is an existing prompt with the same answer and saves the new prompt if it's different.
+  """
+  handleSaveUserPrompt(UserPromptInput: IUserPrompt!): UserPromptOutput!
+
+  """
+  method saves new or changed user prompts. It also saves the order of the prompts and returns the saved prompts and their IDs.
+  """
+  saveUserPrompts(UserPromptInput: [IUserPrompt!]!): GetUserPromptsOutput!
+
+  """
+  method saves the order of user prompts. It checks if the user has answered each prompt before saving the order. Usecase for saving prompt order changes, where prompt answers have not changed.
+  """
+  saveUserPromptsOrder(userPromptsOrder: IUserPromptsOrder!): GetUserPromptsOutput!
   saveNewCompliants(complaintsInput: ComplaintsInput!): String!
   updateComplaint(complaintsInput: ComplaintsInput!): String!
   closeComplaints(complaintId: String!): String!
@@ -592,15 +616,15 @@ input PromptsInput {
   sample_answer: String
 }
 
-input UserPromptsInput {
+input IUserPrompt {
   userId: String!
   promptId: String!
   answer: String!
 }
 
-input UserPromptsOrder {
+input IUserPromptsOrder {
   userId: String!
-  userPromptIds: [String!]!
+  promptIds: [String!]!
 }
 
 input ComplaintsInput {

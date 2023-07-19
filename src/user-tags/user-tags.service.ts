@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { tag_type } from 'src/common/enums'
 import { UserTagsTypeVisibleInput } from 'src/user-tags-type-visible/dto/create-user-tag-type-visible.input'
@@ -13,26 +13,30 @@ export class UserTagsService {
     ) {}
 
     async saveUserTags(userTagsInput: UserTagsTypeVisibleInput) {
-        // find tags that match userId and tagType and delete them
-        const { userId, tagType, userTags } = userTagsInput
-        const dbUserTags = await this.userTagsRespository.find({
-            userId,
-            tagType: tag_type[tagType],
-        })
-        if (dbUserTags.length > 0) {
-            await this.userTagsRespository.remove(dbUserTags)
-        }
-
-        // save new tags
-        const userTagsToSave = userTags.map((tag) => {
-            return {
+        try {
+            // find tags that match userId and tagType and delete them
+            const { userId, tagType, userTags } = userTagsInput
+            const dbUserTags = await this.userTagsRespository.find({
                 userId,
                 tagType: tag_type[tagType],
-                tagName: tag.tagName,
+            })
+            if (dbUserTags.length > 0) {
+                await this.userTagsRespository.remove(dbUserTags)
             }
-        })
 
-        return await this.userTagsRespository.save(userTagsToSave)
+            // save new tags
+            const userTagsToSave = userTags.map((tag) => {
+                return {
+                    userId,
+                    tagType: tag_type[tagType],
+                    tagName: tag.tagName,
+                }
+            })
+
+            return await this.userTagsRespository.save(userTagsToSave)
+        } catch (error) {
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+        }
     }
 
     async getUserTags(userId: string, tagType: string) {
