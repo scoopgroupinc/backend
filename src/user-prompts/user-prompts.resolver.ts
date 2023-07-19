@@ -42,18 +42,18 @@ export class UserPromptsResolver {
 
     @UseGuards(GqlAuthGuard)
     @Query(() => GetUserPromptsOutput)
-    async getAllUserPromptsData(
-        @Args('userId') userId: string
-    ): Promise<GetUserPromptsOutput> {
-        return await this.userPromptsService.getAllUserPromptsData(userId)
-    }
-
-    @UseGuards(GqlAuthGuard)
-    @Query(() => GetUserPromptsOutput)
     async getUserAnsweredPrompts(
         @Args('userId') userId: string
     ): Promise<GetUserPromptsOutput> {
         return await this.userPromptsService.getUserAnsweredPrompts(userId)
+    }
+
+    @UseGuards(GqlAuthGuard)
+    @Query(() => [UserPrompts])
+    async getUserAnsweredPromptsArray(
+        @Args('userId') userId: string
+    ): Promise<UserPrompts[]> {
+        return await this.userPromptsService.getUserAnsweredPromptsArray(userId)
     }
 
     @UseGuards(GqlAuthGuard)

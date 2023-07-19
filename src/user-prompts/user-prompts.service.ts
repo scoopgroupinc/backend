@@ -8,6 +8,7 @@ import { RatingService } from 'src/rating/rating.service'
 import { UserProfileService } from 'src/user-profile/user-profile.service'
 import { IUserPromptsOrder } from 'src/user-profile/dto/user-prompts-order.input'
 import { GetUserPromptsOutput } from './dto/user-prompts.output'
+import logger from 'src/utils/logger'
 
 @Injectable()
 export class UserPromptsService {
@@ -19,6 +20,7 @@ export class UserPromptsService {
     ) {}
 
     async handleSaveUserPrompt(userPromptsInput: IUserPrompt): Promise<any> {
+        console.log('handleSaveUserPrompt', userPromptsInput)
         try {
             const existingUserPrompt = await this.findLatestPrompt(
                 userPromptsInput
@@ -32,6 +34,7 @@ export class UserPromptsService {
             }
             return userPromptsInput
         } catch (error) {
+            logger.debug(error)
             throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
         }
     }
@@ -40,16 +43,18 @@ export class UserPromptsService {
         userId,
         promptId,
     }: IUserPromptsFindLatest): Promise<any> {
+        console.log('findLatestPrompt', userId, promptId)
+
         try {
             return await this.userPromptsRepository
-                .createQueryBuilder('userprompts')
-                .where('userprompts.userId = :userId', {
+                .createQueryBuilder('user_prompts')
+                .where('user_prompts.userId = :userId', {
                     userId,
                 })
-                .andWhere('userprompts.promptId = :promptId', {
+                .andWhere('user_prompts.promptId = :promptId', {
                     promptId,
                 })
-                .orderBy('userprompts.createdAt', 'DESC')
+                .orderBy('user_prompts.createdAt', 'DESC')
                 .take(1)
                 .getOne()
         } catch (error) {
@@ -61,6 +66,7 @@ export class UserPromptsService {
         userId,
         promptIds,
     }: IUserPromptsOrder): Promise<GetUserPromptsOutput> {
+        console.log('saveUserPromptsOrder', userId, promptIds)
         try {
             const userPrompts = []
             const ids = []
@@ -88,6 +94,7 @@ export class UserPromptsService {
                 promptIds: ids,
             }
         } catch (error) {
+            logger.debug(error)
             throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
         }
     }
@@ -96,6 +103,7 @@ export class UserPromptsService {
     async saveUserPrompts(
         userPromptsInput: IUserPrompt[]
     ): Promise<GetUserPromptsOutput> {
+        console.log('saveUserPrompts', userPromptsInput)
         try {
             const userPrompts = []
             const promptIds = []
@@ -116,7 +124,7 @@ export class UserPromptsService {
                 promptIds,
             }
         } catch (error) {
-            console.log(error)
+            logger.debug(error)
             throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
         }
     }
@@ -125,10 +133,10 @@ export class UserPromptsService {
         userId,
         raterId,
     }: IGetPromptOrder): Promise<any> {
+        console.log('getUserPromptsOrder', userId)
         // const userPromptIds = await lastValueFrom(
         //     this.httpService.get(userId).pipe(map((response) => response.data))
         // )
-
         const userPromptIds = await this.userProfileService.getUserPromptsOrder(
             userId
         )
@@ -149,46 +157,44 @@ export class UserPromptsService {
         // )
     }
 
-    async getAllUserPromptsData(userId: string): Promise<any> {
+    async getUserAnsweredPrompts(userId: string): Promise<any> {
         try {
-            const userPrompts = await this.getUserAnsweredPrompts(userId)
+            const userPrompts = await this.getUserAnsweredPromptsArray(userId)
             const promptIds = await this.userProfileService.getUserPromptsOrder(
                 userId
             )
+            console.log('getUserAnsweredPrompts', userPrompts)
             return {
                 userPrompts,
                 promptIds,
             }
         } catch (error) {
+            logger.debug(error)
             throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
         }
     }
 
-    async getUserAnsweredPrompts(userId: string) {
+    async getUserAnsweredPromptsArray(userId: string): Promise<any> {
+        console.log('getUserAnsweredPrompts', userId)
+
         try {
-            const promptIds = await this.userProfileService.getUserPromptsOrder(
-                userId
-            )
             const userPrompts = await this.userPromptsRepository
-                .createQueryBuilder('userprompts')
-                .where('userprompts.userId = :userId', { userId })
-                .andWhere(
-                    (qb) =>
-                        `userprompts.createdAt = 
-                    (SELECT MAX(p.createdAt) FROM userprompts p WHERE p.userId = :userId AND p.promptId = userprompts.promptId)`
-                )
-                .getMany()
+                .createQueryBuilder('up')
+                .select('up.promptId', 'promptId')
+                .addSelect('MAX(up.createdAt)', 'maxCreatedAt')
+                .where('up.userId = :userId', { userId })
+                .groupBy('up.promptId')
+                .getRawMany()
 
-            return {
-                userPrompts,
-                promptIds,
-            }
+            return userPrompts
         } catch (error) {
+            logger.debug(error)
             throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
         }
     }
 
-    async getUserPromptsDisplayed(userId: string) {
+    async getUserPromptsDisplayed(userId: string): Promise<any> {
+        console.log('getUserPromptsDisplayed', userId)
         if (userId) {
             try {
                 const userPromptIds =
@@ -213,6 +219,7 @@ export class UserPromptsService {
                 }
             } catch (error) {
                 // Handle error for fetching user prompt ids
+                logger.debug(error)
                 throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
             }
         }
