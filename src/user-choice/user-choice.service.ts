@@ -92,20 +92,21 @@ export class UserChoiceService {
                     const max = visuals.length
                     const randomIndex = Math.floor(Math.random() * max)
                     const selected = visuals[randomIndex]
-                    response.push({
-                        ...match,
-                        prompt: await this.userPromptsService.getUserPromptsOrder(
-                            {
-                                userId: match.shownUserId,
-                                raterId: userId,
-                            }
-                        ),
-                        profile:
-                            await this.userTagsTypeVisibleService.allUserTagsTypeVisible(
-                                match.shownUserId
-                            ),
-                        visual: selected,
-                    })
+                    // TODO
+                    // response.push({
+                    //     ...match,
+                    //     prompt: await this.userPromptsService.getUserPromptsOrder(
+                    //         {
+                    //             userId: match.shownUserId,
+                    //             raterId: userId,
+                    //         }
+                    //     ),
+                    //     profile:
+                    //         await this.userTagsTypeVisibleService.allUserTagsTypeVisible(
+                    //             match.shownUserId
+                    //         ),
+                    //     visual: selected,
+                    // })
                 })
             )
 

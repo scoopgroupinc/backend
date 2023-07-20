@@ -12,7 +12,7 @@ export class UserPromptsOrder {
 }
 
 @InputType()
-export class IGetPromptOrder {
+export class GetPromptOrderInput {
     @Field(() => String)
     @IsString()
     userId: string

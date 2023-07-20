@@ -6,7 +6,7 @@ export class UserPromptOutput {
     @Field(() => ID)
     id: string
 
-    @Field()
+    @Field(() => String, { nullable: true })
     createdAt?: string
 
     @Field(() => String)
@@ -33,6 +33,12 @@ export class GetUserPromptsOutput {
     @Field(() => [UserPromptOutput], { nullable: true })
     userPrompts: UserPromptOutput[]
 
+    @Field(() => [String])
+    promptIds: string[]
+}
+
+@ObjectType()
+export class GetUserPromptsOrder {
     @Field(() => [String])
     promptIds: string[]
 }

@@ -175,6 +175,10 @@ type FeedBack {
   createdAt: String!
 }
 
+type GetUserPromptIdsOutput {
+  promptIds: [String!]!
+}
+
 type RatingOutput {
   contentId: String!
   type: String!
@@ -201,7 +205,7 @@ type AverageOutput {
 
 type UserPromptOutput {
   id: ID!
-  createdAt: String!
+  createdAt: String
   userId: String!
   promptId: String!
   prompt: String
@@ -210,6 +214,10 @@ type UserPromptOutput {
 
 type GetUserPromptsOutput {
   userPrompts: [UserPromptOutput!]
+  promptIds: [String!]!
+}
+
+type GetUserPromptsOrder {
   promptIds: [String!]!
 }
 
@@ -301,6 +309,7 @@ type Query {
   getUserDevice(macAddress: String!): UserDevice!
   getAllUserTagsTypeVisible(userId: String!): [UserTagsTypeVisibleEnity!]!
   getUserProfile(userId: String!): UserProfile!
+  getPromptIds(userId: String!): GetUserPromptIdsOutput!
 
   """fetch user preference"""
   getUserPreference(userId: String!): UserPreference!
@@ -356,6 +365,8 @@ type Query {
   Always specify the prompt type (prompts and visual_prompts) to upload. Pass the prompt type as parameter.
   """
   uploadPrompts(promptType: String!): String!
+  getUserPromptsOrder(userId: String!): GetUserPromptsOrder!
+  findLatestPrompt(userId: String!, promptId: String!): UserPrompts!
   getUserAnsweredPrompts(userId: String!): GetUserPromptsOutput!
   getUserAnsweredPromptsArray(userId: String!): [UserPrompts!]!
 
@@ -425,17 +436,15 @@ type Mutation {
   """
   method handles saving a user prompt. It checks if there is an existing prompt with the same answer and saves the new prompt if it's different.
   """
-  handleSaveUserPrompt(UserPromptInput: IUserPrompt!): UserPromptOutput!
+  handleSaveUserPrompt(userPromptInput: UserPromptInput!): UserPromptOutput!
 
-  """
-  method saves new or changed user prompts. It also saves the order of the prompts and returns the saved prompts and their IDs.
-  """
-  saveUserPrompts(UserPromptInput: [IUserPrompt!]!): GetUserPromptsOutput!
+  """method saves new or changed user prompts..."""
+  saveUserPrompts(userPromptsInput: [UserPromptInput!]!): GetUserPromptsOutput!
 
   """
   method saves the order of user prompts. It checks if the user has answered each prompt before saving the order. Usecase for saving prompt order changes, where prompt answers have not changed.
   """
-  saveUserPromptsOrder(userPromptsOrder: IUserPromptsOrder!): GetUserPromptsOutput!
+  saveUserPromptsOrder(userPromptsOrder: UserPromptsOrderInput!): GetUserPromptsOutput!
   saveNewCompliants(complaintsInput: ComplaintsInput!): String!
   updateComplaint(complaintsInput: ComplaintsInput!): String!
   closeComplaints(complaintId: String!): String!
@@ -616,13 +625,13 @@ input PromptsInput {
   sample_answer: String
 }
 
-input IUserPrompt {
+input UserPromptInput {
   userId: String!
   promptId: String!
   answer: String!
 }
 
-input IUserPromptsOrder {
+input UserPromptsOrderInput {
   userId: String!
   promptIds: [String!]!
 }
