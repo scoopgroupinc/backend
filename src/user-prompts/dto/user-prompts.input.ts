@@ -2,7 +2,7 @@ import { Field, InputType } from '@nestjs/graphql'
 import { IsNotEmpty, IsString } from 'class-validator'
 
 @InputType()
-export class IUserPrompt {
+export class UserPromptInput {
     @Field(() => String)
     @IsNotEmpty()
     @IsString()
@@ -19,7 +19,7 @@ export class IUserPrompt {
 }
 
 @InputType()
-export class IUserPromptsFindLatest {
+export class UserPromptInputsFindLatest {
     @Field(() => String)
     @IsNotEmpty()
     @IsString()

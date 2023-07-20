@@ -2,13 +2,14 @@ import { UseGuards } from '@nestjs/common'
 import { Args, Mutation, Resolver, Query } from '@nestjs/graphql'
 import { GqlAuthGuard } from 'src/auth/guards/jwt-auth.guard'
 import {
+    GetUserPromptsOrder,
     GetUserPromptsOutput,
     UserPromptOutput,
 } from './dto/user-prompts.output'
 import { UserPrompts } from './entities/user-prompts.entity'
 import { UserPromptsService } from './user-prompts.service'
-import { IUserPromptsOrder } from 'src/user-profile/dto/user-prompts-order.input'
-import { IUserPrompt } from './dto/user-prompts.input'
+import { UserPromptsOrderInput } from 'src/user-profile/dto/user-prompts-order.input'
+import { UserPromptInput } from './dto/user-prompts.input'
 
 @Resolver(() => UserPrompts)
 export class UserPromptsResolver {
@@ -20,24 +21,38 @@ export class UserPromptsResolver {
             "method handles saving a user prompt. It checks if there is an existing prompt with the same answer and saves the new prompt if it's different.",
     })
     async handleSaveUserPrompt(
-        @Args('UserPromptInput') userPromptInput: IUserPrompt
+        @Args('userPromptInput') userPromptInput: UserPromptInput
     ): Promise<UserPromptOutput> {
         return await this.userPromptsService.handleSaveUserPrompt(
             userPromptInput
         )
     }
 
-    @UseGuards(GqlAuthGuard)
     @Mutation(() => GetUserPromptsOutput, {
-        name: 'saveUserPrompts',
-        description:
-            'method saves new or changed user prompts. It also saves the order of the prompts and returns the saved prompts and their IDs.',
+        description: 'method saves new or changed user prompts...',
     })
     async saveUserPrompts(
-        @Args('UserPromptInput', { type: () => [IUserPrompt] })
-        userPromptInput: IUserPrompt[]
-    ): Promise<GetUserPromptsOutput> {
-        return await this.userPromptsService.saveUserPrompts(userPromptInput)
+        @Args('userPromptsInput', { type: () => [UserPromptInput] })
+        userPromptsInput: UserPromptInput[]
+    ): Promise<any> {
+        return await this.userPromptsService.saveUserPrompts(userPromptsInput)
+    }
+
+    @UseGuards(GqlAuthGuard)
+    @Query(() => GetUserPromptsOrder)
+    async getUserPromptsOrder(@Args('userId') userId: string): Promise<any> {
+        return await this.userPromptsService.getUserPromptsOrder(userId)
+    }
+
+    @Query(() => UserPrompts)
+    async findLatestPrompt(
+        @Args('userId', { type: () => String }) userId: string,
+        @Args('promptId', { type: () => String }) promptId: string
+    ): Promise<UserPrompts> {
+        return await this.userPromptsService.findLatestPrompt({
+            userId,
+            promptId,
+        })
     }
 
     @UseGuards(GqlAuthGuard)
@@ -52,7 +67,7 @@ export class UserPromptsResolver {
     @Query(() => [UserPrompts])
     async getUserAnsweredPromptsArray(
         @Args('userId') userId: string
-    ): Promise<UserPrompts[]> {
+    ): Promise<any> {
         return await this.userPromptsService.getUserAnsweredPromptsArray(userId)
     }
 
@@ -62,7 +77,7 @@ export class UserPromptsResolver {
             'method saves the order of user prompts. It checks if the user has answered each prompt before saving the order. Usecase for saving prompt order changes, where prompt answers have not changed.',
     })
     async saveUserPromptsOrder(
-        @Args('userPromptsOrder') userPromptsOrder: IUserPromptsOrder
+        @Args('userPromptsOrder') userPromptsOrder: UserPromptsOrderInput
     ): Promise<GetUserPromptsOutput> {
         return await this.userPromptsService.saveUserPromptsOrder(
             userPromptsOrder

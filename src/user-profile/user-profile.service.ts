@@ -11,7 +11,7 @@ import { UserProfile } from './entities/user-profile.entity'
 import { Repository } from 'typeorm'
 import { UserProfileInput } from './dto/user-profile.input'
 import logger from 'src/utils/logger'
-import { IUserPromptsOrder } from './dto/user-prompts-order.input'
+import { UserPromptsOrderInput } from './dto/user-prompts-order.input'
 
 @Injectable()
 export class UserProfileService {
@@ -80,12 +80,15 @@ export class UserProfileService {
         }
     }
 
-    async getUserPromptsOrder(userId: string): Promise<any> {
+    async getUserPromptIds(userId: string): Promise<any> {
         try {
-            const user = await this.userProfileRespository.findOne({ userId })
-            if (user) {
-                return (await user.promptIds) || []
+            const userProfile = await this.userProfileRespository.findOne({
+                userId,
+            })
+            if (userProfile) {
+                return { promptIds: userProfile.promptIds }
             }
+            return []
         } catch (error) {
             logger.debug(error)
             throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
@@ -93,7 +96,7 @@ export class UserProfileService {
     }
 
     async saveUserPromptsOrder(
-        userPromptsOrderInput: IUserPromptsOrder
+        userPromptsOrderInput: UserPromptsOrderInput
     ): Promise<any> {
         try {
             const { userId, promptIds } = userPromptsOrderInput
