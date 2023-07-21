@@ -155,7 +155,7 @@ jobs:
               uses: azure/aci-deploy@v1
               with:
                   resource-group: scoop-dev-rg
-                  dns-name-label: scoop-dev-backend-dns
+                  dns-name-label: scoop-dev-backend
                   name: scoop-dev-backend-ci
                   image: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
                   registry-login-server: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
@@ -187,7 +187,7 @@ jobs:
     #           uses: azure/aci-deploy@v1
     #           with:
     #               resource-group: scoop-prod-rg
-    #               dns-name-label: scoop-prod-backend-dns
+    #               dns-name-label: scoop-dev-prod
     #               name: scoop-prod-backend-ci
     #               image: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
     #               registry-login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
