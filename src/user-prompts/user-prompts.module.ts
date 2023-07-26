@@ -12,17 +12,6 @@ import { UserProfileModule } from 'src/user-profile/user-profile.module'
 @Module({
     imports: [
         TypeOrmModule.forFeature([UserPrompts]),
-        HttpModule.registerAsync({
-            imports: [ConfigModule],
-            inject: [ConfigService],
-            useFactory: async (configService: ConfigService) => ({
-                baseURL: `${configService.get('fileServer_Url')}userDisplay/`,
-                headers: {
-                    ipaddress: process.env.FILE_SERVICE_IPADDRESS,
-                    clientKey: process.env.FILE_SERVICE_CLIENT_KEY,
-                },
-            }),
-        }),
         PromptsModule,
         RatingModule,
         UserProfileModule,

@@ -154,17 +154,30 @@ Table user_visuals {
   id bigint [pk, increment]
   createdAt datetime
   userId big_int [not null]
-  videoOrPhoto string [not null]
+  videoOrPhoto string [not null, note: 'file or blob url used to load image']
+  blobName string [note: 'key used to find image in blob storage']
+  // file string [note: 'stores blob url temporarily when it is uploaded. Once it is saved, we move it to videoOrPhoto' ]
   visualPromptId int
   deletedAt datetime
   description varchar(100)
-  order int  [note: 'used to indicate order of photos']
   isVisible boolean 
 }
 
 Ref: "users"."userId" < "user_visuals"."userId"
 Ref: "user_visuals"."visualPromptId" < "visual_prompts"."id"
 
+Table user_visuals_order {
+  id bigint [pk, increment]
+  createdAt datetime
+  userId big_int [not null]
+  userVisualsIds string[] [note: 'list of user_visuals.id used to indicate the order user_visuals appear in the app']
+}
+
+Ref: "user_visuals"."id" < "user_visuals_order"."userVisualsIds"
+
+Ref: "users"."userId" - "user_visuals_order"."userId"
+
+// constant options users can choose from to describe thier image
 Table visual_prompts {
   id bigint [pk, increment]
   prompt varchar
@@ -353,12 +366,11 @@ Table meta {
    closeUpdateButtonIos varchar [default: 'update later']
 }
 
-
-
 Ref: "user_preferences"."userId" < "user_preferences"."gender"
 
 Ref: "users"."userId" < "rating_group"."raterId" 
 
+// --------- NOTIFICATIONS DATA ------------
 Table notifications {
   id bigint [pk, increment]
   userId bigint [not null]
@@ -372,8 +384,10 @@ Table notifications {
 }
 
 Ref: "notifications"."userId" < "users"."userId"
+Ref: "notifications"."title" < "notifications"."isRead"
 
 
+// --------- TAGS ------------
 // ethnicity, sports, smoking, cannabis, alcohol, drugs, diet, languages, musicGenre, creativeOulet, religions, religiousPractice, zodiac, meyerBriggs, characteristics, politics, parentingGoal, relationshipGoals, relationshipTypes, pets
 Table user_tags {
 id  bigint [pk, increment]
@@ -399,7 +413,8 @@ Ref: "user_profile"."userId" < "user_tag_type_visibility"."userId"
 
 Ref: "user_profile"."userId" < "user_tags"."userId"
 
-Ref: "notifications"."title" < "notifications"."isRead"
+
+// --------- FEEDBACK DATA ------------
 
 Table feedback{
   id bigint [pk, increment]
@@ -415,6 +430,7 @@ Table feedback{
 
 Ref: "feedback"."userId" < "users"."userId"
 
+// --------- GROUP CODES ------------
 Table group_codes {
   id bigint [pk, increment]
   name varchar
@@ -431,3 +447,62 @@ Table user_group_codes{
 }
 Ref: "group_codes"."id" < "user_group_codes"."codeId"
 Ref: "user_group_codes"."userId" < "users"."userId"
+
+
+// --------- FILE HASH TRACKER (FILESERVICE) ------------
+Table file_hash_tracker {
+  id string [note: 'format of ${hash}-${userId}-${fieldname} used to prevent same file upload from same user']
+}
+
+Ref: "user_visuals"."videoOrPhoto" - "file_hash_tracker"."id"
+
+
+// --------- DEEPLINK HASH ------------
+
+Table user_link_uuid {
+  id bigint [pk, increment]
+  userId bigint
+  uuid string [note: 'uuid is used to map back to user']
+  createdAt datetime
+  active boolean [default: true, note: 'user can deactivate link']
+  page string [note: 'used to ensure that uuid is used to only go to allowed deep link page']
+}
+
+
+// --------- PROFILE FEEDBACK SHARE ------------
+
+// captured profile feedback
+Table profile_share {
+  id bigint [pk, increment]
+  createdAt datetime
+  description string 
+  userId bigint [note: 'person/profile who got feedback']
+  raterId bigint [note: 'null if unknown, else userId of the person who gave feedback']
+  name string
+  feedback_group_id string [note: 'used to track which features were grouped and presented together']
+  version string [note: 'profile share']
+}
+
+// used to track which features were grouped and presented together
+Table feedback_group {
+  id bigint [pk, increment]
+  createdAt datetime
+  userId bigint [note: 'person/profile who got feedback']
+  raterId bigint [note: 'null if unknown, else userId of the person who gave feedback']
+  version string [note: 'from a list of known feedback versions: profile share, post date']
+}
+
+// to store data from first impressions feature
+Table personality_feedback {
+  id bigint [pk, increment]
+  createdAt datetime
+  userId bigint
+  raterId bigint [note: 'null if unknown']
+  version string [note: 'profile share, post date']
+  personality string
+  feedback_group_id string
+}
+
+Ref: "feedback_group"."id" < "profile_share"."feedback_group_id"
+
+Ref: "feedback_group"."id" < "personality_feedback"."feedback_group_id"
