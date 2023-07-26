@@ -36,7 +36,7 @@ RUN echo "DB_TYPE: $DB_TYPE" && \
     echo "DB_USERNAME: $DB_USERNAME" && \
     echo "DB_PORT: $DB_PORT" && \
     echo "DB_PASSWORD: $DB_PASSWORD" && \
-    echo "DB_SSL_CA_CERT: $DB_SSL_CA_CERT"
+    echo "DB_SSL_CA_CERT: $DB_SSL_CA_CERT" && \
     echo "JWT_SECRET: $JWT_SECRET" && \
     echo "JWT_EXPIRES_IN: $JWT_EXPIRES_IN" && \
     echo "PORT: $PORT" && \
