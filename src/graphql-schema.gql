@@ -425,9 +425,7 @@ type Query {
   getProfileFeedbackById(id: String!): ProfileFeedback!
   getAllProfileFeedbacks: [ProfileFeedback!]!
   getAllPersonalityFeedbacks: [PersonalityFeedback!]!
-  getAllUserLinks: [UserLink!]!
   getUserProfileByLinkId(id: String!): UserProfile!
-  getUserLinksByUserId(userId: String!): [UserLink!]!
 }
 
 input IGetRatingInput {

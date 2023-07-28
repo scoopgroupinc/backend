@@ -9,25 +9,11 @@ import { UserProfile } from 'src/user-profile/entities/user-profile.entity'
 export class UserLinkResolver {
     constructor(private readonly userLinkService: UserLinkService) {}
 
-    @UseGuards(GqlAuthGuard)
-    @Query(() => [UserLink])
-    async getAllUserLinks(): Promise<UserLink[]> {
-        return this.userLinkService.findAll()
-    }
-
     @Query(() => UserProfile)
     async getUserProfileByLinkId(
         @Args('id', { type: () => String }) id: string
     ): Promise<UserProfile> {
         return this.userLinkService.getUserProfileByShareLinkId(id)
-    }
-
-    @UseGuards(GqlAuthGuard)
-    @Query(() => [UserLink])
-    async getUserLinksByUserId(
-        @Args('userId', { type: () => String }) userId: string
-    ): Promise<UserLink[]> {
-        return this.userLinkService.findAllByUserId(userId)
     }
 
     @UseGuards(GqlAuthGuard)
