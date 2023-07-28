@@ -166,7 +166,7 @@ jobs:
                   memory: 1.5
                   location: eastus
                   restart-policy: Never
-                  ports: ${{ vars.PORT_DEV}}
+                  ports: 80,${{ vars.PORT_DEV}}
 
     # deploy-prod:
     #     runs-on: ubuntu-latest
