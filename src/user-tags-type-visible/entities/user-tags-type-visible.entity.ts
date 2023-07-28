@@ -5,7 +5,10 @@ import { UserTagsEntity } from 'src/user-tags/entities/user-tags.entity'
 import {
     Column,
     Entity,
+<<<<<<< HEAD
     JoinColumn,
+=======
+>>>>>>> c42c81d (ensure queries can fetch related tables in one query)
     ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
@@ -19,7 +22,7 @@ registerEnumType(tag_type, {
     description: 'User tags type visible',
 })
 @Entity('user_tags_type_visible')
-export class UserTagsTypeVisibleEnity {
+export class UserTagsTypeVisibleEntity {
     @Field(() => ID)
     @PrimaryGeneratedColumn({ type: 'bigint' })
     id: string
@@ -40,7 +43,7 @@ export class UserTagsTypeVisibleEnity {
     @Column({ default: true })
     visible?: boolean
 
-    @Field(() => [UserTagsEntity])
+    @Field(() => [UserTagsEntity], { nullable: true })
     @OneToMany(
         () => UserTagsEntity,
         (userTagsEntity) => userTagsEntity.userTagsTypeVisible

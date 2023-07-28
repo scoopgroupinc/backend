@@ -38,7 +38,15 @@ export class UserProfile extends BaseEntity {
     createdAt: Date
 
     @Field(() => String, { nullable: true })
+<<<<<<< HEAD
     displayName?: string
+=======
+    displayName: string
+
+    @Field(() => String, { nullable: true })
+    @Column({ nullable: true })
+    profilePhoto: string
+>>>>>>> c42c81d (ensure queries can fetch related tables in one query)
 
     @Field(() => String, { nullable: true })
     @Column({ nullable: true })
