@@ -38,4 +38,9 @@ export class UserProfileResolver {
     async getUserPromptIds(@Args('userId') userId: string): Promise<string[]> {
         return this.userProfileService.getUserPromptIds(userId)
     }
+
+    @Query(() => UserProfile, { name: 'getFullProfile' })
+    async getFullProfile(@Args('userId') userId: string): Promise<UserProfile> {
+        return this.userProfileService.getFullProfile(userId)
+    }
 }
