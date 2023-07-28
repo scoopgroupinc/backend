@@ -429,7 +429,7 @@ type Query {
   getUserProfileByLinkId(id: String!): UserProfile!
 =======
   getAllUserLinks: [UserLink!]!
-  getUserLinkById(id: String!): UserLink!
+  getUserProfileByLinkId(id: String!): UserProfile!
   getUserLinksByUserId(userId: String!): [UserLink!]!
 >>>>>>> c42c81d (ensure queries can fetch related tables in one query)
 }
