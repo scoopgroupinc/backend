@@ -425,13 +425,7 @@ type Query {
   getProfileFeedbackById(id: String!): ProfileFeedback!
   getAllProfileFeedbacks: [ProfileFeedback!]!
   getAllPersonalityFeedbacks: [PersonalityFeedback!]!
-<<<<<<< HEAD
   getUserProfileByLinkId(id: String!): UserProfile!
-=======
-  getAllUserLinks: [UserLink!]!
-  getUserProfileByLinkId(id: String!): UserProfile!
-  getUserLinksByUserId(userId: String!): [UserLink!]!
->>>>>>> c42c81d (ensure queries can fetch related tables in one query)
 }
 
 input IGetRatingInput {
