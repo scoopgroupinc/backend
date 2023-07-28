@@ -426,7 +426,7 @@ type Query {
   getAllProfileFeedbacks: [ProfileFeedback!]!
   getAllPersonalityFeedbacks: [PersonalityFeedback!]!
   getAllUserLinks: [UserLink!]!
-  getUserLinkById(id: String!): UserLink!
+  getUserProfileByLinkId(id: String!): UserProfile!
   getUserLinksByUserId(userId: String!): [UserLink!]!
 }
 

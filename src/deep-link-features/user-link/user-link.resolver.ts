@@ -3,6 +3,7 @@ import { UseGuards } from '@nestjs/common'
 import { GqlAuthGuard } from 'src/auth/guards/jwt-auth.guard'
 import { UserLinkService } from './user-link.service'
 import { UserLink } from './user-link.entity'
+import { UserProfile } from 'src/user-profile/entities/user-profile.entity'
 
 @Resolver(() => UserLink)
 export class UserLinkResolver {
@@ -14,12 +15,11 @@ export class UserLinkResolver {
         return this.userLinkService.findAll()
     }
 
-    @UseGuards(GqlAuthGuard)
-    @Query(() => UserLink)
-    async getUserLinkById(
+    @Query(() => UserProfile)
+    async getUserProfileByLinkId(
         @Args('id', { type: () => String }) id: string
-    ): Promise<UserLink> {
-        return this.userLinkService.findOne(id)
+    ): Promise<UserProfile> {
+        return this.userLinkService.getUserProfileByShareLinkId(id)
     }
 
     @UseGuards(GqlAuthGuard)
@@ -38,6 +38,7 @@ export class UserLinkResolver {
         return this.userLinkService.getUserShareProfileLink(userId)
     }
 
+    @UseGuards(GqlAuthGuard)
     @Mutation(() => UserLink)
     async updateUserLinkState(
         @Args('id', { type: () => String }) id: string,
@@ -46,6 +47,7 @@ export class UserLinkResolver {
         return this.userLinkService.update(id, { state })
     }
 
+    @UseGuards(GqlAuthGuard)
     @Mutation(() => UserLink)
     async deleteUserLink(
         @Args('id', { type: () => String }) id: string

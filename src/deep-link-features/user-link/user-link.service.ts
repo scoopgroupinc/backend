@@ -2,13 +2,16 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { UserLink } from './user-link.entity'
-import { TEMPLATE_ID } from './user-link.constants'
+import { TEMPLATE_ID, USER_LINK_STATE } from './user-link.constants'
+import { UserProfile } from 'src/user-profile/entities/user-profile.entity'
+import { UserProfileService } from 'src/user-profile/user-profile.service'
 
 @Injectable()
 export class UserLinkService {
     constructor(
         @InjectRepository(UserLink)
-        private readonly userLinkRepository: Repository<UserLink>
+        private readonly userLinkRepository: Repository<UserLink>,
+        private readonly userProfileService: UserProfileService
     ) {}
 
     async findAll(): Promise<UserLink[]> {
@@ -23,6 +26,20 @@ export class UserLinkService {
 
     async findOne(id: string): Promise<UserLink> {
         return this.userLinkRepository.findOne(id)
+    }
+
+    async getUserProfileByShareLinkId(id: string): Promise<UserProfile> {
+        const link = await this.userLinkRepository.findOne(id)
+        if (!link) {
+            throw new Error('UserLink not found.')
+        }
+        if (link.templateId !== TEMPLATE_ID.SHARE_PROFILE) {
+            throw new Error('UserLink is not a share profile link.')
+        }
+        if (link.state === USER_LINK_STATE.INACTIVE) {
+            throw new Error('UserLink is inactive.')
+        }
+        return await this.userProfileService.getFullProfile(link.userId)
     }
 
     async getUserShareProfileLink(userId: string): Promise<UserLink> {

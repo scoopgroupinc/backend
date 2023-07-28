@@ -34,11 +34,13 @@ export class UserProfileResolver {
         return await this.userProfileService.findOne(userId)
     }
 
+    @UseGuards(GqlAuthGuard)
     @Query(() => GetUserPromptIdsOutput, { name: 'getPromptIds' })
     async getUserPromptIds(@Args('userId') userId: string): Promise<string[]> {
         return this.userProfileService.getUserPromptIds(userId)
     }
 
+    @UseGuards(GqlAuthGuard)
     @Query(() => UserProfile, { name: 'getFullProfile' })
     async getFullProfile(@Args('userId') userId: string): Promise<UserProfile> {
         return this.userProfileService.getFullProfile(userId)
