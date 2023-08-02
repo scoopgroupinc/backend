@@ -10,13 +10,13 @@ import { UserTagsService } from 'src/user-tags/user-tags.service'
 import logger from 'src/utils/logger'
 import { Repository } from 'typeorm'
 import { UserTagsTypeVisibleInput } from './dto/create-user-tag-type-visible.input'
-import { UserTagsTypeVisibleEnity } from './entities/user-tags-type-visible.entity'
+import { UserTagsTypeVisibleEntity } from './entities/user-tags-type-visible.entity'
 
 @Injectable()
 export class UserTagsTypeVisibleService {
     constructor(
-        @InjectRepository(UserTagsTypeVisibleEnity)
-        private userTagsTypeVisibleRepository: Repository<UserTagsTypeVisibleEnity>,
+        @InjectRepository(UserTagsTypeVisibleEntity)
+        private userTagsTypeVisibleRepository: Repository<UserTagsTypeVisibleEntity>,
         private userTagsService: UserTagsService
     ) {}
 

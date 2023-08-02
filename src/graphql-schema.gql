@@ -30,44 +30,6 @@ type UserDevice {
   notificationToken: String
 }
 
-"""User tags type visible"""
-type UserTagsTypeVisibleEnity {
-  id: ID!
-  userId: ID!
-  emoji: String
-  tagType: String!
-  visible: Boolean!
-  userTags: [UserTagsEntity!]!
-}
-
-"""Entity for user tags"""
-type UserTagsEntity {
-  id: ID!
-  userId: ID!
-  tagName: String!
-  tagType: String!
-}
-
-type UserOutput {
-  userId: ID!
-  firstName: String
-  lastName: String
-  email: String
-  isOnboarded: Boolean!
-  isVoteOnboarded: Boolean!
-}
-
-type UserToken {
-  token: String!
-  user: UserOutput
-  message: String
-}
-
-type VerifyRestPasswordCode {
-  message: String
-  token: String!
-}
-
 type LocationEntity {
   userId: ID!
   latitude: String
@@ -79,9 +41,39 @@ type LocationEntity {
   zipPostal: Float
 }
 
+type UserPrompts {
+  id: ID!
+  createdAt: String!
+  userId: String!
+  promptId: String!
+  answer: String!
+  userProfile: UserProfile!
+}
+
+"""Entity for user tags"""
+type UserTagsEntity {
+  id: ID!
+  userId: ID!
+  tagName: String!
+  tagType: String!
+  userTagsTypeVisible: UserTagsTypeVisibleEntity!
+}
+
+"""User tags type visible"""
+type UserTagsTypeVisibleEntity {
+  id: ID!
+  userId: ID!
+  emoji: String
+  tagType: String!
+  visible: Boolean!
+  userTags: [UserTagsEntity!]
+  userProfile: UserProfile!
+}
+
 type UserProfile {
   userId: ID!
   createdAt: String
+  displayName: String
   profilePhoto: String
   birthday: String
   height: String
@@ -92,6 +84,8 @@ type UserProfile {
   homeTown: String
   school: String
   promptIds: [String!]
+  prompts: [UserPrompts!]
+  tags: [UserTagsTypeVisibleEntity!]
 }
 
 type UserPreference {
@@ -137,14 +131,6 @@ type Prompts {
   sample_answer: String
 }
 
-type UserPrompts {
-  id: ID!
-  createdAt: String!
-  userId: String!
-  promptId: String!
-  answer: String!
-}
-
 type MetaDetails {
   id: ID!
   forceUpdateAndroid: String!
@@ -173,6 +159,64 @@ type FeedBack {
   text: String!
   image: String
   createdAt: String!
+}
+
+type PersonalityFeedback {
+  id: String!
+  createdAt: DateTime!
+  personality: String!
+  feedbackGroupId: String!
+  feedbackGroup: FeedbackGroup!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type ProfileFeedback {
+  id: String!
+  createdAt: DateTime!
+  description: String!
+  name: String!
+  feedbackGroupId: String!
+}
+
+type FeedbackGroup {
+  id: String!
+  createdAt: DateTime!
+  userId: String!
+  raterId: String
+  templateId: String!
+  personalityFeedbacks: [PersonalityFeedback!]!
+}
+
+type UserLink {
+  id: String!
+  userId: String
+  createdAt: DateTime!
+  state: String!
+  templateId: String!
+}
+
+type UserOutput {
+  userId: ID!
+  firstName: String
+  lastName: String
+  email: String
+  isOnboarded: Boolean!
+  isVoteOnboarded: Boolean!
+}
+
+type UserToken {
+  token: String!
+  user: UserOutput
+  message: String
+}
+
+type VerifyRestPasswordCode {
+  message: String
+  token: String!
 }
 
 type GetUserPromptIdsOutput {
@@ -258,14 +302,9 @@ type UserChoiceOutput {
   gender: String!
   choiceName: String!
   prompt: UserPromptOutput!
-  profile: [UserTagsTypeVisibleEnity!]!
+  profile: [UserTagsTypeVisibleEntity!]!
   visual: IVisual
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type MatchesOutput {
   id: ID!
@@ -307,9 +346,10 @@ type IGroupUser {
 type Query {
   getUser(userId: String!): User!
   getUserDevice(macAddress: String!): UserDevice!
-  getAllUserTagsTypeVisible(userId: String!): [UserTagsTypeVisibleEnity!]!
+  getAllUserTagsTypeVisible(userId: String!): [UserTagsTypeVisibleEntity!]!
   getUserProfile(userId: String!): UserProfile!
   getPromptIds(userId: String!): GetUserPromptIdsOutput!
+  getFullProfile(userId: String!): UserProfile!
 
   """fetch user preference"""
   getUserPreference(userId: String!): UserPreference!
@@ -381,6 +421,11 @@ type Query {
   getFeedBacks(feedbackfilter: FeedBackFilter!): [FeedBack!]!
   verifyCode(code: String!, userId: String!): String!
   getGroupMembers(userId: String!): [IGroupMembers!]!
+  getShareProfileFeedback(userId: String!): [FeedbackGroup!]!
+  getProfileFeedbackById(id: String!): ProfileFeedback!
+  getAllProfileFeedbacks: [ProfileFeedback!]!
+  getAllPersonalityFeedbacks: [PersonalityFeedback!]!
+  getUserProfileByLinkId(id: String!): UserProfile!
 }
 
 input IGetRatingInput {
@@ -423,7 +468,7 @@ type Mutation {
   testNewMailer(email: String!, code: Float!): String!
   updateOnBoarding(onboardInput: OnBoardInput!): String!
   saveDeviceDetails(userdeviceInput: UserDeviceInput!): UserDevice!
-  saveUserTagsTypeVisible(userTagsTypeVisibleInput: [UserTagsTypeVisibleInput!]!): [UserTagsTypeVisibleEnity!]!
+  saveUserTagsTypeVisible(userTagsTypeVisibleInput: [UserTagsTypeVisibleInput!]!): [UserTagsTypeVisibleEntity!]!
   saveUserProfile(userProfileInput: UserProfileInput!): UserProfile!
 
   """Use this endpoint to savs and update entity"""
@@ -454,6 +499,13 @@ type Mutation {
   updateDetials(metaDetailsInput: MetaDetailsInput!): MetaDetails!
   saveUserFeedBack(feedbackInput: FeedBackInput!): String!
   createCodes(code: String!, name: String!): String!
+  createShareProfileFeedback(feedbackGroupInput: FeedbackGroupInput!, personalityFeedbacksInput: [PersonalityFeedbackInput!]!, profileFeedbackInput: ProfileFeedbackInput!): FeedbackGroup!
+  updateShareProfileRaterId(id: String!, raterId: String!): FeedbackGroup!
+  createProfileFeedback(profileFeedbackInput: ProfileFeedbackInput!): ProfileFeedback!
+  createPersonalityFeedback(personalityFeedbackInput: PersonalityFeedbackInput!): PersonalityFeedback!
+  getUserShareProfileLink(userId: String!): UserLink!
+  updateUserLinkState(id: String!, state: String!): UserLink!
+  deleteUserLink(id: String!): UserLink!
 }
 
 input CreateUserInput {
@@ -550,6 +602,7 @@ input UserTagsInput {
 input UserProfileInput {
   userId: ID!
   createdAt: String
+  displayName: String
   profilePhoto: String
   birthday: String
   height: String
@@ -672,4 +725,25 @@ input FeedBackInput {
   issue: String!
   text: String!
   image: String
+}
+
+input FeedbackGroupInput {
+  id: String!
+  createdAt: DateTime!
+  userId: String!
+  raterId: String
+  templateId: String!
+}
+
+input PersonalityFeedbackInput {
+  id: String!
+  personality: String!
+  feedbackGroupId: String!
+}
+
+input ProfileFeedbackInput {
+  createdAt: DateTime!
+  description: String!
+  name: String!
+  feedbackGroupId: String!
 }

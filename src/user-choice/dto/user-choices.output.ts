@@ -1,7 +1,7 @@
 import { Field, ObjectType } from '@nestjs/graphql'
 import { IsOptional } from 'class-validator'
 import { UserPromptOutput } from 'src/user-prompts/dto/user-prompts.output'
-import { UserTagsTypeVisibleEnity } from 'src/user-tags-type-visible/entities/user-tags-type-visible.entity'
+import { UserTagsTypeVisibleEntity } from 'src/user-tags-type-visible/entities/user-tags-type-visible.entity'
 
 @ObjectType()
 export class IVisual {
@@ -54,8 +54,8 @@ export class UserChoiceOutput {
     @Field(() => UserPromptOutput)
     prompt: UserPromptOutput
 
-    @Field(() => [UserTagsTypeVisibleEnity])
-    profile: UserTagsTypeVisibleEnity[]
+    @Field(() => [UserTagsTypeVisibleEntity])
+    profile: UserTagsTypeVisibleEntity[]
 
     @Field(() => IVisual, { nullable: true })
     @IsOptional()

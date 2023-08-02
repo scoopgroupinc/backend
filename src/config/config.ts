@@ -20,11 +20,15 @@ import { UserChoice } from 'src/user-choice/entities/user-choice.entity'
 import { MetaDetails } from 'src/meta-details/entities/meta.entity'
 import { FeedBack } from 'src/feedback/entities/feedback.entity'
 import { BlockedUsers } from 'src/blocked-users/entities/blocked-users.entity'
-import { UserTagsTypeVisibleEnity } from 'src/user-tags-type-visible/entities/user-tags-type-visible.entity'
+import { UserTagsTypeVisibleEntity } from 'src/user-tags-type-visible/entities/user-tags-type-visible.entity'
 import { UserTagsEntity } from 'src/user-tags/entities/user-tags.entity'
 import { GroupCodes } from 'src/group-code/entities/group.entity'
 import { UserGroupCodes } from 'src/group-code/entities/userCodes.entity'
 import { FederatedCredential } from 'src/user/entities/federated-credential.entity'
+import { FeedbackGroup } from 'src/deep-link-features/feedback-group/feedback-group.entity'
+import { PersonalityFeedback } from 'src/deep-link-features/feedback-group/personality-feedback/personality-feedback.entity'
+import { ProfileFeedback } from 'src/deep-link-features/feedback-group/profile-feedback/profile-feedback.entity'
+import { UserLink } from 'src/deep-link-features/user-link/user-link.entity'
 
 if (process.env.NODE_ENV === 'local') {
     dotenv.config({
@@ -50,7 +54,9 @@ export const config = () => {
             username: process.env.DB_USERNAME,
             password: process.env.DB_PASSWORD,
             database: process.env.DB_DATABASE,
-            synchronize: true,
+            synchronize:
+                process.env.NODE_ENV === 'development' ||
+                process.env.NODE_ENV === 'local',
             logging: false,
             entities: [
                 User,
@@ -73,10 +79,14 @@ export const config = () => {
                 MetaDetails,
                 FeedBack,
                 BlockedUsers,
-                UserTagsTypeVisibleEnity,
+                UserTagsTypeVisibleEntity,
                 UserTagsEntity,
                 GroupCodes,
                 UserGroupCodes,
+                FeedbackGroup,
+                PersonalityFeedback,
+                ProfileFeedback,
+                UserLink,
             ],
             ssl: {
                 rejectUnauthorized: false,
