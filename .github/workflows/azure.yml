@@ -103,7 +103,6 @@ jobs:
 
             - name: Print working directory
               run: |
-                pwd
                 ls
 
             - name: Substitute environment variables in k8s config
