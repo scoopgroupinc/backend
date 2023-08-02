@@ -101,9 +101,8 @@ jobs:
               uses: azure/setup-kubectl@v1
               id: install
 
-            - name: Print working directory
-              run: |
-                ls
+            - name: Print directory tree
+              run: ls -R
 
             - name: Substitute environment variables in k8s config
               run: |
