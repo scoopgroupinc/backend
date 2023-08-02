@@ -92,6 +92,19 @@ jobs:
               with:
                   creds: ${{ secrets.AZURE_CREDENTIALS_PROD }}
 
+            - uses: azure/aks-set-context@v3
+              with:
+                  resource-group: scoop-prod-rg
+                  cluster-name: scoop-prod-kubernetes
+            - name: Setup kubectl
+              uses: azure/setup-kubectl@v1
+              id: install
+
+            - name: Checkout repository
+              uses: actions/checkout@v3
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+
             - name: Substitute environment variables in k8s config
               run: |
                   export PORT=${{ vars.PORT_PROD }}
