@@ -101,12 +101,16 @@ jobs:
               uses: azure/setup-kubectl@v1
               id: install
 
+            - name: Print working directory
+              run: pwd
+
             - name: Substitute environment variables in k8s config
               run: |
                   export PORT=${{ vars.PORT_DEV }}
                   export IMAGE_TAG=${{ github.sha }}
                   export CONTAINER_REGISTRY=${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
-                  envsubst < ../../k8/k8.yml.template > ../../k8/k8.yml
+                  touch k8/k8.yml
+                  envsubst < k8/k8.yml.template > k8/k8.yml
             - name: Deploy to AKS
               id: deploy-aks
               uses: Azure/k8s-deploy@v4
