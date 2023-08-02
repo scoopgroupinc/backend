@@ -22,7 +22,6 @@ export class UserPromptsService {
     ) {}
 
     async handleSaveUserPrompt(userPromptInput: UserPromptInput): Promise<any> {
-        console.log('handleSaveUserPrompt', userPromptInput)
         try {
             const existingUserPrompt = await this.findLatestPrompt(
                 userPromptInput

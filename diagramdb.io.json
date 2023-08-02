@@ -459,13 +459,12 @@ Ref: "user_visuals"."videoOrPhoto" - "file_hash_tracker"."id"
 
 // --------- DEEPLINK HASH ------------
 
-Table user_link_uuid {
-  id bigint [pk, increment]
+Table user_link {
+  id uuid [pk, note: 'uuid is used to map back to user']
   userId bigint
-  uuid string [note: 'uuid is used to map back to user']
   createdAt datetime
-  active boolean [default: true, note: 'user can deactivate link']
-  page string [note: 'used to ensure that uuid is used to only go to allowed deep link page']
+  state string [note: 'user can deactivate link']
+  templateId string [note: 'used to ensure that uuid is used to only go to allowed deep link page']
 }
 
 
@@ -475,12 +474,9 @@ Table user_link_uuid {
 Table profile_share {
   id bigint [pk, increment]
   createdAt datetime
-  description string 
-  userId bigint [note: 'person/profile who got feedback']
-  raterId bigint [note: 'null if unknown, else userId of the person who gave feedback']
+  description string   
   name string
-  feedback_group_id string [note: 'used to track which features were grouped and presented together']
-  version string [note: 'profile share']
+  feedbackGroupId string [note: 'used to track which features were grouped and presented together']
 }
 
 // used to track which features were grouped and presented together
@@ -489,20 +485,18 @@ Table feedback_group {
   createdAt datetime
   userId bigint [note: 'person/profile who got feedback']
   raterId bigint [note: 'null if unknown, else userId of the person who gave feedback']
-  version string [note: 'from a list of known feedback versions: profile share, post date']
+  templateId string [note: 'from a list of known feedback versions: profile share, post date']
 }
 
 // to store data from first impressions feature
 Table personality_feedback {
   id bigint [pk, increment]
   createdAt datetime
-  userId bigint
-  raterId bigint [note: 'null if unknown']
-  version string [note: 'profile share, post date']
   personality string
-  feedback_group_id string
+  feedbackGroupId string
 }
 
-Ref: "feedback_group"."id" < "profile_share"."feedback_group_id"
+Ref: "feedback_group"."id" - "profile_share"."feedbackGroupId"
 
-Ref: "feedback_group"."id" < "personality_feedback"."feedback_group_id"
+Ref: "feedback_group"."id" < "personality_feedback"."feedbackGroupId"
+

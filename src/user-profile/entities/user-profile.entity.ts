@@ -7,8 +7,11 @@ import {
     BaseEntity,
     Column,
     CreateDateColumn,
+    OneToMany,
 } from 'typeorm'
 import { IsNumber } from 'class-validator'
+import { UserPrompts } from 'src/user-prompts/entities/user-prompts.entity'
+import { UserTagsTypeVisibleEntity } from 'src/user-tags-type-visible/entities/user-tags-type-visible.entity'
 
 export enum educationLevels {
     highSchool = 'high School',
@@ -35,29 +38,32 @@ export class UserProfile extends BaseEntity {
     createdAt: Date
 
     @Field(() => String, { nullable: true })
-    @Column({ nullable: true })
-    profilePhoto: string
+    displayName?: string
 
     @Field(() => String, { nullable: true })
     @Column({ nullable: true })
-    birthday: string
+    profilePhoto?: string
+
+    @Field(() => String, { nullable: true })
+    @Column({ nullable: true })
+    birthday?: string
 
     @Field(() => String, { nullable: true })
     @IsNumber()
     @Column({ nullable: true })
-    height: string
+    height?: string
 
     @Field(() => String, { nullable: true })
     @Column({ type: 'enum', enum: gender, nullable: true })
-    gender: string
+    gender?: string
 
     @Field(() => String, { nullable: true })
     @Column({ nullable: true })
-    locationId: string
+    locationId?: string
 
     @Field(() => String, { nullable: true })
     @Column({ nullable: true })
-    jobTitle: string
+    jobTitle?: string
 
     @Field(() => String, { nullable: true })
     @Column({ nullable: true })
@@ -73,5 +79,16 @@ export class UserProfile extends BaseEntity {
 
     @Field(() => [String], { nullable: true })
     @Column({ type: 'varchar', array: true, nullable: true, default: [] })
-    promptIds: string[]
+    promptIds?: string[]
+
+    @Field(() => [UserPrompts], { nullable: true })
+    @OneToMany(() => UserPrompts, (userPrompts) => userPrompts.userProfile)
+    prompts?: UserPrompts[]
+
+    @Field(() => [UserTagsTypeVisibleEntity], { nullable: true })
+    @OneToMany(
+        () => UserTagsTypeVisibleEntity,
+        (userTagsTypeVisibleEntity) => userTagsTypeVisibleEntity.userProfile
+    )
+    tags?: UserTagsTypeVisibleEntity[]
 }

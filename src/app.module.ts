@@ -1,14 +1,16 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
-import { UserModule } from './user/user.module'
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
+
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { GraphQLModule } from '@nestjs/graphql'
 import { MailerModule } from '@nestjs-modules/mailer'
 import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter'
 import { join } from 'path'
 import * as configs from 'config'
-import { AuthModule } from './auth/auth.module'
 import { config } from './config/config'
+import { UserModule } from './user/user.module'
+import { AuthModule } from './auth/auth.module'
 import { UserProfileModule } from './user-profile/user-profile.module'
 import { LocationModule } from './location/location.module'
 import { UserPreferenceModule } from './user-preference/user-preference.module'
@@ -27,8 +29,10 @@ import { FeedBackModule } from './feedback/feedback.module'
 import { BlockedUserModule } from './blocked-users/blocked-users.module'
 import { UserTagsTypeVisibleModule } from './user-tags-type-visible/user-tags-type-visible.module'
 import { GroupCodesModule } from './group-code/group-code.module'
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
-import logger from './utils/logger'
+import { FeedbackGroupModule } from './deep-link-features/feedback-group/feedback-group.module'
+import { ProfileFeedbackModule } from './deep-link-features/feedback-group/profile-feedback/profile-feedback.module'
+import { PersonalityFeedbackModule } from './deep-link-features/feedback-group/personality-feedback/personality-feedback.module'
+import { UserLinkModule } from './deep-link-features/user-link/user-link.module'
 
 const { user, pass, host, port } = configs.get('mail')
 @Module({
@@ -94,6 +98,10 @@ const { user, pass, host, port } = configs.get('mail')
         BlockedUserModule,
         UserTagsTypeVisibleModule,
         GroupCodesModule,
+        FeedbackGroupModule,
+        ProfileFeedbackModule,
+        PersonalityFeedbackModule,
+        UserLinkModule,
     ],
     controllers: [],
     providers: [],
