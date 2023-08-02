@@ -21,7 +21,7 @@ export class UserProfileService {
         @InjectRepository(UserProfile)
         private userProfileRepository: Repository<UserProfile>,
         @InjectRepository(User)
-        private userRepository: Repository<User>,
+        private userRepository: Repository<User>
     ) {}
 
     async saveUserProfile(userProfileInput: UserProfileInput) {
@@ -30,7 +30,7 @@ export class UserProfileService {
             const { userId } = userProfileInput
 
             const existingUser = await this.userRepository.findOne({
-                where: { id: userId },
+                userId,
             })
 
             if (!existingUser)
@@ -38,7 +38,9 @@ export class UserProfileService {
                     'User does not exist, can not create a profile for user'
                 )
 
-            const user = await this.userProfileRepository.findOne({ userId })
+            const user = await this.userProfileRepository.findOne({
+                userId,
+            })
             if (user) {
                 return await this.updateOne(userProfileInput)
             }
@@ -72,7 +74,7 @@ export class UserProfileService {
             userProfile.promptIds.length > 0
         ) {
             userProfile.prompts = userProfile.prompts.filter((prompt) =>
-                userProfile.promptIds.includes(prompt.id)
+                userProfile.promptIds.includes(prompt.promptId)
             )
         }
 
