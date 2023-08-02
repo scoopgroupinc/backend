@@ -1,0 +1,42 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: ${CONTAINER_REGISTRY}/backend:${IMAGE_TAG}
+        ports:
+        - containerPort: ${PORT}
+        env:
+        - name: DB_TYPE
+          valueFrom:
+            secretKeyRef:
+              name: my-app-secrets
+              key: DB_TYPE
+        # ... repeat for all other environment variables
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: ${PORT}
+      targetPort: ${PORT}
+  type: LoadBalancer

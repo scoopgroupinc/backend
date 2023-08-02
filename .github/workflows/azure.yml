@@ -4,12 +4,12 @@ on:
     push:
         branches:
             - development
-            - main
+            - kubernetes
 
 jobs:
     build-dev:
         runs-on: ubuntu-latest
-        if: github.ref == 'refs/heads/development'
+        if: github.ref_name == 'kubernetes'
 
         steps:
             - name: Checkout repository
@@ -28,9 +28,9 @@ jobs:
                   DB_USERNAME: ${{ secrets.DB_USERNAME_DEV }}
                   DB_PORT: ${{ vars.DB_PORT_DEV }}
                   DB_PASSWORD: ${{ secrets.DB_PASSWORD_DEV }}
-                  DB_SSL_CA_CERT: $${{ secrets.DB_SSL_CA_CERT_DEV }}
+                  DB_SSL_CA_CERT: ${{ secrets.DB_SSL_CA_CERT_DEV }}
                   JWT_SECRET: ${{ secrets.JWT_SECRET_DEV }}
-                  JWT_EXPIRES_IN: $${{ vars.JWT_EXPIRES_IN_DEV }}
+                  JWT_EXPIRES_IN: ${{ vars.JWT_EXPIRES_IN_DEV }}
                   PORT: ${{ vars.PORT_DEV }}
                   BE_FILE_SERVER_URL: ${{ vars.BE_FILE_SERVER_URL_DEV }}
               run: |
@@ -77,59 +77,6 @@ jobs:
                   docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:latest -f Dockerfile.dev --build-arg DB_TYPE="${DB_TYPE}" --build-arg DB_DATABASE="${DB_DATABASE}" --build-arg DB_HOST="${DB_HOST}" --build-arg DB_USERNAME="${DB_USERNAME}" --build-arg DB_PORT="${DB_PORT}" --build-arg DB_PASSWORD="${DB_PASSWORD}" --build-arg DB_SSL_CA_CERT="${DB_SSL_CA_CERT}" --build-arg JWT_SECRET="${JWT_SECRET}" --build-arg JWT_EXPIRES_IN="${JWT_EXPIRES_IN}" --build-arg PORT="${PORT}" --build-arg BE_FILE_SERVER_URL="${BE_FILE_SERVER_URL}" .
                   docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:latest
 
-    # build-prod:
-    #     runs-on: ubuntu-latest
-    #     if: github.ref == 'refs/heads/main'
-
-    #     steps:
-    #         - name: Checkout repository
-    #           uses: actions/checkout@v3
-    #           with:
-    #               token: ${{ secrets.GITHUB_TOKEN }}
-
-    #         - name: Set secrets as build arguments
-    #           env:
-    #               DB_TYPE: ${{ vars.DB_TYPE_PROD }}
-    #               DB_DATABASE: ${{ vars.DB_DATABASE_PROD }}
-    #               DB_HOST: ${{ secrets.DB_HOST_PROD }}
-    #               DB_USERNAME: ${{ vars.DB_USERNAME_PROD }}
-    #               DB_PORT: ${{ vars.DB_PORT_PROD }}
-    #               DB_PASSWORD: ${{ secrets.DB_PASSWORD_PROD }}
-    #               DB_SSL_CA_CERT: $${{ secrets.DB_SSL_CA_CERT_PROD }}
-    #               JWT_SECRET: ${{ secrets.JWT_SECRET_PROD }}
-    #               JWT_EXPIRES_IN: $${{ vars.JWT_EXPIRES_IN_PROD }}
-    #               PORT: ${{ vars.PORT_PROD }}
-    #               BE_FILE_SERVER_URL: ${{ vars.BE_FILE_SERVER_URL_PROD }}
-    #           run: |
-    #               echo "DB_TYPE=${DB_TYPE}" >> $GITHUB_ENV
-    #               echo "DB_DATABASE=${DB_DATABASE}" >> $GITHUB_ENV
-    #               echo "DB_HOST=${DB_HOST}" >> $GITHUB_ENV
-    #               echo "DB_USERNAME=${DB_USERNAME}" >> $GITHUB_ENV
-    #               echo "DB_PORT=${DB_PORT}" >> $GITHUB_ENV
-    #               echo "DB_PASSWORD=${DB_PASSWORD}" >> $GITHUB_ENV
-    #               echo "DB_SSL_CA_CERT=${DB_SSL_CA_CERT}" >> $GITHUB_ENV
-    #               echo "JWT_SECRET=${JWT_SECRET}" >> $GITHUB_ENV
-    #               echo "JWT_EXPIRES_IN=${JWT_EXPIRES_IN}" >> $GITHUB_ENV
-    #               echo "PORT=${PORT}" >> $GITHUB_ENV
-    #               echo "BE_FILE_SERVER_URL=${BE_FILE_SERVER_URL}" >> $GITHUB_ENV
-
-    #         - uses: actions/setup-node@v3
-    #           with:
-    #               node-version: '16'
-
-    #         - uses: azure/docker-login@v1
-    #           with:
-    #               login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
-    #               username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
-    #               password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_PROD }}
-
-    #         - name: Build and push Docker image (Production)
-    #           run: |
-    #               docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }} -f Dockerfile.prod --build-arg DB_TYPE="${DB_TYPE}" --build-arg DB_DATABASE="${DB_DATABASE}" --build-arg DB_HOST="${DB_HOST}" --build-arg DB_USERNAME="${DB_USERNAME}" --build-arg DB_PORT="${DB_PORT}" --build-arg DB_PASSWORD="${DB_PASSWORD}" --build-arg DB_SSL_CA_CERT="${DB_SSL_CA_CERT}" --build-arg JWT_SECRET="${JWT_SECRET}" --build-arg JWT_EXPIRES_IN="${JWT_EXPIRES_IN}" --build-arg PORT="${PORT}" --build-arg BE_FILE_SERVER_URL="${BE_FILE_SERVER_URL}" .
-    #               docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
-    #               docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:latest -f Dockerfile.prod --build-arg DB_TYPE="${DB_TYPE}" --build-arg DB_DATABASE="${DB_DATABASE}" --build-arg DB_HOST="${DB_HOST}" --build-arg DB_USERNAME="${DB_USERNAME}" --build-arg DB_PORT="${DB_PORT}" --build-arg DB_PASSWORD="${DB_PASSWORD}" --build-arg DB_SSL_CA_CERT="${DB_SSL_CA_CERT}" --build-arg JWT_SECRET="${JWT_SECRET}" --build-arg JWT_EXPIRES_IN="${JWT_EXPIRES_IN}" --build-arg PORT="${PORT}" --build-arg BE_FILE_SERVER_URL="${BE_FILE_SERVER_URL}" .
-    #               docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:latest
-
     deploy-dev:
         runs-on: ubuntu-latest
         needs: build-dev
@@ -146,57 +93,46 @@ jobs:
               with:
                   creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
 
+            - uses: azure/aks-set-context@v3
+              with:
+                resource-group: scoop-dev-rg
+                cluster-name: scoop-dev-kubernetes
+            - name: Setup kubectl
+                id: install-kubectl
+                uses: azure/setup-kubectl@v3
+            - name: Substitute environment variables in k8s config
+                run: |
+                  export PORT=${{ vars.PORT_DEV }}
+                  export IMAGE_TAG=${{ github.sha }}
+                  export CONTAINER_REGISTRY=${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
+                  envsubst < k8/k8.yml.template > k8/k8.yml
+            - name: Deploy to AKS
+                id: deploy-aks
+                uses: Azure/k8s-deploy@v4
+                with:
+                  namespace: 'default'
+                  manifests: |
+                    k8/k8.yml
+
+          
             # - name: Delete existing Azure Container Instance
             #   run: |
             #     az container delete --name <container-name> --resource-group <resource-group-name> --yes
             # Continue with the deployment steps for the new container instance
 
-            - name: Deploy to Azure Container Instances (Development)
-              uses: azure/aci-deploy@v1
-              with:
-                  resource-group: scoop-dev-rg
-                  dns-name-label: scoop-dev-backend
-                  name: scoop-dev-backend-ci
-                  image: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
-                  registry-login-server: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
-                  registry-username: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
-                  registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
-                  os-type: Linux
-                  cpu: 1
-                  memory: 1.5
-                  location: eastus
-                  restart-policy: Never
-                  ports: 80,${{ vars.PORT_DEV}}
-
-    # deploy-prod:
-    #     runs-on: ubuntu-latest
-    #     needs: build-prod
-    #     if: github.ref == 'refs/heads/main'
-
-    #     steps:
-    #         - name: Set up Python and Azure CLI
-    #           uses: actions/setup-python@v2
-    #           with:
-    #               python-version: '3.x'
-
-    #         - name: Login to Azure
-    #           uses: azure/login@v1
-    #           with:
-    #               creds: ${{ secrets.AZURE_CREDENTIALS_PROD }}
-
-    #         - name: Deploy to Azure Container Instances (Production)
-    #           uses: azure/aci-deploy@v1
-    #           with:
-    #               resource-group: scoop-prod-rg
-    #               dns-name-label: scoop-dev-prod
-    #               name: scoop-prod-backend-ci
-    #               image: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
-    #               registry-login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
-    #               registry-username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
-    #               registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_PROD }}
-    #               os-type: Linux
-    #               cpu: 1
-    #               memory: 1.5
-    #               location: eastus
-    #               restart-policy: Never
-    #               ports: ${{ vars.PORT_PROD}}
+            # - name: Deploy to Azure Container Instances (Development)
+            #   uses: azure/aci-deploy@v1
+            #   with:
+            #       resource-group: scoop-dev-rg
+            #       dns-name-label: scoop-dev-backend
+            #       name: scoop-dev-backend-ci
+            #       image: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
+            #       registry-login-server: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
+            #       registry-username: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
+            #       registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
+            #       os-type: Linux
+            #       cpu: 1
+            #       memory: 1.5
+            #       location: eastus
+            #       restart-policy: Never
+            #       ports: 80,${{ vars.PORT_DEV}}
