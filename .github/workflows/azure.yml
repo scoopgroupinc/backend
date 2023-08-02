@@ -95,27 +95,26 @@ jobs:
 
             - uses: azure/aks-set-context@v3
               with:
-                resource-group: scoop-dev-rg
-                cluster-name: scoop-dev-kubernetes
+                  resource-group: scoop-dev-rg
+                  cluster-name: scoop-dev-kubernetes
             - name: Setup kubectl
               uses: azure/setup-kubectl@v1
               id: install
- 
+
             - name: Substitute environment variables in k8s config
-                run: |
+              run: |
                   export PORT=${{ vars.PORT_DEV }}
                   export IMAGE_TAG=${{ github.sha }}
                   export CONTAINER_REGISTRY=${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
                   envsubst < k8/k8.yml.template > k8/k8.yml
             - name: Deploy to AKS
-                id: deploy-aks
-                uses: Azure/k8s-deploy@v4
-                with:
+              id: deploy-aks
+              uses: Azure/k8s-deploy@v4
+              with:
                   namespace: 'default'
                   manifests: |
-                    k8/k8.yml
+                      k8/k8.yml
 
-          
             # - name: Delete existing Azure Container Instance
             #   run: |
             #     az container delete --name <container-name> --resource-group <resource-group-name> --yes
