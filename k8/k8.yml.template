@@ -20,13 +20,7 @@ spec:
         image: ${CONTAINER_REGISTRY}/backend:${IMAGE_TAG}
         ports:
         - containerPort: ${PORT}
-        env:
-        - name: DB_TYPE
-          valueFrom:
-            secretKeyRef:
-              name: my-app-secrets
-              key: DB_TYPE
-        # ... repeat for all other environment variables
+        
 ---
 apiVersion: v1
 kind: Service
