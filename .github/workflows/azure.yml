@@ -102,7 +102,9 @@ jobs:
               id: install
 
             - name: Print working directory
-              run: pwd
+              run: |
+                pwd
+                ls
 
             - name: Substitute environment variables in k8s config
               run: |

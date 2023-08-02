@@ -16,11 +16,14 @@ jobs:
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
 
+            - name: Print DB_SSL_CA_CERT_DEV
+              run: echo ${{ secrets.DB_SSL_CA_CERT_DEV }}
+
             - name: Set secrets as build arguments
               env:
                   DB_TYPE: ${{ vars.DB_TYPE_PROD }}
                   DB_DATABASE: ${{ vars.DB_DATABASE_PROD }}
-                  DB_HOST: ${{ secrets.DB_HOST_PROD }}
+                  DB_HOST: ${{ vars.DB_HOST_PROD }}
                   DB_USERNAME: ${{ vars.DB_USERNAME_PROD }}
                   DB_PORT: ${{ vars.DB_PORT_PROD }}
                   DB_PASSWORD: ${{ secrets.DB_PASSWORD_PROD }}
@@ -42,6 +45,20 @@ jobs:
                   echo "PORT=${PORT}" >> $GITHUB_ENV
                   echo "BE_FILE_SERVER_URL=${BE_FILE_SERVER_URL}" >> $GITHUB_ENV
 
+            - name: Print env variables
+              run: |
+                  echo "DB_TYPE=$DB_TYPE" 
+                  echo "DB_DATABASE=$DB_DATABASE"
+                  echo "DB_HOST=$DB_HOST"
+                  echo "DB_USERNAME=$DB_USERNAME"
+                  echo "DB_PORT=$DB_PORT"
+                  echo "DB_PASSWORD=$DB_PASSWORD"
+                  echo "DB_SSL_CA_CERT=$DB_SSL_CA_CERT"
+                  echo "JWT_SECRET=$JWT_SECRET"
+                  echo "JWT_EXPIRES_IN=$JWT_EXPIRES_IN"
+                  echo "PORT=$PORT"
+                  echo "BE_FILE_SERVER_URL=$BE_FILE_SERVER_URL"
+
             - uses: actions/setup-node@v3
               with:
                   node-version: '16'
@@ -62,7 +79,7 @@ jobs:
     deploy-prod:
         runs-on: ubuntu-latest
         needs: build-prod
-        if: github.ref == 'refs/heads/main'
+        if: github.ref_name == 'main'
 
         steps:
             - name: Set up Python and Azure CLI
@@ -75,19 +92,17 @@ jobs:
               with:
                   creds: ${{ secrets.AZURE_CREDENTIALS_PROD }}
 
-            - name: Deploy to Azure Container Instances (Production)
-              uses: azure/aci-deploy@v1
+            - name: Substitute environment variables in k8s config
+              run: |
+                  export PORT=${{ vars.PORT_PROD }}
+                  export IMAGE_TAG=${{ github.sha }}
+                  export CONTAINER_REGISTRY=${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
+                  touch k8/k8.yml
+                  envsubst < k8/k8.yml.template > k8/k8.yml
+            - name: Deploy to AKS
+              id: deploy-aks
+              uses: Azure/k8s-deploy@v4
               with:
-                  resource-group: scoop-prod-rg
-                  dns-name-label: scoop-dev-prod
-                  name: scoop-prod-backend-ci
-                  image: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
-                  registry-login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
-                  registry-username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
-                  registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_PROD }}
-                  os-type: Linux
-                  cpu: 1
-                  memory: 1.5
-                  location: eastus
-                  restart-policy: Never
-                  ports: ${{ vars.PORT_PROD}}
+                  namespace: 'default'
+                  manifests: |
+                      k8/k8.yml
