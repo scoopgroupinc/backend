@@ -98,8 +98,9 @@ jobs:
                 resource-group: scoop-dev-rg
                 cluster-name: scoop-dev-kubernetes
             - name: Setup kubectl
-                id: install-kubectl
-                uses: azure/setup-kubectl@v3
+                uses: azure/setup-kubectl@v1
+                id: install
+ 
             - name: Substitute environment variables in k8s config
                 run: |
                   export PORT=${{ vars.PORT_DEV }}
