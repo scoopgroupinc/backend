@@ -49,10 +49,12 @@ export class UserLinkService {
         if (link.length > 0) {
             return link[0]
         }
-        return this.userLinkRepository.save({
+        const newLink = this.userLinkRepository.create({
             userId,
             templateId: TEMPLATE_ID.SHARE_PROFILE,
         })
+
+        return this.userLinkRepository.save(newLink)
     }
 
     async update(id: string, data: Partial<UserLink>): Promise<UserLink> {
