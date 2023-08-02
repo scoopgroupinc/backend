@@ -34,3 +34,4 @@ spec:
       port: ${PORT}
       targetPort: ${PORT}
   type: LoadBalancer
+  loadBalancerIP: scoop-dev.eastus.cloudapp.azure.com
