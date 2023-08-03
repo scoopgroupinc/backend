@@ -20,6 +20,10 @@ spec:
         image: ${CONTAINER_REGISTRY}/backend:${IMAGE_TAG}
         ports:
         - containerPort: ${PORT}
+      - name: fileservice
+        image: ${CONTAINER_REGISTRY}/fileservice:latest
+        ports:
+        - containerPort: ${FILESERVICE_PORT}
         
 ---
 apiVersion: v1
@@ -33,5 +37,8 @@ spec:
     - protocol: TCP
       port: ${PORT}
       targetPort: ${PORT}
+    - protocol: TCP
+      port: ${FILESERVICE_PORT}
+      targetPort: ${FILESERVICE_PORT}
   type: LoadBalancer
   loadBalancerIP: 104.45.131.87
