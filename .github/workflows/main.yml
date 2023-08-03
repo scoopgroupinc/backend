@@ -115,6 +115,7 @@ jobs:
             - name: Substitute environment variables in k8s config
               run: |
                   export PORT=${{ vars.PORT_PROD }}
+                  export FILESERVICE_PORT=${{ vars.FILESERVICE_PORT_PROD }}
                   export IMAGE_TAG=${{ github.sha }}
                   export CONTAINER_REGISTRY=${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
                   touch k8/k8.yml
