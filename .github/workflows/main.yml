@@ -31,6 +31,7 @@ jobs:
                   JWT_SECRET: ${{ secrets.JWT_SECRET_PROD }}
                   JWT_EXPIRES_IN: ${{ vars.JWT_EXPIRES_IN_PROD }}
                   PORT: ${{ vars.PORT_PROD }}
+                  FILESERVICE_PORT: ${{ vars.FILESERVICE_PORT_PROD }}
                   BE_FILE_SERVER_URL: ${{ vars.BE_FILE_SERVER_URL_PROD }}
               run: |
                   echo "DB_TYPE=${DB_TYPE}" >> $GITHUB_ENV
@@ -43,6 +44,7 @@ jobs:
                   echo "JWT_SECRET=${JWT_SECRET}" >> $GITHUB_ENV
                   echo "JWT_EXPIRES_IN=${JWT_EXPIRES_IN}" >> $GITHUB_ENV
                   echo "PORT=${PORT}" >> $GITHUB_ENV
+                  echo "FILESERVICE_PORT=${FILESERVICE_PORT}" >> $GITHUB_ENV
                   echo "BE_FILE_SERVER_URL=${BE_FILE_SERVER_URL}" >> $GITHUB_ENV
 
             - name: Print env variables
@@ -57,6 +59,7 @@ jobs:
                   echo "JWT_SECRET=$JWT_SECRET"
                   echo "JWT_EXPIRES_IN=$JWT_EXPIRES_IN"
                   echo "PORT=$PORT"
+                  echo "FILESERVICE_PORT=${FILESERVICE_PORT}"
                   echo "BE_FILE_SERVER_URL=$BE_FILE_SERVER_URL"
 
             - uses: actions/setup-node@v3
@@ -104,6 +107,10 @@ jobs:
               uses: actions/checkout@v3
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
+
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: '16'
 
             - name: Substitute environment variables in k8s config
               run: |

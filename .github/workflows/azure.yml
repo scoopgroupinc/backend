@@ -32,6 +32,7 @@ jobs:
                   JWT_SECRET: ${{ secrets.JWT_SECRET_DEV }}
                   JWT_EXPIRES_IN: ${{ vars.JWT_EXPIRES_IN_DEV }}
                   PORT: ${{ vars.PORT_DEV }}
+                  FILESERVICE_PORT: ${{ vars.FILESERVICE_PORT_DEV }}
                   BE_FILE_SERVER_URL: ${{ vars.BE_FILE_SERVER_URL_DEV }}
               run: |
                   echo "DB_TYPE=${DB_TYPE}" >> $GITHUB_ENV
@@ -44,6 +45,7 @@ jobs:
                   echo "JWT_SECRET=${JWT_SECRET}" >> $GITHUB_ENV
                   echo "JWT_EXPIRES_IN=${JWT_EXPIRES_IN}" >> $GITHUB_ENV
                   echo "PORT=${PORT}" >> $GITHUB_ENV
+                  echo "FILESERVICE_PORT=${FILESERVICE_PORT}" >> $GITHUB_ENV
                   echo "BE_FILE_SERVER_URL=${BE_FILE_SERVER_URL}" >> $GITHUB_ENV
 
             - name: Print env variables
@@ -58,6 +60,7 @@ jobs:
                   echo "JWT_SECRET=$JWT_SECRET"
                   echo "JWT_EXPIRES_IN=$JWT_EXPIRES_IN"
                   echo "PORT=$PORT"
+                  echo "FILESERVICE_PORT=$FILESERVICE_PORT"
                   echo "BE_FILE_SERVER_URL=$BE_FILE_SERVER_URL"
 
             - uses: actions/setup-node@v3
@@ -106,8 +109,9 @@ jobs:
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Print directory tree
-              run: ls -R
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: '16'
 
             - name: Substitute environment variables in k8s config
               run: |
@@ -116,6 +120,7 @@ jobs:
                   export CONTAINER_REGISTRY=${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
                   touch k8/k8.yml
                   envsubst < k8/k8.yml.template > k8/k8.yml
+
             - name: Deploy to AKS
               id: deploy-aks
               uses: Azure/k8s-deploy@v4
