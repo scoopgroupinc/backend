@@ -34,10 +34,12 @@ spec:
   selector:
     app: backend
   ports:
-    - protocol: TCP
+    - name: backend-port 
+      protocol: TCP
       port: ${PORT}
       targetPort: ${PORT}
-    - protocol: TCP
+    - name: fileservice-port
+      protocol: TCP
       port: ${FILESERVICE_PORT}
       targetPort: ${FILESERVICE_PORT}
   type: LoadBalancer
