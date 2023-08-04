@@ -21,6 +21,8 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: ${PORT}
+      imagePullSecrets:
+      - name: devdockerregistrykey
         
 ---
 apiVersion: v1
