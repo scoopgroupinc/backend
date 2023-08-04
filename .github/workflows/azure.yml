@@ -100,14 +100,21 @@ jobs:
               with:
                   creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
 
+            - name: Setup kubectl
+              uses: azure/setup-kubectl@v3
+
             - uses: azure/aks-set-context@v3
               with:
                   resource-group: scoop-dev-rg
                   cluster-name: scoop-dev-kubernetes
 
-            - name: Setup kubectl
-              uses: azure/setup-kubectl@v1
-              id: install
+            - uses: Azure/k8s-create-secret@v1.1
+              with:
+              namespace: backend
+              container-registry-url: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
+              container-registry-username: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
+              container-registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
+              secret-name: dev-docker-registry-secret
 
             - name: Checkout repository
               uses: actions/checkout@v3
@@ -117,7 +124,6 @@ jobs:
             - name: Substitute environment variables in k8s config
               run: |
                   export PORT=${{ vars.PORT_DEV }}
-                  export FILESERVICE_PORT=${{ vars.FILESERVICE_PORT_DEV }}
                   export IMAGE_TAG=${{ github.sha }}
                   export CONTAINER_REGISTRY=${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
                   touch k8/k8.yml
@@ -130,6 +136,8 @@ jobs:
                   namespace: 'default'
                   manifests: |
                       k8/k8.yml
+                  imagepullsecrets: |
+                      dev-docker-registry-secret
 
             # - name: Delete existing Azure Container Instance
             #   run: |
