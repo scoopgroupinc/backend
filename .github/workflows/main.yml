@@ -68,16 +68,16 @@ jobs:
 
             - uses: azure/docker-login@v1
               with:
-                  login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
-                  username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
+                  login-server: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
+                  username: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
                   password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_PROD }}
 
             - name: Build and push Docker image (Production)
               run: |
-                  docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }} -f Dockerfile.prod --build-arg DB_TYPE="${DB_TYPE}" --build-arg DB_DATABASE="${DB_DATABASE}" --build-arg DB_HOST="${DB_HOST}" --build-arg DB_USERNAME="${DB_USERNAME}" --build-arg DB_PORT="${DB_PORT}" --build-arg DB_PASSWORD="${DB_PASSWORD}" --build-arg DB_SSL_CA_CERT="${DB_SSL_CA_CERT}" --build-arg JWT_SECRET="${JWT_SECRET}" --build-arg JWT_EXPIRES_IN="${JWT_EXPIRES_IN}" --build-arg PORT="${PORT}" --build-arg BE_FILE_SERVER_URL="${BE_FILE_SERVER_URL}" .
-                  docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
-                  docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:latest -f Dockerfile.prod --build-arg DB_TYPE="${DB_TYPE}" --build-arg DB_DATABASE="${DB_DATABASE}" --build-arg DB_HOST="${DB_HOST}" --build-arg DB_USERNAME="${DB_USERNAME}" --build-arg DB_PORT="${DB_PORT}" --build-arg DB_PASSWORD="${DB_PASSWORD}" --build-arg DB_SSL_CA_CERT="${DB_SSL_CA_CERT}" --build-arg JWT_SECRET="${JWT_SECRET}" --build-arg JWT_EXPIRES_IN="${JWT_EXPIRES_IN}" --build-arg PORT="${PORT}" --build-arg BE_FILE_SERVER_URL="${BE_FILE_SERVER_URL}" .
-                  docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:latest
+                  docker build -t ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }} -f Dockerfile.prod --build-arg DB_TYPE="${DB_TYPE}" --build-arg DB_DATABASE="${DB_DATABASE}" --build-arg DB_HOST="${DB_HOST}" --build-arg DB_USERNAME="${DB_USERNAME}" --build-arg DB_PORT="${DB_PORT}" --build-arg DB_PASSWORD="${DB_PASSWORD}" --build-arg DB_SSL_CA_CERT="${DB_SSL_CA_CERT}" --build-arg JWT_SECRET="${JWT_SECRET}" --build-arg JWT_EXPIRES_IN="${JWT_EXPIRES_IN}" --build-arg PORT="${PORT}" --build-arg BE_FILE_SERVER_URL="${BE_FILE_SERVER_URL}" .
+                  docker push ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
+                  docker build -t ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:latest -f Dockerfile.prod --build-arg DB_TYPE="${DB_TYPE}" --build-arg DB_DATABASE="${DB_DATABASE}" --build-arg DB_HOST="${DB_HOST}" --build-arg DB_USERNAME="${DB_USERNAME}" --build-arg DB_PORT="${DB_PORT}" --build-arg DB_PASSWORD="${DB_PASSWORD}" --build-arg DB_SSL_CA_CERT="${DB_SSL_CA_CERT}" --build-arg JWT_SECRET="${JWT_SECRET}" --build-arg JWT_EXPIRES_IN="${JWT_EXPIRES_IN}" --build-arg PORT="${PORT}" --build-arg BE_FILE_SERVER_URL="${BE_FILE_SERVER_URL}" .
+                  docker push ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:latest
 
     deploy-prod:
         runs-on: ubuntu-latest
@@ -85,6 +85,10 @@ jobs:
         if: github.ref_name == 'main'
 
         steps:
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: '16'
+
             - name: Set up Python and Azure CLI
               uses: actions/setup-python@v2
               with:
@@ -108,16 +112,12 @@ jobs:
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
 
-            - uses: actions/setup-node@v3
-              with:
-                  node-version: '16'
-
             - name: Substitute environment variables in k8s config
               run: |
                   export PORT=${{ vars.PORT_PROD }}
                   export FILESERVICE_PORT=${{ vars.FILESERVICE_PORT_PROD }}
                   export IMAGE_TAG=${{ github.sha }}
-                  export CONTAINER_REGISTRY=${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
+                  export CONTAINER_REGISTRY=${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
                   touch k8/k8.yml
                   envsubst < k8/k8.yml.template > k8/k8.yml
             - name: Deploy to AKS

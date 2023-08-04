@@ -69,16 +69,16 @@ jobs:
 
             - uses: azure/docker-login@v1
               with:
-                  login-server: ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
-                  username: ${{ secrets.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
+                  login-server: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
+                  username: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
                   password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
 
             - name: Build and push Docker image (Development)
               run: |
-                  docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }} -f Dockerfile.dev --build-arg DB_TYPE="${DB_TYPE}" --build-arg DB_DATABASE="${DB_DATABASE}" --build-arg DB_HOST="${DB_HOST}" --build-arg DB_USERNAME="${DB_USERNAME}" --build-arg DB_PORT="${DB_PORT}" --build-arg DB_PASSWORD="${DB_PASSWORD}"  --build-arg DB_SSL_CA_CERT="${DB_SSL_CA_CERT}" --build-arg JWT_SECRET="${JWT_SECRET}" --build-arg JWT_EXPIRES_IN="${JWT_EXPIRES_IN}" --build-arg PORT="${PORT}" --build-arg BE_FILE_SERVER_URL="${BE_FILE_SERVER_URL}" .
-                  docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
-                  docker build -t ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:latest -f Dockerfile.dev --build-arg DB_TYPE="${DB_TYPE}" --build-arg DB_DATABASE="${DB_DATABASE}" --build-arg DB_HOST="${DB_HOST}" --build-arg DB_USERNAME="${DB_USERNAME}" --build-arg DB_PORT="${DB_PORT}" --build-arg DB_PASSWORD="${DB_PASSWORD}" --build-arg DB_SSL_CA_CERT="${DB_SSL_CA_CERT}" --build-arg JWT_SECRET="${JWT_SECRET}" --build-arg JWT_EXPIRES_IN="${JWT_EXPIRES_IN}" --build-arg PORT="${PORT}" --build-arg BE_FILE_SERVER_URL="${BE_FILE_SERVER_URL}" .
-                  docker push ${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:latest
+                  docker build -t ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }} -f Dockerfile.dev --build-arg DB_TYPE="${DB_TYPE}" --build-arg DB_DATABASE="${DB_DATABASE}" --build-arg DB_HOST="${DB_HOST}" --build-arg DB_USERNAME="${DB_USERNAME}" --build-arg DB_PORT="${DB_PORT}" --build-arg DB_PASSWORD="${DB_PASSWORD}"  --build-arg DB_SSL_CA_CERT="${DB_SSL_CA_CERT}" --build-arg JWT_SECRET="${JWT_SECRET}" --build-arg JWT_EXPIRES_IN="${JWT_EXPIRES_IN}" --build-arg PORT="${PORT}" --build-arg BE_FILE_SERVER_URL="${BE_FILE_SERVER_URL}" .
+                  docker push ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
+                  docker build -t ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:latest -f Dockerfile.dev --build-arg DB_TYPE="${DB_TYPE}" --build-arg DB_DATABASE="${DB_DATABASE}" --build-arg DB_HOST="${DB_HOST}" --build-arg DB_USERNAME="${DB_USERNAME}" --build-arg DB_PORT="${DB_PORT}" --build-arg DB_PASSWORD="${DB_PASSWORD}" --build-arg DB_SSL_CA_CERT="${DB_SSL_CA_CERT}" --build-arg JWT_SECRET="${JWT_SECRET}" --build-arg JWT_EXPIRES_IN="${JWT_EXPIRES_IN}" --build-arg PORT="${PORT}" --build-arg BE_FILE_SERVER_URL="${BE_FILE_SERVER_URL}" .
+                  docker push ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:latest
 
     deploy-dev:
         runs-on: ubuntu-latest
@@ -86,6 +86,10 @@ jobs:
         if: github.ref_name == 'kubernetes-2'
 
         steps:
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: '16'
+
             - name: Set up Python and Azure CLI
               uses: actions/setup-python@v2
               with:
@@ -100,6 +104,7 @@ jobs:
               with:
                   resource-group: scoop-dev-rg
                   cluster-name: scoop-dev-kubernetes
+
             - name: Setup kubectl
               uses: azure/setup-kubectl@v1
               id: install
@@ -109,16 +114,12 @@ jobs:
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
 
-            - uses: actions/setup-node@v3
-              with:
-                  node-version: '16'
-
             - name: Substitute environment variables in k8s config
               run: |
                   export PORT=${{ vars.PORT_DEV }}
                   export FILESERVICE_PORT=${{ vars.FILESERVICE_PORT_DEV }}
                   export IMAGE_TAG=${{ github.sha }}
-                  export CONTAINER_REGISTRY=${{ secrets.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
+                  export CONTAINER_REGISTRY=${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
                   touch k8/k8.yml
                   envsubst < k8/k8.yml.template > k8/k8.yml
 
