@@ -137,7 +137,6 @@ jobs:
                   manifests: |
                       k8/k8.yml
 
-
             # - name: Delete existing Azure Container Instance
             #   run: |
             #     az container delete --name <container-name> --resource-group <resource-group-name> --yes
