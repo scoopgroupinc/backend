@@ -12,6 +12,7 @@ import {
 import { IsNumber } from 'class-validator'
 import { UserPrompts } from 'src/user-prompts/entities/user-prompts.entity'
 import { UserTagsTypeVisibleEntity } from 'src/user-tags-type-visible/entities/user-tags-type-visible.entity'
+import { UserVisuals } from '../user-visuals/user-visuals.entity'
 
 export enum educationLevels {
     highSchool = 'high School',
@@ -91,4 +92,8 @@ export class UserProfile extends BaseEntity {
         (userTagsTypeVisibleEntity) => userTagsTypeVisibleEntity.userProfile
     )
     tags: UserTagsTypeVisibleEntity[]
+
+    @OneToMany(() => UserVisuals, (userVisual) => userVisual.userProfile)
+    @Field(() => [UserVisuals], { nullable: true })
+    visuals: UserVisuals[]
 }

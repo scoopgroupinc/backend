@@ -39,6 +39,7 @@ export class UserLinkService {
         if (link.state === USER_LINK_STATE.INACTIVE) {
             throw new Error('UserLink is inactive.')
         }
+        console.log('link', link)
         return await this.userProfileService.getFullProfile(link.userId)
     }
 

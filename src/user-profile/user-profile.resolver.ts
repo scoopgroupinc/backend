@@ -4,8 +4,6 @@ import {
     Args,
     Mutation,
     Query,
-    ResolveField,
-    Parent,
 } from '@nestjs/graphql'
 import { UseGuards } from '@nestjs/common'
 

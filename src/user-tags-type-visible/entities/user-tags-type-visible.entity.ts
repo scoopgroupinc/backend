@@ -5,6 +5,7 @@ import { UserTagsEntity } from 'src/user-tags/entities/user-tags.entity'
 import {
     Column,
     Entity,
+    JoinColumn,
     ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
@@ -47,6 +48,7 @@ export class UserTagsTypeVisibleEntity {
     userTags: UserTagsEntity[]
 
     @ManyToOne(() => UserProfile, (userProfile) => userProfile.tags)
+    @JoinColumn({ name: 'userId' })
     @Field(() => UserProfile)
     userProfile: UserProfile
 }
