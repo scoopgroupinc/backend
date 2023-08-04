@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: ${CONTAINER_REGISTRY}/backend:${IMAGE_TAG}
+        image: scoopdevcontainerregistry.azurecr.io/backend:${IMAGE_TAG}
         ports:
         - containerPort: ${PORT}
         
