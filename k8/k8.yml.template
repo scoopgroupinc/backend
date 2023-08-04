@@ -40,7 +40,7 @@ spec:
       protocol: TCP
       port: ${PORT}
       targetPort: ${PORT}
-     - name: fileservice-port
+    - name: fileservice-port
       protocol: TCP
       port: ${FILESERVICE_PORT}
       targetPort: ${FILESERVICE_PORT}
