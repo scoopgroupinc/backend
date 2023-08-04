@@ -21,6 +21,8 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: ${PORT}
+      imagePullSecrets:
+      - name:
         
 ---
 apiVersion: v1
@@ -36,4 +38,3 @@ spec:
       port: ${PORT}
       targetPort: ${PORT}
   type: LoadBalancer
-  loadBalancerIP: 104.45.131.87
