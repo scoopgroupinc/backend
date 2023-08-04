@@ -21,6 +21,11 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: ${PORT}
+      - name: fileservice
+        image: ${CONTAINER_REGISTRY}/fileservice:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: ${FILESERVICE_PORT}
         
 ---
 apiVersion: v1
@@ -35,5 +40,9 @@ spec:
       protocol: TCP
       port: ${PORT}
       targetPort: ${PORT}
+     - name: fileservice-port
+      protocol: TCP
+      port: ${FILESERVICE_PORT}
+      targetPort: ${FILESERVICE_PORT}
   type: LoadBalancer
   loadBalancerIP: 104.45.131.87
