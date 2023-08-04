@@ -15,6 +15,6 @@ async function bootstrap() {
     const configService = app.get(ConfigService)
     const port = configService.get('port')
     logger.debug(port)
-    await app.listen(port || process.env.PORT)
+    await app.listen(port || process.env.PORT, '0.0.0.0')
 }
 bootstrap()
