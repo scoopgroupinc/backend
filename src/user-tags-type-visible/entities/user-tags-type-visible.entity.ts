@@ -5,10 +5,7 @@ import { UserTagsEntity } from 'src/user-tags/entities/user-tags.entity'
 import {
     Column,
     Entity,
-<<<<<<< HEAD
     JoinColumn,
-=======
->>>>>>> c42c81d (ensure queries can fetch related tables in one query)
     ManyToOne,
     OneToMany,
     PrimaryGeneratedColumn,
