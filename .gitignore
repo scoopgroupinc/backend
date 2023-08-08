@@ -40,3 +40,6 @@ lerna-debug.log*
 .env.*
 
 DigiCertGlobalRootCA.crt.pem
+
+# Azure workflow
+/k8/k8.yml

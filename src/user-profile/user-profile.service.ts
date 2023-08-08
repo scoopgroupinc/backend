@@ -30,7 +30,7 @@ export class UserProfileService {
             const { userId } = userProfileInput
 
             const existingUser = await this.userRepository.findOne({
-                userId,
+                userId
             })
 
             if (!existingUser)
@@ -38,9 +38,7 @@ export class UserProfileService {
                     'User does not exist, can not create a profile for user'
                 )
 
-            const user = await this.userProfileRepository.findOne({
-                userId,
-            })
+            const user = await this.userProfileRepository.findOne({ userId })
             if (user) {
                 return await this.updateOne(userProfileInput)
             }

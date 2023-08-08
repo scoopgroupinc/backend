@@ -40,7 +40,7 @@ export class UserTagsTypeVisibleEntity {
     @Column({ default: true })
     visible?: boolean
 
-    @Field(() => [UserTagsEntity])
+    @Field(() => [UserTagsEntity], { nullable: true })
     @OneToMany(
         () => UserTagsEntity,
         (userTagsEntity) => userTagsEntity.userTagsTypeVisible
