@@ -19,7 +19,7 @@ registerEnumType(tag_type, {
     description: 'User tags type visible',
 })
 @Entity('user_tags_type_visible')
-export class UserTagsTypeVisibleEnity {
+export class UserTagsTypeVisibleEntity {
     @Field(() => ID)
     @PrimaryGeneratedColumn({ type: 'bigint' })
     id: string
