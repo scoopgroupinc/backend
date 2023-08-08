@@ -21,8 +21,8 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
           - containerPort: ${PORT}
-        imagePullSecrets:
-          - name: dev-docker-registry-secret
+      imagePullSecrets:
+      - name: dev-docker-registry-secret
 
 ---
 apiVersion: v1
