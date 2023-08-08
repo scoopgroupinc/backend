@@ -141,25 +141,3 @@ jobs:
                       k8/k8.yml
                   imagepullsecrets: |
                       dev-docker-registry-secret
-
-            # - name: Delete existing Azure Container Instance
-            #   run: |
-            #     az container delete --name <container-name> --resource-group <resource-group-name> --yes
-            # Continue with the deployment steps for the new container instance
-
-            # - name: Deploy to Azure Container Instances (Development)
-            #   uses: azure/aci-deploy@v1
-            #   with:
-            #       resource-group: scoop-dev-rg
-            #       dns-name-label: scoop-dev-backend
-            #       name: scoop-dev-backend-ci
-            #       image: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
-            #       registry-login-server: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
-            #       registry-username: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
-            #       registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
-            #       os-type: Linux
-            #       cpu: 1
-            #       memory: 1.5
-            #       location: eastus
-            #       restart-policy: Never
-            #       ports: 80,${{ vars.PORT_DEV}}
