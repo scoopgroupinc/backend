@@ -18,9 +18,11 @@ spec:
       containers:
       - name: backend-container
         image: ${CONTAINER_REGISTRY}/backend:${IMAGE_TAG}
-        imagePullPolicy: Always
+        imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: ${PORT}
+          - containerPort: ${PORT}
+        imagepullsecrets:
+          - name: dev-docker-registry-secret
 
 ---
 apiVersion: v1
