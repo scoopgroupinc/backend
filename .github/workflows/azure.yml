@@ -81,6 +81,10 @@ jobs:
                   docker push ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:latest
 
     deploy-dev:
+        permissions:
+            actions: read
+            contents: read
+            id-token: write
         runs-on: ubuntu-latest
         needs: build-dev
         if: github.ref_name == 'kubernetes-2'
