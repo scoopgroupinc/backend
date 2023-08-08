@@ -147,5 +147,5 @@ jobs:
                   images: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
                   manifests: |
                       k8/k8.yml
-                  imagepullsecrets: |
+                  imagePullSecrets: |
                       dev-docker-registry-secret
