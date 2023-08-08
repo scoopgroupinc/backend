@@ -115,13 +115,13 @@ jobs:
                   resource-group: scoop-dev-rg
                   cluster-name: scoop-dev-kubernetes
 
-            - uses: Azure/k8s-create-secret@v1.1
-              with:
-                  namespace: default
-                  container-registry-url: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
-                  container-registry-username: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
-                  container-registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
-                  secret-name: dev-docker-registry-secret
+            # - uses: Azure/k8s-create-secret@v1.1
+            #   with:
+            #       namespace: default
+            #       container-registry-url: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
+            #       container-registry-username: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
+            #       container-registry-password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
+            #       secret-name: dev-docker-registry-secret
 
             - name: Checkout repository
               uses: actions/checkout@v3
@@ -147,5 +147,5 @@ jobs:
                   images: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
                   manifests: |
                       k8/k8.yml
-                  imagePullSecrets: |
-                      dev-docker-registry-secret
+                  # imagePullSecrets: |
+                  #     dev-docker-registry-secret
