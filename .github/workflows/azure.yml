@@ -133,7 +133,7 @@ jobs:
               id: deploy-aks
               uses: Azure/k8s-deploy@v4
               with:
-                  namespace: 'default'
+                  namespace: default
                   manifests: |
                       k8/k8.yml
                   imagepullsecrets: |

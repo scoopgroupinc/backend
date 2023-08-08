@@ -120,6 +120,10 @@ jobs:
                   export CONTAINER_REGISTRY=${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
                   touch k8/k8.yml
                   envsubst < k8/k8.yml.template > k8/k8.yml
+
+            - name: Echo contents of k8.yml
+              run: cat k8/k8.yml
+              
             - name: Deploy to AKS
               id: deploy-aks
               uses: Azure/k8s-deploy@v4

@@ -16,7 +16,7 @@ spec:
         app: backend
     spec:
       containers:
-      - name: backend
+      - name: backend-container
         image: ${CONTAINER_REGISTRY}/backend:${IMAGE_TAG}
         imagePullPolicy: Always
         ports:
