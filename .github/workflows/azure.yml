@@ -99,18 +99,23 @@ jobs:
               with:
                   python-version: '3.x'
 
-            - name: Login to Azure
-              uses: azure/login@v1
-              with:
-                  creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
+            # - name: Login to Azure
+            #   uses: azure/login@v1
+            #   with:
+            #       creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
 
             - name: Setup kubectl
               uses: azure/setup-kubectl@v3
+              with:
+                  version: 'latest'
+              id: install
 
             - uses: azure/aks-set-context@v3
               with:
+                  creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
                   resource-group: scoop-dev-rg
                   cluster-name: scoop-dev-kubernetes
+              id: login
 
             - uses: Azure/k8s-create-secret@v1.1
               with:
@@ -138,9 +143,10 @@ jobs:
 
             - name: Deploy to AKS
               id: deploy-aks
-              uses: Azure/k8s-deploy@v4.10
+              uses: Azure/k8s-deploy@v4
               with:
                   namespace: default
+                  images: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
                   manifests: |
                       k8/k8.yml
                   imagepullsecrets: |
