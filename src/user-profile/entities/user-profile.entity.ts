@@ -38,6 +38,7 @@ export class UserProfile extends BaseEntity {
     createdAt: Date
 
     @Field(() => String, { nullable: true })
+    @Column({ nullable: true })
     displayName?: string
 
     @Field(() => String, { nullable: true })
