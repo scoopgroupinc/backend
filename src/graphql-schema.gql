@@ -66,7 +66,7 @@ type UserTagsTypeVisibleEntity {
   emoji: String
   tagType: String!
   visible: Boolean!
-  userTags: [UserTagsEntity!]
+  userTags: [UserTagsEntity!]!
   userProfile: UserProfile!
 }
 
@@ -188,6 +188,7 @@ type FeedbackGroup {
   userId: String!
   raterId: String
   templateId: String!
+  profileFeedback: ProfileFeedback
   personalityFeedbacks: [PersonalityFeedback!]!
 }
 
@@ -728,22 +729,16 @@ input FeedBackInput {
 }
 
 input FeedbackGroupInput {
-  id: String!
-  createdAt: DateTime!
   userId: String!
   raterId: String
-  templateId: String!
+  templateId: String
 }
 
 input PersonalityFeedbackInput {
-  id: String!
   personality: String!
-  feedbackGroupId: String!
 }
 
 input ProfileFeedbackInput {
-  createdAt: DateTime!
   description: String!
   name: String!
-  feedbackGroupId: String!
 }

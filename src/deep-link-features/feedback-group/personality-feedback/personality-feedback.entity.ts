@@ -14,11 +14,11 @@ import { FeedbackGroup } from '../feedback-group.entity'
 export class PersonalityFeedback {
     @PrimaryGeneratedColumn({ type: 'bigint' })
     @Field(() => String)
-    id: string
+    id?: string
 
     @CreateDateColumn()
     @Field()
-    createdAt: Date
+    createdAt?: Date
 
     @Column()
     @Field()
@@ -26,7 +26,7 @@ export class PersonalityFeedback {
 
     @Column()
     @Field()
-    feedbackGroupId: string
+    feedbackGroupId?: string
 
     @ManyToOne(
         () => FeedbackGroup,

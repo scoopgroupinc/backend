@@ -18,7 +18,7 @@ export class ProfileFeedback {
 
     @CreateDateColumn()
     @Field()
-    createdAt: Date
+    createdAt?: Date
 
     @Column()
     @Field()
@@ -30,7 +30,7 @@ export class ProfileFeedback {
 
     @Column()
     @Field()
-    feedbackGroupId: string
+    feedbackGroupId?: string
 
     @OneToOne(() => FeedbackGroup)
     @JoinColumn({ name: 'feedbackGroupId', referencedColumnName: 'id' })

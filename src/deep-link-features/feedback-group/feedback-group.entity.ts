@@ -39,7 +39,7 @@ export class FeedbackGroup extends BaseEntity {
         () => ProfileFeedback,
         (profileFeedback) => profileFeedback.feedbackGroup
     )
-    @JoinColumn({ name: 'feedbackGroupId', referencedColumnName: 'id' })
+    @Field(() => ProfileFeedback, { nullable: true }) // Nullable if it can be null
     profileFeedback: ProfileFeedback
 
     @OneToMany(
