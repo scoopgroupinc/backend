@@ -35,5 +35,3 @@ spec:
       protocol: TCP
       port: ${PORT}
       targetPort: ${PORT}
-  type: LoadBalancer
-  loadBalancerIP: 104.45.131.87
