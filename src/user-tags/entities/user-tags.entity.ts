@@ -31,7 +31,7 @@ export class UserTagsEntity {
     @Field(() => UserTagsTypeVisibleEntity)
     @ManyToOne(
         () => UserTagsTypeVisibleEntity,
-        (userTagsTypeVisibleEnity) => userTagsTypeVisibleEnity.userTags
+        (UserTagsTypeVisibleEntity) => UserTagsTypeVisibleEntity.userTags
     )
     userTagsTypeVisible: UserTagsTypeVisibleEntity
 }
