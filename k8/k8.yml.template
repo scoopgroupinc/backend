@@ -38,4 +38,4 @@ spec:
       port: ${PORT}
       targetPort: ${PORT}
   type: LoadBalancer
-  loadBalancerIP: 20.25.94.84
+  loadBalancerIP: ${PUBLIC_IP}

@@ -130,6 +130,7 @@ jobs:
                   export PORT=${{ vars.PORT_DEV }}
                   export IMAGE_TAG=${{ github.sha }}
                   export CONTAINER_REGISTRY=${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
+                  export PUBLIC_IP=${{ vars.PUBLIC_IP_DEV }}
                   touch k8/k8.yml
                   envsubst < k8/k8.yml.template > k8/k8.yml
 
