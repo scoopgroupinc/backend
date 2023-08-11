@@ -3,7 +3,7 @@ import { UseGuards } from '@nestjs/common'
 import { GqlAuthGuard } from 'src/auth/guards/jwt-auth.guard'
 import { UserLinkService } from './user-link.service'
 import { UserLink } from './user-link.entity'
-import { UserProfile } from 'src/user-profile/entities/user-profile.entity'
+import { UserProfile } from 'src/user-profile/user-profile.entity'
 
 @Resolver(() => UserLink)
 export class UserLinkResolver {

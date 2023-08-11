@@ -7,7 +7,7 @@ import {
     HttpStatus,
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { UserProfile } from './entities/user-profile.entity'
+import { UserProfile } from './user-profile.entity'
 import { Repository } from 'typeorm'
 import { UserProfileInput } from './dto/user-profile.input'
 import logger from 'src/utils/logger'

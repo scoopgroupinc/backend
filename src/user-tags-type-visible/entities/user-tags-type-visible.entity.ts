@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql'
 import { tag_type } from 'src/common/enums'
-import { UserProfile } from 'src/user-profile/entities/user-profile.entity'
+import { UserProfile } from 'src/user-profile/user-profile.entity'
 import { UserTagsEntity } from 'src/user-tags/entities/user-tags.entity'
 import {
     Column,

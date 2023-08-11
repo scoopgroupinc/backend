@@ -9,7 +9,7 @@ import {
 } from '@nestjs/graphql'
 import { UseGuards } from '@nestjs/common'
 
-import { UserProfile } from './entities/user-profile.entity'
+import { UserProfile } from './user-profile.entity'
 import { UserProfileService } from './user-profile.service'
 import { GqlAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { UserProfileInput } from './dto/user-profile.input'
