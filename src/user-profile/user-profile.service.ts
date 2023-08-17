@@ -1,4 +1,6 @@
 /* eslint-disable prettier/prettier */
+import { HttpService } from '@nestjs/axios'
+import { lastValueFrom, map } from 'rxjs'
 import {
     Injectable,
     BadRequestException,
@@ -14,6 +16,7 @@ import logger from 'src/utils/logger'
 import { UserPromptsOrderInput } from './dto/user-prompts-order.input'
 import { UserPrompts } from 'src/user-prompts/entities/user-prompts.entity'
 import { User } from 'src/user/entities/user.entity'
+import { UserVisuals } from './user-visuals/user-visuals.entity'
 
 @Injectable()
 export class UserProfileService {
@@ -21,7 +24,8 @@ export class UserProfileService {
         @InjectRepository(UserProfile)
         private userProfileRepository: Repository<UserProfile>,
         @InjectRepository(User)
-        private userRepository: Repository<User>
+        private userRepository: Repository<User>,
+        private httpService: HttpService
     ) {}
 
     async saveUserProfile(userProfileInput: UserProfileInput) {
@@ -76,6 +80,37 @@ export class UserProfileService {
             userProfile.prompts = userProfile.prompts.filter((prompt) =>
                 userProfile.promptIds.includes(prompt.promptId)
             )
+        }
+
+        try {
+            const visualsResponse = await lastValueFrom(
+                this.httpService
+                    .get(`http://137.117.84.255:4040/visuals/${userId}`)
+                    .pipe(map((response) => response.data))
+            )
+
+            console.log('visuals', visualsResponse)
+
+            if (visualsResponse) {
+                const visuals = visualsResponse.map(({ id, createdAt, userId, videoOrPhoto, blobName, visualPromptId, deletedAt, description, isVisible }) => {
+                    const visual = new UserVisuals()
+                    visual.id = id
+                    visual.createdAt = createdAt
+                    visual.userId = userId
+                    visual.videoOrPhoto = videoOrPhoto
+                    visual.blobName = blobName
+                    visual.visualPromptId = visualPromptId
+                    visual.deletedAt = deletedAt
+                    visual.description = description
+                    visual.isVisible = isVisible
+                    return visual
+                })
+
+                userProfile.visuals = visuals
+            }
+        } catch (error) {
+            // Handle error if HTTP request fails
+            console.error('Error fetching visuals:', error)
         }
 
         return userProfile

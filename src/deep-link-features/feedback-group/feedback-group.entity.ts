@@ -5,7 +5,6 @@ import {
     CreateDateColumn,
     BaseEntity,
     OneToOne,
-    JoinColumn,
     OneToMany,
 } from 'typeorm'
 import { ObjectType, Field } from '@nestjs/graphql' // Import the Field decorator

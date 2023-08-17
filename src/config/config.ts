@@ -29,6 +29,7 @@ import { FeedbackGroup } from 'src/deep-link-features/feedback-group/feedback-gr
 import { PersonalityFeedback } from 'src/deep-link-features/feedback-group/personality-feedback/personality-feedback.entity'
 import { ProfileFeedback } from 'src/deep-link-features/feedback-group/profile-feedback/profile-feedback.entity'
 import { UserLink } from 'src/deep-link-features/user-link/user-link.entity'
+import { UserVisuals } from 'src/user-profile/user-visuals/user-visuals.entity'
 
 if (process.env.NODE_ENV === 'local') {
     dotenv.config({
@@ -65,6 +66,7 @@ export const config = () => {
                 UserDevice,
                 LocationEntity,
                 UserProfile,
+                UserVisuals,
                 UserPreference,
                 TagsEntity,
                 Rating,
