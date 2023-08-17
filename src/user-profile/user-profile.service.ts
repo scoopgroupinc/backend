@@ -85,26 +85,38 @@ export class UserProfileService {
         try {
             const visualsResponse = await lastValueFrom(
                 this.httpService
-                    .get(`http://137.117.84.255:4040/visuals/${userId}`)
+                    .get(`${userId}`)
                     .pipe(map((response) => response.data))
             )
 
             console.log('visuals', visualsResponse)
 
             if (visualsResponse) {
-                const visuals = visualsResponse.map(({ id, createdAt, userId, videoOrPhoto, blobName, visualPromptId, deletedAt, description, isVisible }) => {
-                    const visual = new UserVisuals()
-                    visual.id = id
-                    visual.createdAt = createdAt
-                    visual.userId = userId
-                    visual.videoOrPhoto = videoOrPhoto
-                    visual.blobName = blobName
-                    visual.visualPromptId = visualPromptId
-                    visual.deletedAt = deletedAt
-                    visual.description = description
-                    visual.isVisible = isVisible
-                    return visual
-                })
+                const visuals = visualsResponse.map(
+                    ({
+                        id,
+                        createdAt,
+                        userId,
+                        videoOrPhoto,
+                        blobName,
+                        visualPromptId,
+                        deletedAt,
+                        description,
+                        isVisible,
+                    }) => {
+                        const visual = new UserVisuals()
+                        visual.id = id
+                        visual.createdAt = createdAt
+                        visual.userId = userId
+                        visual.videoOrPhoto = videoOrPhoto
+                        visual.blobName = blobName
+                        visual.visualPromptId = visualPromptId
+                        visual.deletedAt = deletedAt
+                        visual.description = description
+                        visual.isVisible = isVisible
+                        return visual
+                    }
+                )
 
                 userProfile.visuals = visuals
             }
