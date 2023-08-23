@@ -203,7 +203,7 @@ type FeedbackGroup {
   raterId: String
   templateId: String!
   profileFeedback: ProfileFeedback
-  personalityFeedbacks: [PersonalityFeedback!]!
+  personalityFeedbacks: [PersonalityFeedback!]
 }
 
 type UserLink {

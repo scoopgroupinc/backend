@@ -45,6 +45,6 @@ export class FeedbackGroup extends BaseEntity {
         () => PersonalityFeedback,
         (personalityFeedback) => personalityFeedback.feedbackGroup
     )
-    @Field(() => [PersonalityFeedback])
+    @Field(() => [PersonalityFeedback], { nullable: true })
     personalityFeedbacks: PersonalityFeedback[] // This field will hold the related PersonalityFeedback entities
 }
