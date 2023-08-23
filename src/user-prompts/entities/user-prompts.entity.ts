@@ -1,5 +1,5 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql'
-import { UserProfile } from 'src/user-profile/entities/user-profile.entity'
+import { UserProfile } from 'src/user-profile/user-profile.entity'
 import {
     BaseEntity,
     Column,

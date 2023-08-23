@@ -1,11 +1,10 @@
 import * as dotenv from 'dotenv'
 import * as path from 'path'
-import * as fs from 'fs'
 import { Auth } from 'src/auth/entities/auth.entity'
 import { User } from '../user/entities/user.entity'
 import { UserDevice } from '../user-devices/entities/user-devices.entity'
 import { LocationEntity } from '../location/entities/location.entity'
-import { UserProfile } from '../user-profile/entities/user-profile.entity'
+import { UserProfile } from '../user-profile/user-profile.entity'
 import { UserPreference } from '../user-preference/entities/user-preference.entity'
 import { TagsEntity } from '../tags/entities/tags.entity'
 import { Rating } from 'src/rating/entities/rating.entity'
@@ -29,6 +28,7 @@ import { FeedbackGroup } from 'src/deep-link-features/feedback-group/feedback-gr
 import { PersonalityFeedback } from 'src/deep-link-features/feedback-group/personality-feedback/personality-feedback.entity'
 import { ProfileFeedback } from 'src/deep-link-features/feedback-group/profile-feedback/profile-feedback.entity'
 import { UserLink } from 'src/deep-link-features/user-link/user-link.entity'
+import { UserVisuals } from 'src/user-profile/user-visuals/user-visuals.entity'
 
 if (process.env.NODE_ENV === 'local') {
     dotenv.config({
@@ -65,6 +65,7 @@ export const config = () => {
                 UserDevice,
                 LocationEntity,
                 UserProfile,
+                UserVisuals,
                 UserPreference,
                 TagsEntity,
                 Rating,

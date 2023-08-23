@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { UserLink } from './user-link.entity'
 import { TEMPLATE_ID, USER_LINK_STATE } from './user-link.constants'
-import { UserProfile } from 'src/user-profile/entities/user-profile.entity'
+import { UserProfile } from 'src/user-profile/user-profile.entity'
 import { UserProfileService } from 'src/user-profile/user-profile.service'
 
 @Injectable()
@@ -43,6 +43,12 @@ export class UserLinkService {
     }
 
     async getUserShareProfileLink(userId: string): Promise<UserLink> {
+        const user = await this.userProfileService.findOne(userId)
+
+        if (!user) {
+            throw new Error('User profile does not exist')
+        }
+
         const link = await this.userLinkRepository.find({
             where: { userId, templateId: TEMPLATE_ID.SHARE_PROFILE },
         })

@@ -33,6 +33,7 @@ import { FeedbackGroupModule } from './deep-link-features/feedback-group/feedbac
 import { ProfileFeedbackModule } from './deep-link-features/feedback-group/profile-feedback/profile-feedback.module'
 import { PersonalityFeedbackModule } from './deep-link-features/feedback-group/personality-feedback/personality-feedback.module'
 import { UserLinkModule } from './deep-link-features/user-link/user-link.module'
+import { UserVisualsModule } from './user-profile/user-visuals/user-visuals.module'
 
 const { user, pass, host, port } = configs.get('mail')
 @Module({
@@ -51,9 +52,8 @@ const { user, pass, host, port } = configs.get('mail')
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
-            useFactory: (configService: ConfigService) => {
-                return configService.get('database')
-            },
+            useFactory: (configService: ConfigService) =>
+                configService.get('database'),
         }),
         MailerModule.forRoot({
             // transport: 'smtps://user@domain.com:pass@smtp.domain.com',
@@ -81,6 +81,7 @@ const { user, pass, host, port } = configs.get('mail')
         AuthModule,
         UserModule,
         UserProfileModule,
+        UserVisualsModule,
         UserPreferenceModule,
         LocationModule,
         TagsModule,

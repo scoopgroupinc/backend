@@ -1,15 +1,8 @@
 /* eslint-disable prettier/prettier */
-import {
-    Resolver,
-    Args,
-    Mutation,
-    Query,
-    ResolveField,
-    Parent,
-} from '@nestjs/graphql'
+import { Resolver, Args, Mutation, Query } from '@nestjs/graphql'
 import { UseGuards } from '@nestjs/common'
 
-import { UserProfile } from './entities/user-profile.entity'
+import { UserProfile } from './user-profile.entity'
 import { UserProfileService } from './user-profile.service'
 import { GqlAuthGuard } from '../auth/guards/jwt-auth.guard'
 import { UserProfileInput } from './dto/user-profile.input'

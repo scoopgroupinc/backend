@@ -70,6 +70,19 @@ type UserTagsTypeVisibleEntity {
   userProfile: UserProfile!
 }
 
+type UserVisuals {
+  id: ID!
+  createdAt: String
+  userId: String
+  videoOrPhoto: String
+  blobName: String
+  visualPromptId: String
+  deletedAt: String
+  description: String
+  isVisible: Boolean
+  userProfile: UserProfile
+}
+
 type UserProfile {
   userId: ID!
   createdAt: String
@@ -86,6 +99,7 @@ type UserProfile {
   promptIds: [String!]
   prompts: [UserPrompts!]
   tags: [UserTagsTypeVisibleEntity!]
+  visuals: [UserVisuals!]
 }
 
 type UserPreference {
