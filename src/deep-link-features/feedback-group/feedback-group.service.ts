@@ -26,6 +26,7 @@ export class FeedbackGroupService {
                 userId,
                 templateId: TEMPLATE_ID.SHARE_PROFILE,
             },
+            relations: ['personalityFeedbacks', 'profileFeedback'],
         })
     }
 

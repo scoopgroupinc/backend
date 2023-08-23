@@ -45,8 +45,6 @@ export class UserPromptsService {
         userId,
         promptId,
     }: UserPromptInputsFindLatest): Promise<any> {
-        console.log('findLatestPrompt', userId, promptId)
-
         try {
             return await this.userPromptsRepository
                 .createQueryBuilder('user_prompts')
@@ -163,8 +161,6 @@ export class UserPromptsService {
             const promptIds = await (
                 await this.userProfileService.findOne(userId)
             ).promptIds
-            console.log('getUserAnsweredPrompts', userPrompts)
-            console.log('getUserAnsweredPrompts', promptIds)
             return {
                 userPrompts,
                 promptIds,
@@ -176,8 +172,6 @@ export class UserPromptsService {
     }
 
     async getUserAnsweredPromptsArray(userId: string): Promise<any> {
-        console.log('getUserAnsweredPrompts', userId)
-
         try {
             const subQuery = this.userPromptsRepository
                 .createQueryBuilder('up_sub')
