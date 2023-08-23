@@ -43,6 +43,12 @@ export class UserLinkService {
     }
 
     async getUserShareProfileLink(userId: string): Promise<UserLink> {
+        const user = await this.userProfileService.findOne(userId)
+
+        if (!user) {
+            throw new Error('User profile does not exist')
+        }
+
         const link = await this.userLinkRepository.find({
             where: { userId, templateId: TEMPLATE_ID.SHARE_PROFILE },
         })
