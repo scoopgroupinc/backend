@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { HttpService } from '@nestjs/axios'
-import { lastValueFrom, map } from 'rxjs'
+import { catchError, firstValueFrom } from 'rxjs'
 import {
     Injectable,
     BadRequestException,
@@ -14,9 +14,9 @@ import { Repository } from 'typeorm'
 import { UserProfileInput } from './dto/user-profile.input'
 import logger from 'src/utils/logger'
 import { UserPromptsOrderInput } from './dto/user-prompts-order.input'
-import { UserPrompts } from 'src/user-prompts/entities/user-prompts.entity'
 import { User } from 'src/user/entities/user.entity'
 import { UserVisuals } from './user-visuals/user-visuals.entity'
+import { UserPrompts } from 'src/user-prompts/entities/user-prompts.entity'
 
 @Injectable()
 export class UserProfileService {
@@ -66,66 +66,77 @@ export class UserProfileService {
     }
 
     async getFullProfile(userId: string): Promise<UserProfile> {
-        const userProfile = await this.userProfileRepository.findOne({
+        const userProfile = await this.getUserProfileWithRelations(userId)
+
+        if (userProfile) {
+            userProfile.prompts = this.filterPrompts(userProfile)
+
+            const visualsResponse = await this.getVisuals(userId)
+            userProfile.visuals = visualsResponse.map((visual) =>
+                this.mapToUserVisuals(visual)
+            )
+
+            return userProfile
+        } else {
+            throw new NotFoundException('Profile not found')
+        }
+    }
+
+    private async getUserProfileWithRelations(
+        userId: string
+    ): Promise<UserProfile | undefined> {
+        return this.userProfileRepository.findOne({
             where: { userId },
             relations: ['prompts', 'tags', 'tags.userTags'],
         })
+    }
 
-        // Filter the prompts based on the promptIds array in the UserProfile
-        if (
-            userProfile &&
-            userProfile.prompts &&
-            userProfile.promptIds.length > 0
-        ) {
-            userProfile.prompts = userProfile.prompts.filter((prompt) =>
+    private filterPrompts(userProfile: UserProfile): UserPrompts[] {
+        if (userProfile.promptIds?.length > 0) {
+            return userProfile.prompts.filter((prompt) =>
                 userProfile.promptIds.includes(prompt.promptId)
             )
         }
+        return []
+    }
 
+    private async getVisuals(userId: string): Promise<UserVisuals[]> {
         try {
-            const visualsResponse = await lastValueFrom(
-                this.httpService
-                    .get(`${userId}`)
-                    .pipe(map((response) => response.data))
+            const { data } = await firstValueFrom(
+                this.httpService.get<UserVisuals[]>(`${userId}`)
             )
-
-            console.log('visuals', visualsResponse)
-
-            if (visualsResponse) {
-                const visuals = visualsResponse.map(
-                    ({
-                        id,
-                        createdAt,
-                        userId,
-                        videoOrPhoto,
-                        blobName,
-                        visualPromptId,
-                        deletedAt,
-                        description,
-                        isVisible,
-                    }) => {
-                        const visual = new UserVisuals()
-                        visual.id = id
-                        visual.createdAt = createdAt
-                        visual.userId = userId
-                        visual.videoOrPhoto = videoOrPhoto
-                        visual.blobName = blobName
-                        visual.visualPromptId = visualPromptId
-                        visual.deletedAt = deletedAt
-                        visual.description = description
-                        visual.isVisible = isVisible
-                        return visual
-                    }
-                )
-
-                userProfile.visuals = visuals
-            }
+            return data ?? []
         } catch (error) {
-            // Handle error if HTTP request fails
-            console.error('Error fetching visuals:', error)
+            // Handle error or rethrow if necessary
+            throw error
         }
+    }
 
-        return userProfile
+    private mapToUserVisuals(visualApiResponse: UserVisuals): UserVisuals {
+        const {
+            id,
+            createdAt,
+            userId,
+            videoOrPhoto,
+            blobName,
+            visualPromptId,
+            deletedAt,
+            description,
+            isVisible,
+        } = visualApiResponse
+
+        const visual = new UserVisuals()
+        visual.id = id
+        visual.createdAt = createdAt
+        visual.userId = userId
+        visual.videoOrPhoto = videoOrPhoto
+        visual.blobName = blobName
+        visual.visualPromptId = visualPromptId
+        visual.deletedAt = deletedAt
+        visual.description = description
+        visual.isVisible = isVisible
+
+        return visual
     }
 
     async updateOne(userProfileInput: UserProfileInput): Promise<any> {

@@ -33,6 +33,7 @@ export class UserProfileResolver {
         return this.userProfileService.getUserPromptIds(userId)
     }
 
+    @UseGuards(GqlAuthGuard)
     @Query(() => UserProfile, { name: 'getFullProfile' })
     async getFullProfile(@Args('userId') userId: string): Promise<UserProfile> {
         return this.userProfileService.getFullProfile(userId)

@@ -104,7 +104,7 @@ export class UserService {
                             email,
                             userId: user.userId,
                         })
-                        this.prePopulateUserTags(user)
+                        this.prePopulateUserTags(user.userId)
                     } else {
                         await this.userRepository.delete({ email })
                     }
@@ -198,7 +198,7 @@ export class UserService {
                             email,
                             userId: user.userId,
                         })
-                        this.prePopulateUserTags(user)
+                        this.prePopulateUserTags(user.userId)
                     } else {
                         await this.userRepository.delete({ email })
                     }
@@ -323,7 +323,7 @@ export class UserService {
                 isVerified: true,
             })
             if (result) {
-                this.prePopulateUserTags(result)
+                this.prePopulateUserTags(result.userId)
 
                 const payload = {
                     token: this.authService.generateJwt(
@@ -581,10 +581,10 @@ export class UserService {
         }
     }
 
-    async prePopulateUserTags(result: any) {
+    async prePopulateUserTags(userId: any) {
         try {
             const userTagsTypeVisible = tags.map((tag) => ({
-                userId: result.userId,
+                userId,
                 visible: true,
                 emoji: '',
                 tagType: tag_type[tag],

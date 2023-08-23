@@ -1,6 +1,5 @@
 import * as dotenv from 'dotenv'
 import * as path from 'path'
-import * as fs from 'fs'
 import { Auth } from 'src/auth/entities/auth.entity'
 import { User } from '../user/entities/user.entity'
 import { UserDevice } from '../user-devices/entities/user-devices.entity'
