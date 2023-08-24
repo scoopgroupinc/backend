@@ -36,6 +36,24 @@ export class UserService {
         private userTagsTypeVisibleService: UserTagsTypeVisibleService
     ) {}
 
+    async getToken(userId: string) {
+        if (process.env.NODE_ENV === 'production') {
+            throw new HttpException(
+                'Not able to use in production',
+                HttpStatus.NOT_FOUND
+            )
+        }
+        const user = await this.userRepository.findOne(userId)
+
+        if (!user)
+            throw new HttpException('User not found', HttpStatus.NOT_FOUND)
+
+        return {
+            token: this.authService.generateJwt(user.email, user.userId),
+            user,
+        }
+    }
+
     async findOrCreateUserWithApple(profile: any) {
         const { id, email, provider } = profile
 

@@ -359,6 +359,8 @@ type IGroupUser {
 }
 
 type Query {
+  """to be used for debugging on non production environments"""
+  getToken(userId: String!): UserToken!
   getUser(userId: String!): User!
   getUserDevice(macAddress: String!): UserDevice!
   getAllUserTagsTypeVisible(userId: String!): [UserTagsTypeVisibleEntity!]!

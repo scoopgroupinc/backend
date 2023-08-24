@@ -24,6 +24,13 @@ export class UserResolver {
         return await this.userService.create(createUserInput)
     }
 
+    @Query(() => UserToken, {
+        description: 'to be used for debugging on non production environments',
+    })
+    async getToken(@Args('userId') userId: string) {
+        return await this.userService.getToken(userId)
+    }
+
     @UseGuards(GqlAuthGuard)
     @Mutation(() => User)
     async updateUser(
