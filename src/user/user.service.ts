@@ -216,18 +216,17 @@ export class UserService {
                             email,
                             userId: user.userId,
                         })
-                        this.prePopulateUserTags(user.userId)
+                        await this.prePopulateUserTags(user.userId)
+                        return {
+                            token: this.authService.generateJwt(
+                                user.email,
+                                user.userId
+                            ),
+                            user,
+                            message: null,
+                        }
                     } else {
                         await this.userRepository.delete({ email })
-                    }
-
-                    return {
-                        token: this.authService.generateJwt(
-                            user.email,
-                            user.userId
-                        ),
-                        user,
-                        message: null,
                     }
                 }
             }
