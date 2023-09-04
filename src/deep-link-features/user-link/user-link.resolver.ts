@@ -9,10 +9,8 @@ import { UserProfile } from 'src/user-profile/user-profile.entity'
 export class UserLinkResolver {
     constructor(private readonly userLinkService: UserLinkService) {}
 
-    @Query(() => UserProfile)
-    async getUserProfileByLinkId(
-        @Args('id', { type: () => String }) id: string
-    ): Promise<UserProfile> {
+    @Mutation(() => UserProfile)
+    async getUserProfileByLinkId(@Args('id') id: string): Promise<UserProfile> {
         return this.userLinkService.getUserProfileByShareLinkId(id)
     }
 
