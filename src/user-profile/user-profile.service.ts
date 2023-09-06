@@ -78,10 +78,10 @@ export class UserProfileService {
             })
 
             /* comment this when working on a localhost */
-            // const visualsResponse = await this.getVisuals(userId)
-            // userProfile.visuals = visualsResponse.map((visual) =>
-            //     this.mapToUserVisuals(visual)
-            // )
+            const visualsResponse = await this.getVisuals(userId)
+            userProfile.visuals = visualsResponse.map((visual) =>
+                this.mapToUserVisuals(visual)
+            )
 
             return userProfile
         } else {
