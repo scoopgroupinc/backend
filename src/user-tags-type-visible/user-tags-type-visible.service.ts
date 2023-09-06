@@ -1,17 +1,22 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import {
+    HttpException,
+    HttpStatus,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { tagEmoji, tag_type } from 'src/common/enums'
 import { UserTagsService } from 'src/user-tags/user-tags.service'
 import logger from 'src/utils/logger'
 import { Repository } from 'typeorm'
 import { UserTagsTypeVisibleInput } from './dto/create-user-tag-type-visible.input'
-import { UserTagsTypeVisibleEnity } from './entities/user-tags-type-visible.entity'
+import { UserTagsTypeVisibleEntity } from './entities/user-tags-type-visible.entity'
 
 @Injectable()
 export class UserTagsTypeVisibleService {
     constructor(
-        @InjectRepository(UserTagsTypeVisibleEnity)
-        private userTagsTypeVisibleRepository: Repository<UserTagsTypeVisibleEnity>,
+        @InjectRepository(UserTagsTypeVisibleEntity)
+        private userTagsTypeVisibleRepository: Repository<UserTagsTypeVisibleEntity>,
         private userTagsService: UserTagsService
     ) {}
 
@@ -30,7 +35,7 @@ export class UserTagsTypeVisibleService {
                     await this.userTagsTypeVisibleRepository.save({
                         ...dbUserTags,
                         visible,
-                        emoji: this.convertFromEmojiToHexa(
+                        emoji: convertFromEmojiToHexa(
                             tagEmoji[tagTypeFromInput]
                         ),
                         tagType: tagTypeFromInput,
@@ -40,7 +45,7 @@ export class UserTagsTypeVisibleService {
                     const userTagsTypeVisibleToSave = {
                         userId,
                         tagType: tagTypeFromInput,
-                        emoji: this.convertFromEmojiToHexa(
+                        emoji: convertFromEmojiToHexa(
                             tagEmoji[tagTypeFromInput]
                         ),
                     }
@@ -62,35 +67,46 @@ export class UserTagsTypeVisibleService {
     }
 
     async saveOneUserTagsTypeVisible(input: UserTagsTypeVisibleInput) {
-        return await this.userTagsService.saveUserTags(input)
+        try {
+            return await this.userTagsService.saveUserTags(input)
+        } catch (error) {
+            logger.debug(error)
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+        }
     }
 
     async allUserTagsTypeVisible(userId: string) {
-        const results = await this.userTagsTypeVisibleRepository.find({
-            userId,
-        })
+        console.log('user tags userId', userId)
+        try {
+            const results = await this.userTagsTypeVisibleRepository.find({
+                userId,
+            })
 
-        if (results.length === 0)
-            return new NotFoundException(
-                `User with Id ${userId} has no tag types`
-            )
+            if (results.length === 0)
+                return new NotFoundException(
+                    `User with Id ${userId} has no tag types`
+                )
 
-        // convert emoji
-        const modifiedOutput = results.map((result) => {
-            return {
-                ...result,
-                emoji: this.convertFromHexaToEmoji(result.emoji),
-            }
-        })
+            // convert emoji
+            const modifiedOutput = results.map((result) => {
+                return {
+                    ...result,
+                    emoji: convertFromHexaToEmoji(result.emoji),
+                }
+            })
 
-        return modifiedOutput
+            return modifiedOutput
+        } catch (error) {
+            logger.debug(error)
+            throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+        }
     }
+}
 
-    convertFromEmojiToHexa(emoji) {
-        return emoji.toString().codePointAt(0).toString(16)
-    }
+export const convertFromEmojiToHexa = (emoji) => {
+    return emoji.toString().codePointAt(0).toString(16)
+}
 
-    convertFromHexaToEmoji(hex) {
-        return String.fromCodePoint(parseInt('0x' + hex))
-    }
+export const convertFromHexaToEmoji = (hex) => {
+    return String.fromCodePoint(parseInt('0x' + hex))
 }

@@ -14,6 +14,10 @@ export class UserProfileInput {
 
     @Field({ nullable: true })
     @IsOptional()
+    displayName?: string
+
+    @Field({ nullable: true })
+    @IsOptional()
     profilePhoto: string
 
     @Field({ nullable: true })

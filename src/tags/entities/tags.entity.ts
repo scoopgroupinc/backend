@@ -28,7 +28,7 @@ export class TagsEntity extends BaseEntity {
     order: number | null
 
     @Field(() => Boolean, { nullable: true })
-    @Column({ type: 'boolean', default: false })
+    @Column({ type: 'boolean', default: true })
     visible: boolean
 
     @Field(() => String, { nullable: true })

@@ -17,6 +17,10 @@ export class GroupCodes extends BaseEntity {
 
     @Field(() => String)
     @Column()
+    name: string
+
+    @Field(() => String)
+    @Column()
     code: string
 
     @Field(() => Boolean)

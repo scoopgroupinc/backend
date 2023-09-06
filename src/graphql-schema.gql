@@ -30,44 +30,6 @@ type UserDevice {
   notificationToken: String
 }
 
-"""User tags type visible"""
-type UserTagsTypeVisibleEnity {
-  id: ID!
-  userId: ID!
-  emoji: String
-  tagType: String!
-  visible: Boolean!
-  userTags: [UserTagsEntity!]!
-}
-
-"""Entity for user tags"""
-type UserTagsEntity {
-  id: ID!
-  userId: ID!
-  tagName: String!
-  tagType: String!
-}
-
-type UserOutput {
-  userId: ID!
-  firstName: String
-  lastName: String
-  email: String
-  isOnboarded: Boolean!
-  isVoteOnboarded: Boolean!
-}
-
-type UserToken {
-  token: String!
-  user: UserOutput
-  message: String
-}
-
-type VerifyRestPasswordCode {
-  message: String
-  token: String!
-}
-
 type LocationEntity {
   userId: ID!
   latitude: String
@@ -79,9 +41,52 @@ type LocationEntity {
   zipPostal: Float
 }
 
+type UserPrompts {
+  id: ID!
+  createdAt: String!
+  userId: String!
+  promptId: String!
+  answer: String!
+  userProfile: UserProfile!
+}
+
+"""Entity for user tags"""
+type UserTagsEntity {
+  id: ID!
+  userId: ID!
+  tagName: String!
+  tagType: String!
+  userTagsTypeVisible: UserTagsTypeVisibleEntity!
+}
+
+"""User tags type visible"""
+type UserTagsTypeVisibleEntity {
+  id: ID!
+  userId: ID!
+  emoji: String
+  tagType: String!
+  visible: Boolean!
+  userTags: [UserTagsEntity!]!
+  userProfile: UserProfile!
+}
+
+type UserVisuals {
+  id: ID!
+  createdAt: String
+  userId: String
+  videoOrPhoto: String
+  blobName: String
+  visualPromptId: String
+  deletedAt: String
+  description: String
+  isVisible: Boolean
+  userProfile: UserProfile
+}
+
 type UserProfile {
   userId: ID!
   createdAt: String
+  displayName: String
   profilePhoto: String
   birthday: String
   height: String
@@ -91,6 +96,10 @@ type UserProfile {
   company: String
   homeTown: String
   school: String
+  promptIds: [String!]
+  prompts: [UserPrompts!]
+  tags: [UserTagsTypeVisibleEntity!]
+  visuals: [UserVisuals!]
 }
 
 type UserPreference {
@@ -166,6 +175,69 @@ type FeedBack {
   createdAt: String!
 }
 
+type PersonalityFeedback {
+  id: String!
+  createdAt: DateTime!
+  personality: String!
+  feedbackGroupId: String!
+  feedbackGroup: FeedbackGroup!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type ProfileFeedback {
+  id: String!
+  createdAt: DateTime!
+  description: String!
+  name: String!
+  feedbackGroupId: String!
+}
+
+type FeedbackGroup {
+  id: String!
+  createdAt: DateTime!
+  userId: String!
+  raterId: String
+  templateId: String!
+  profileFeedback: ProfileFeedback
+  personalityFeedbacks: [PersonalityFeedback!]
+}
+
+type UserLink {
+  id: String!
+  userId: String
+  createdAt: DateTime!
+  state: String!
+  templateId: String!
+}
+
+type UserOutput {
+  userId: ID!
+  firstName: String
+  lastName: String
+  email: String
+  isOnboarded: Boolean!
+  isVoteOnboarded: Boolean!
+}
+
+type UserToken {
+  token: String!
+  user: UserOutput
+  message: String
+}
+
+type VerifyRestPasswordCode {
+  message: String
+  token: String!
+}
+
+type GetUserPromptIdsOutput {
+  promptIds: [String!]!
+}
+
 type RatingOutput {
   contentId: String!
   type: String!
@@ -190,13 +262,22 @@ type AverageOutput {
   count: Float
 }
 
-type UserPromptsOutput {
+type UserPromptOutput {
   id: ID!
-  createdAt: String!
-  userId: String
-  promptId: String
+  createdAt: String
+  userId: String!
+  promptId: String!
   prompt: String
-  answer: String
+  answer: String!
+}
+
+type GetUserPromptsOutput {
+  userPrompts: [UserPromptOutput!]
+  promptIds: [String!]!
+}
+
+type GetUserPromptsOrder {
+  promptIds: [String!]!
 }
 
 type BlockUserOutput {
@@ -235,15 +316,10 @@ type UserChoiceOutput {
   createdAt: DateTime!
   gender: String!
   choiceName: String!
-  prompt: UserPromptsOutput!
-  profile: [UserTagsTypeVisibleEnity!]!
+  prompt: UserPromptOutput!
+  profile: [UserTagsTypeVisibleEntity!]!
   visual: IVisual
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type MatchesOutput {
   id: ID!
@@ -269,25 +345,34 @@ type SwiperActionOutput {
 }
 
 type IGroupMembers {
-  id: String!
+  groupId: String!
+  groupName: String!
+  groupCode: String!
+  members: [IGroupUser!]!
+}
+
+type IGroupUser {
   userId: String!
   name: String!
   gender: String!
   visual: String
-  age: String
 }
 
 type Query {
+  """to be used for debugging on non production environments"""
+  getToken(userId: String!): UserToken!
   getUser(userId: String!): User!
   getUserDevice(macAddress: String!): UserDevice!
-  getAllUserTagsTypeVisible(userId: String!): [UserTagsTypeVisibleEnity!]!
+  getAllUserTagsTypeVisible(userId: String!): [UserTagsTypeVisibleEntity!]!
   getUserProfile(userId: String!): UserProfile!
+  getPromptIds(userId: String!): GetUserPromptIdsOutput!
+  getFullProfile(userId: String!): UserProfile!
 
   """fetch user preference"""
   getUserPreference(userId: String!): UserPreference!
 
   """fetch user location details"""
-  getUserLocation(userId: String!): LocationEntity!
+  getUserLocation(userId: String!): LocationEntity
 
   """fetch a tag"""
   getSpecificTag(id: String!): TagsEntity!
@@ -312,7 +397,7 @@ type Query {
          is the rater id and then the criteria id. Passing the rater id as an empty string  will return a result of the 
           average rating for the criteria id provided
   """
-  getAverageRatings(criteriaId: String!, raterId: String!): AverageOutput!
+  getAverageRatings(raterId: String!, criteriaId: String!): AverageOutput!
 
   """fetch a tag"""
   getspecificTag(criteriaId: String!): RateCriterias!
@@ -331,33 +416,37 @@ type Query {
       string ('') as second parameter, id. Specify or pass id as second paramter whiles the second parameter remains an empty
       string ('') to fetch a specific prompt.
   """
-  getPrompts(id: String!, promptType: String!): [Prompts!]!
+  getPrompts(promptType: String!, id: String!): [Prompts!]!
 
   """
   Always specify the prompt type (prompts and visual_prompts) to upload. Pass the prompt type as parameter.
   """
   uploadPrompts(promptType: String!): String!
-  getUserPromptsOrder(userPromptsOrder: IGetPromptOrder!): [UserPromptsOutput!]!
-  getUserPrompts(userId: String!): [UserPromptsOutput!]!
+  getUserPromptsOrder(userId: String!): GetUserPromptsOrder!
+  findLatestPrompt(userId: String!, promptId: String!): UserPrompts!
+  getUserAnsweredPrompts(userId: String!): GetUserPromptsOutput!
+  getUserAnsweredPromptsArray(userId: String!): [UserPrompts!]!
+
+  """method retrieves displayed prompts for a given user."""
+  getUserPromptsDisplayed(userId: String!): GetUserPromptsOutput!
   getAllOpenComplaints(complaintsFilter: ComplaintsFilter!): [ComplaintsOutput!]!
   getAComplaint(complaintId: String!): ComplaintsOutput!
-  isUserBlocked(userIds: [String!]!, userId: String!): [BlockUserOutput!]!
+  isUserBlocked(userId: String!, userIds: [String!]!): [BlockUserOutput!]!
   getUserMatches(userId: String!): [MatchesOutput!]!
   getUserChoices(userId: String!): [UserChoiceOutput!]!
   getMetaDetails: MetaDetails!
   getFeedBacks(feedbackfilter: FeedBackFilter!): [FeedBack!]!
-  verifyCode(userId: String!, code: String!): String!
+  verifyCode(code: String!, userId: String!): String!
   getGroupMembers(userId: String!): [IGroupMembers!]!
+  getShareProfileFeedback(userId: String!): [FeedbackGroup!]!
+  getProfileFeedbackById(id: String!): ProfileFeedback!
+  getAllProfileFeedbacks: [ProfileFeedback!]!
+  getAllPersonalityFeedbacks: [PersonalityFeedback!]!
 }
 
 input IGetRatingInput {
   contentId: String!
   type: String!
-}
-
-input IGetPromptOrder {
-  userId: String!
-  raterId: String
 }
 
 input ComplaintsFilter {
@@ -384,17 +473,18 @@ input FeedBackFilter {
 type Mutation {
   createUser(createUserInput: CreateUserInput!): String!
   updateUser(updateUserInput: UpdateUserInput!): User!
-  deleteUser(email: String!, userId: String!): String!
+  deleteUser(userId: String!, email: String!): String!
   login(loginUserInput: LoginUserInput!): UserToken!
-  activateAccount(email: String!, code: Float!): UserToken!
+  loginWithProvider(authProviderInput: AuthProviderInput!): UserToken!
+  activateAccount(code: Float!, email: String!): UserToken!
   resendActivationCode(email: String!): String!
   forgotPassword(email: String!): String!
-  verifyPasswordResetCode(code: Float!, email: String!): VerifyRestPasswordCode!
-  resetPassword(password: String!, email: String!): User!
-  testNewMailer(code: Float!, email: String!): String!
+  verifyPasswordResetCode(email: String!, code: Float!): VerifyRestPasswordCode!
+  resetPassword(email: String!, password: String!): User!
+  testNewMailer(email: String!, code: Float!): String!
   updateOnBoarding(onboardInput: OnBoardInput!): String!
   saveDeviceDetails(userdeviceInput: UserDeviceInput!): UserDevice!
-  saveUserTagsTypeVisible(userTagsTypeVisibleInput: [UserTagsTypeVisibleInput!]!): [UserTagsTypeVisibleEnity!]!
+  saveUserTagsTypeVisible(userTagsTypeVisibleInput: [UserTagsTypeVisibleInput!]!): [UserTagsTypeVisibleEntity!]!
   saveUserProfile(userProfileInput: UserProfileInput!): UserProfile!
 
   """Use this endpoint to savs and update entity"""
@@ -403,18 +493,36 @@ type Mutation {
   saveTag(tagInput: TagsInput!): TagsEntity!
   saveRatingGroup(ratingGroupInput: SaveRatingInput!): String!
   addNewPrompt(promptInput: PromptsInput!): Prompts!
-  saveUserPrompt(UserPromptInput: UserPromptsInput!): UserPromptsOutput!
-  saveUserPrompts(UserPromptInput: [UserPromptsInput!]!): [UserPromptsOutput!]!
-  saveUserPromptsOrder(userPromptsOrder: UserPromptsOrder!): String!
+
+  """
+  method handles saving a user prompt. It checks if there is an existing prompt with the same answer and saves the new prompt if it's different.
+  """
+  handleSaveUserPrompt(userPromptInput: UserPromptInput!): UserPromptOutput!
+
+  """method saves new or changed user prompts..."""
+  saveUserPrompts(userPromptsInput: [UserPromptInput!]!): GetUserPromptsOutput!
+
+  """
+  method saves the order of user prompts. It checks if the user has answered each prompt before saving the order. Usecase for saving prompt order changes, where prompt answers have not changed.
+  """
+  saveUserPromptsOrder(userPromptsOrder: UserPromptsOrderInput!): GetUserPromptsOutput!
   saveNewCompliants(complaintsInput: ComplaintsInput!): String!
   updateComplaint(complaintsInput: ComplaintsInput!): String!
   closeComplaints(complaintId: String!): String!
   deactivateMatch(id: String!): String!
-  userSwipeAction(choice: String!, matchId: String!): SwiperActionOutput!
+  userSwipeAction(matchId: String!, choice: String!): SwiperActionOutput!
   createMetaDetails(metaDetailsInput: MetaDetailsInput!): MetaDetails!
   updateDetials(metaDetailsInput: MetaDetailsInput!): MetaDetails!
   saveUserFeedBack(feedbackInput: FeedBackInput!): String!
-  createCodes(code: String!): String!
+  createCodes(code: String!, name: String!): String!
+  createShareProfileFeedback(feedbackGroupInput: FeedbackGroupInput!, personalityFeedbacksInput: [PersonalityFeedbackInput!]!, profileFeedbackInput: ProfileFeedbackInput!): FeedbackGroup!
+  updateShareProfileRaterId(id: String!, raterId: String!): FeedbackGroup!
+  createProfileFeedback(profileFeedbackInput: ProfileFeedbackInput!): ProfileFeedback!
+  createPersonalityFeedback(personalityFeedbackInput: PersonalityFeedbackInput!): PersonalityFeedback!
+  getUserProfileByLinkId(id: String!): UserProfile!
+  getUserShareProfileLink(userId: String!): UserLink!
+  updateUserLinkState(id: String!, state: String!): UserLink!
+  deleteUserLink(id: String!): UserLink!
 }
 
 input CreateUserInput {
@@ -432,6 +540,12 @@ input UpdateUserInput {
 input LoginUserInput {
   email: String!
   password: String!
+}
+
+input AuthProviderInput {
+  email: String
+  provider: String!
+  id: String!
 }
 
 input OnBoardInput {
@@ -505,6 +619,7 @@ input UserTagsInput {
 input UserProfileInput {
   userId: ID!
   createdAt: String
+  displayName: String
   profilePhoto: String
   birthday: String
   height: String
@@ -580,15 +695,15 @@ input PromptsInput {
   sample_answer: String
 }
 
-input UserPromptsInput {
+input UserPromptInput {
   userId: String!
   promptId: String!
   answer: String!
 }
 
-input UserPromptsOrder {
+input UserPromptsOrderInput {
   userId: String!
-  userPromptIds: [String!]!
+  promptIds: [String!]!
 }
 
 input ComplaintsInput {
@@ -627,4 +742,19 @@ input FeedBackInput {
   issue: String!
   text: String!
   image: String
+}
+
+input FeedbackGroupInput {
+  userId: String!
+  raterId: String
+  templateId: String
+}
+
+input PersonalityFeedbackInput {
+  personality: String!
+}
+
+input ProfileFeedbackInput {
+  description: String!
+  name: String!
 }

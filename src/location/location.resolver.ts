@@ -16,9 +16,11 @@ export class LocationResolver {
     ): Promise<any> {
         return await this.locationService.saveUserLocation(createLocationInput)
     }
+
     @UseGuards(GqlAuthGuard)
     @Query(() => LocationEntity, {
         name: 'getUserLocation',
+        nullable: true,
         description: 'fetch user location details',
     })
     async getUserLocation(@Args('userId') userId: string): Promise<any> {

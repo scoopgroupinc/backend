@@ -2,14 +2,14 @@ import { MailerService } from '@nestjs-modules/mailer'
 import { HttpService } from '@nestjs/axios'
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { isNotEmpty } from 'class-validator'
 import * as moment from 'moment'
 import { lastValueFrom, map } from 'rxjs'
 import { UserProfileService } from 'src/user-profile/user-profile.service'
 import { UserService } from 'src/user/user.service'
-import { Between, Repository } from 'typeorm'
+import { Repository } from 'typeorm'
 import { MatchesOutput } from './dto/matches.output'
 import { Matches } from './entities/matches.entity'
+import logger from 'src/utils/logger'
 
 @Injectable()
 export class MatchesService {
@@ -52,7 +52,7 @@ export class MatchesService {
             if (userId !== match.secondSwiper) {
                 matchTo = await this.userService.findOneByID(match.secondSwiper)
             }
-            console.log(matchTo)
+            if (!matchTo) continue
             const profile = await this.userProfileService.findOne(
                 matchTo.userId
             )
@@ -90,7 +90,7 @@ export class MatchesService {
             await this.matchesRpository.update({ id }, { active: false })
             return 'saved'
         } catch (error) {
-            console.log(error)
+            logger.debug(error)
             throw new HttpException('something went wrong', HttpStatus.CONFLICT)
         }
     }
@@ -129,15 +129,19 @@ export class MatchesService {
                     .pipe(map((response) => response.data))
             )
 
-            if (id === swiper1.userId) pic2 = profilePic[0].videoOrPhoto
-            if (id === swiper2.userId) pic1 = profilePic[0].videoOrPhoto
+            if (id === swiper1.userId) pic2 = profilePic[0]?.videoOrPhoto
+            if (id === swiper2.userId) pic1 = profilePic[0]?.videoOrPhoto
             await this.mailerService.sendMail({
                 to: id === swiper1.userId ? swiper1.email : swiper2.email,
                 from: 'noreply@scoop.love',
                 subject: 'Scoop Match Made ✔',
                 text: 'Matched',
                 template: 'matchNotification',
-                context: { year, matchName, profilePic },
+                context: {
+                    year,
+                    matchName,
+                    profilePic: profilePic[0]?.videoOrPhoto,
+                },
             })
         }
         //TODO: add user profile pic

@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql'
 import { tag_type } from 'src/common/enums'
-import { UserTagsTypeVisibleEnity } from 'src/user-tags-type-visible/entities/user-tags-type-visible.entity'
+import { UserTagsTypeVisibleEntity } from 'src/user-tags-type-visible/entities/user-tags-type-visible.entity'
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 
 registerEnumType(tag_type, {
@@ -28,9 +28,10 @@ export class UserTagsEntity {
     @Column()
     tagType: string
 
+    @Field(() => UserTagsTypeVisibleEntity)
     @ManyToOne(
-        () => UserTagsTypeVisibleEnity,
-        (userTagsTypeVisibleEnity) => userTagsTypeVisibleEnity.userTags
+        () => UserTagsTypeVisibleEntity,
+        (UserTagsTypeVisibleEntity) => UserTagsTypeVisibleEntity.userTags
     )
-    userTagsTypeVisible: UserTagsTypeVisibleEnity
+    userTagsTypeVisible: UserTagsTypeVisibleEntity
 }

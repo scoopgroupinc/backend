@@ -10,12 +10,6 @@ DB:
     password: 'a271fd81ec6cdc4fcb8801e2fd571d7d'
     synchronize: true
 
-redis:
-    host: '18.218.140.148'
-    port: 6379
-    password: 'b61023583ec444cb'
-    username: 'icredis'
-
 jwt:
     secret: 'jwtsecret'
     expiresIn: '1d'

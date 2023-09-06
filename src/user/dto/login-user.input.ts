@@ -14,3 +14,15 @@ export class LoginUserInput {
     // @Field({ nullable: false })
     // macAddress: string
 }
+
+@InputType()
+export class AuthProviderInput {
+    @Field({ nullable: true })
+    email: string
+
+    @Field({ nullable: false })
+    provider: string
+
+    @Field({ nullable: false })
+    id: string
+}

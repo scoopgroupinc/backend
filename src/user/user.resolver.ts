@@ -1,4 +1,3 @@
-import { BadRequestException } from '@nestjs/common'
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql'
 
 import { UseGuards } from '@nestjs/common'
@@ -7,13 +6,12 @@ import { User } from './entities/user.entity'
 import { UserToken } from './types/user-token.schema'
 import { CreateUserInput } from './dto/create-user.input'
 import { UpdateUserInput } from './dto/update-user.input'
-import { LoginUserInput } from './dto/login-user.input'
-import { AuthService } from '../auth/auth.service'
-import { JwtService } from '@nestjs/jwt'
-import { GqlAuthGuard } from '../auth/guards/jwt-auth.guard'
-import { UserType } from './types/delete-user.schema'
+import { AuthProviderInput, LoginUserInput } from './dto/login-user.input'
 import { VerifyRestPasswordCode } from './dto/verify-Code-output'
 import { OnBoardInput } from './dto/onBoarding.input'
+import { HttpStatusType } from './types/http-status.schema'
+import { GqlAuthGuard } from 'src/auth/guards/jwt-auth.guard'
+import { AppleProviderInput } from './dto/apple-provider.input'
 
 @Resolver(() => User)
 export class UserResolver {
@@ -24,6 +22,13 @@ export class UserResolver {
         @Args('createUserInput') createUserInput: CreateUserInput
     ) {
         return await this.userService.create(createUserInput)
+    }
+
+    @Query(() => UserToken, {
+        description: 'to be used for debugging on non production environments',
+    })
+    async getToken(@Args('userId') userId: string) {
+        return await this.userService.getToken(userId)
     }
 
     @UseGuards(GqlAuthGuard)
@@ -52,6 +57,21 @@ export class UserResolver {
     @Mutation(() => UserToken)
     async login(@Args('loginUserInput') loginUserInput: LoginUserInput) {
         return await this.userService.login(loginUserInput)
+    }
+
+    @Mutation(() => UserToken)
+    async loginWithProvider(
+        @Args('authProviderInput') authProviderInput: AuthProviderInput
+    ) {
+        const { provider } = authProviderInput
+        if (provider === 'google')
+            return await this.userService.findOrCreateUserWithGoogle(
+                authProviderInput
+            )
+        if (provider === 'apple')
+            return await this.userService.findOrCreateUserWithApple(
+                authProviderInput
+            )
     }
 
     @Mutation(() => UserToken)
@@ -96,7 +116,6 @@ export class UserResolver {
     ) {
         return await this.userService.sendVerificationMail(email, code)
     }
-
     @Mutation(() => String)
     async updateOnBoarding(@Args('onboardInput') onboardInput: OnBoardInput) {
         return await this.userService.updateOnBoarding(onboardInput)

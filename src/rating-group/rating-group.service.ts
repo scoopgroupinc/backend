@@ -34,7 +34,7 @@ export class RatingGroupService {
                 saveRatingInput
             // first check if rateriD and contentId already exist
             if (
-                (await this.findRaterAndContent(raterId, contentId)).length !==
+                (await this.findRaterAndContent(raterId, contentId, type)).length !==
                 0
             ) {
                 return new HttpException(
@@ -114,10 +114,11 @@ export class RatingGroupService {
 
     async findRaterAndContent(
         raterId: string,
-        contentId: string
+        contentId: string,
+        type: string,
     ): Promise<RatingGroupInput[]> {
         return await this.ratingGroupRepository.find({
-            where: { raterId, contentId },
+            where: { raterId, contentId, type },
         })
     }
 
