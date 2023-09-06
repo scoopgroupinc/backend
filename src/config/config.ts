@@ -54,9 +54,9 @@ export const config = () => {
             username: process.env.DB_USERNAME,
             password: process.env.DB_PASSWORD,
             database: process.env.DB_DATABASE,
-            synchronize: true,
-            // process.env.NODE_ENV === 'development' ||
-            // process.env.NODE_ENV === 'local',
+            synchronize:
+                process.env.NODE_ENV === 'development' ||
+                process.env.NODE_ENV === 'local',
             logging: false,
             entities: [
                 User,
