@@ -35,7 +35,7 @@ export class UserTagsTypeVisibleService {
                     await this.userTagsTypeVisibleRepository.save({
                         ...dbUserTags,
                         visible,
-                        emoji: this.convertFromEmojiToHexa(
+                        emoji: convertFromEmojiToHexa(
                             tagEmoji[tagTypeFromInput]
                         ),
                         tagType: tagTypeFromInput,
@@ -45,7 +45,7 @@ export class UserTagsTypeVisibleService {
                     const userTagsTypeVisibleToSave = {
                         userId,
                         tagType: tagTypeFromInput,
-                        emoji: this.convertFromEmojiToHexa(
+                        emoji: convertFromEmojiToHexa(
                             tagEmoji[tagTypeFromInput]
                         ),
                     }
@@ -76,6 +76,7 @@ export class UserTagsTypeVisibleService {
     }
 
     async allUserTagsTypeVisible(userId: string) {
+        console.log('user tags userId', userId)
         try {
             const results = await this.userTagsTypeVisibleRepository.find({
                 userId,
@@ -90,7 +91,7 @@ export class UserTagsTypeVisibleService {
             const modifiedOutput = results.map((result) => {
                 return {
                     ...result,
-                    emoji: this.convertFromHexaToEmoji(result.emoji),
+                    emoji: convertFromHexaToEmoji(result.emoji),
                 }
             })
 
@@ -100,12 +101,12 @@ export class UserTagsTypeVisibleService {
             throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
         }
     }
+}
 
-    convertFromEmojiToHexa(emoji) {
-        return emoji.toString().codePointAt(0).toString(16)
-    }
+export const convertFromEmojiToHexa = (emoji) => {
+    return emoji.toString().codePointAt(0).toString(16)
+}
 
-    convertFromHexaToEmoji(hex) {
-        return String.fromCodePoint(parseInt('0x' + hex))
-    }
+export const convertFromHexaToEmoji = (hex) => {
+    return String.fromCodePoint(parseInt('0x' + hex))
 }

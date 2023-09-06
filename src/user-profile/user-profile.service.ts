@@ -17,6 +17,7 @@ import { UserPromptsOrderInput } from './dto/user-prompts-order.input'
 import { User } from 'src/user/entities/user.entity'
 import { UserVisuals } from './user-visuals/user-visuals.entity'
 import { UserPrompts } from 'src/user-prompts/entities/user-prompts.entity'
+import { convertFromHexaToEmoji } from 'src/user-tags-type-visible/user-tags-type-visible.service'
 
 @Injectable()
 export class UserProfileService {
@@ -67,14 +68,20 @@ export class UserProfileService {
 
     async getFullProfile(userId: string): Promise<UserProfile> {
         const userProfile = await this.getUserProfileWithRelations(userId)
-
         if (userProfile) {
             userProfile.prompts = this.filterPrompts(userProfile)
+            userProfile.tags = userProfile.tags.map((tag) => {
+                return {
+                    ...tag,
+                    emoji: convertFromHexaToEmoji(tag.emoji),
+                }
+            })
 
-            const visualsResponse = await this.getVisuals(userId)
-            userProfile.visuals = visualsResponse.map((visual) =>
-                this.mapToUserVisuals(visual)
-            )
+            /* comment this when working on a localhost */
+            // const visualsResponse = await this.getVisuals(userId)
+            // userProfile.visuals = visualsResponse.map((visual) =>
+            //     this.mapToUserVisuals(visual)
+            // )
 
             return userProfile
         } else {
@@ -87,7 +94,7 @@ export class UserProfileService {
     ): Promise<UserProfile | undefined> {
         return this.userProfileRepository.findOne({
             where: { userId },
-            relations: ['prompts', 'tags', 'tags.userTags'],
+            relations: ['prompts', 'tags'],
         })
     }
 
