@@ -48,7 +48,7 @@ export class UserTagsTypeVisibleEntity {
     userTags?: UserTagsEntity[]
 
     @ManyToOne(() => UserProfile, (userProfile) => userProfile.tags)
-    // @JoinColumn({ name: 'userId', referencedColumnName: 'userId' })
+    @JoinColumn({ name: 'userId', referencedColumnName: 'userId' })
     @Field(() => UserProfile)
     userProfile?: UserProfile
 }
