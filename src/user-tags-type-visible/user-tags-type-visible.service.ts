@@ -5,7 +5,7 @@ import {
     NotFoundException,
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { tagEmoji, tag_type } from 'src/common/enums'
+import { tagEmoji, tag_type, tags } from 'src/common/enums'
 import { UserTagsService } from 'src/user-tags/user-tags.service'
 import logger from 'src/utils/logger'
 import { Repository } from 'typeorm'
@@ -99,6 +99,42 @@ export class UserTagsTypeVisibleService {
         } catch (error) {
             logger.debug(error)
             throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    async prePopulateUserTags(userId: any) {
+        try {
+            console.log('prePopulateUserTags userId', userId)
+
+            // Check if the user tags have already been populated for the given user ID
+            const existingUserTags =
+                await this.userTagsTypeVisibleRepository.find({
+                    userId,
+                })
+
+            if (existingUserTags && existingUserTags.length > 0) {
+                throw new HttpException(
+                    'User tags already populated',
+                    HttpStatus.FORBIDDEN
+                )
+            }
+
+            const userTagsTypeVisible = tags.map((tag) => ({
+                userId,
+                visible: true,
+                emoji: '',
+                tagType: tag_type[tag],
+                userTags: [],
+            }))
+            console.log('userTagsTypeVisible', userTagsTypeVisible)
+
+            await this.saveUserTagsTypeVisible(userTagsTypeVisible)
+        } catch (error) {
+            logger.debug(error)
+            throw new HttpException(
+                'Failed to pre-populate user tags',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
         }
     }
 }

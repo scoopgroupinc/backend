@@ -485,6 +485,7 @@ type Mutation {
   updateOnBoarding(onboardInput: OnBoardInput!): String!
   saveDeviceDetails(userdeviceInput: UserDeviceInput!): UserDevice!
   saveUserTagsTypeVisible(userTagsTypeVisibleInput: [UserTagsTypeVisibleInput!]!): [UserTagsTypeVisibleEntity!]!
+  prePopulateUserTags(userId: String!): [UserTagsTypeVisibleEntity!]!
   saveUserProfile(userProfileInput: UserProfileInput!): UserProfile!
 
   """Use this endpoint to savs and update entity"""

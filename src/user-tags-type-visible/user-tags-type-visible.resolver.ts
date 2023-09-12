@@ -56,4 +56,17 @@ export class UserTagsTypeVisibleResolver {
         const { userId, tagType } = userTagsTypeVisible
         return await this.userTagsService.getUserTags(userId, tagType)
     }
+
+    @UseGuards(GqlAuthGuard)
+    @Mutation(() => [UserTagsTypeVisibleEntity], {
+        name: 'prePopulateUserTags',
+    })
+    async prePopulateUserTags(
+        @Args('userId', { type: () => String }) userId: string
+    ) {
+        const results =
+            await this.userTagsTypeVisibleService.prePopulateUserTags(userId)
+
+        return results
+    }
 }

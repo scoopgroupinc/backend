@@ -19,7 +19,6 @@ import { JwtService } from '@nestjs/jwt'
 import * as moment from 'moment'
 import { VerifyRestPasswordCode } from './dto/verify-Code-output'
 import { UserTagsTypeVisibleService } from 'src/user-tags-type-visible/user-tags-type-visible.service'
-import { tag_type, tags } from 'src/common/enums'
 import { OnBoardInput } from './dto/onBoarding.input'
 import { FederatedCredential } from './entities/federated-credential.entity'
 
@@ -122,7 +121,7 @@ export class UserService {
                             email,
                             userId: user.userId,
                         })
-                        this.prePopulateUserTags(user.userId)
+                        this.userTagsTypeVisibleService.prePopulateUserTags(user.userId)
                     } else {
                         await this.userRepository.delete({ email })
                     }
@@ -216,7 +215,7 @@ export class UserService {
                             email,
                             userId: user.userId,
                         })
-                        await this.prePopulateUserTags(user.userId)
+                        await this.userTagsTypeVisibleService.prePopulateUserTags(user.userId)
                         return {
                             token: this.authService.generateJwt(
                                 user.email,
@@ -340,7 +339,7 @@ export class UserService {
                 isVerified: true,
             })
             if (result) {
-                this.prePopulateUserTags(result.userId)
+                this.userTagsTypeVisibleService.prePopulateUserTags(result.userId)
 
                 const payload = {
                     token: this.authService.generateJwt(
@@ -593,27 +592,6 @@ export class UserService {
             logger.debug(error)
             throw new HttpException(
                 'Failed to update onboarding',
-                HttpStatus.INTERNAL_SERVER_ERROR
-            )
-        }
-    }
-
-    async prePopulateUserTags(userId: any) {
-        try {
-            const userTagsTypeVisible = tags.map((tag) => ({
-                userId,
-                visible: true,
-                emoji: '',
-                tagType: tag_type[tag],
-                userTags: [],
-            }))
-            await this.userTagsTypeVisibleService.saveUserTagsTypeVisible(
-                userTagsTypeVisible
-            )
-        } catch (error) {
-            logger.debug(error)
-            throw new HttpException(
-                'Failed to pre-populate user tags',
                 HttpStatus.INTERNAL_SERVER_ERROR
             )
         }
