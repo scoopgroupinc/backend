@@ -116,7 +116,11 @@ export class TagsService {
     }
 
     convertFromEmojiToHexa(emoji) {
-        return emoji.toString().codePointAt(0).toString(16)
+        if (typeof emoji === 'string' && emoji.length > 0) {
+            return emoji.codePointAt(0).toString(16)
+        } else {
+            throw new Error('Invalid input for emoji conversion')
+        }
     }
 
     convertFromHexaToEmoji(hex) {
