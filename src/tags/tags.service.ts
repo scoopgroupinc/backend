@@ -68,7 +68,7 @@ export class TagsService {
     async getTagsbyType(tagType: string): Promise<TagsEntity[]> {
         const result = await this.tagsRepository.find({ type: tagType })
         result.forEach((tag) => {
-            if (tag.emoji !== '') {
+            if (tag.emoji !== '' && typeof tag.emoji === 'string' && tag.emoji.match(/^[0-9a-fA-F]+$/)) {
                 tag.emoji = this.convertFromHexaToEmoji(tag.emoji)
             }
         })
@@ -96,7 +96,7 @@ export class TagsService {
                     order: row[3],
                     visible: row[4],
                     emoji:
-                        row[5] !== null
+                        row[5] !== null && typeof row[5] === 'string' && row[5].length > 0
                             ? this.convertFromEmojiToHexa(row[5])
                             : null,
                 }
@@ -124,6 +124,13 @@ export class TagsService {
     }
 
     convertFromHexaToEmoji(hex) {
-        return String.fromCodePoint(parseInt('0x' + hex))
+        if (typeof hex !== 'string' || !hex.match(/^[0-9a-fA-F]+$/)) {
+            throw new Error('Invalid hex input')
+        }
+        const codePoint = parseInt(hex, 16)
+        if (isNaN(codePoint)) {
+            throw new Error('Invalid code point')
+        }
+        return String.fromCodePoint(codePoint)
     }
 }
