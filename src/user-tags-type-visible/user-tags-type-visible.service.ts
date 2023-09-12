@@ -128,7 +128,7 @@ export class UserTagsTypeVisibleService {
             }))
             console.log('userTagsTypeVisible', userTagsTypeVisible)
 
-            await this.saveUserTagsTypeVisible(userTagsTypeVisible)
+            return this.saveUserTagsTypeVisible(userTagsTypeVisible)
         } catch (error) {
             logger.debug(error)
             throw new HttpException(
