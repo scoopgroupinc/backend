@@ -21,6 +21,8 @@ import { VerifyRestPasswordCode } from './dto/verify-Code-output'
 import { UserTagsTypeVisibleService } from 'src/user-tags-type-visible/user-tags-type-visible.service'
 import { OnBoardInput } from './dto/onBoarding.input'
 import { FederatedCredential } from './entities/federated-credential.entity'
+import { UserProfileService } from 'src/user-profile/user-profile.service'
+import { UserProfileInput } from 'src/user-profile/dto/user-profile.input'
 
 @Injectable()
 export class UserService {
@@ -32,7 +34,8 @@ export class UserService {
         private deviceService: UserDeviceService,
         private mailerService: MailerService,
         private jwtService: JwtService,
-        private userTagsTypeVisibleService: UserTagsTypeVisibleService
+        private userTagsTypeVisibleService: UserTagsTypeVisibleService,
+        private userProfileSvc: UserProfileService
     ) {}
 
     async getToken(userId: string) {
@@ -121,7 +124,9 @@ export class UserService {
                             email,
                             userId: user.userId,
                         })
-                        this.userTagsTypeVisibleService.prePopulateUserTags(user.userId)
+                        this.userTagsTypeVisibleService.prePopulateUserTags(
+                            user.userId
+                        )
                     } else {
                         await this.userRepository.delete({ email })
                     }
@@ -209,13 +214,24 @@ export class UserService {
                     })
 
                     if (user) {
+                        const userProfile: UserProfileInput = {
+                            userId: user.userId,
+                        }
                         await this.federatedCredentialRepository.save({
                             provider,
                             providerUserId: id,
                             email,
                             userId: user.userId,
                         })
-                        await this.userTagsTypeVisibleService.prePopulateUserTags(user.userId)
+                        const resp = await this.userProfileSvc.saveUserProfile(
+                            userProfile
+                        )
+
+                        if (resp) {
+                            await this.userTagsTypeVisibleService.prePopulateUserTags(
+                                user.userId
+                            )
+                        }
                         return {
                             token: this.authService.generateJwt(
                                 user.email,
@@ -339,7 +355,9 @@ export class UserService {
                 isVerified: true,
             })
             if (result) {
-                this.userTagsTypeVisibleService.prePopulateUserTags(result.userId)
+                this.userTagsTypeVisibleService.prePopulateUserTags(
+                    result.userId
+                )
 
                 const payload = {
                     token: this.authService.generateJwt(

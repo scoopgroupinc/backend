@@ -10,6 +10,7 @@ import { UserService } from './user.service'
 import { User } from './entities/user.entity'
 import { ConfigService } from '@nestjs/config' // Import ConfigService
 import { FederatedCredential } from './entities/federated-credential.entity'
+import { UserProfileModule } from 'src/user-profile/user-profile.module'
 
 @Module({
     imports: [
@@ -26,6 +27,7 @@ import { FederatedCredential } from './entities/federated-credential.entity'
         AuthModule,
         UserDeviceModule,
         UserTagsTypeVisibleModule,
+        UserProfileModule,
     ],
     providers: [UserResolver, UserService, AuthService],
     exports: [UserService],
