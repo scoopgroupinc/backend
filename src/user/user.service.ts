@@ -136,6 +136,7 @@ export class UserService {
                                 user.userId
                             )
                         }
+
                     } else {
                         await this.userRepository.delete({ email })
                     }
