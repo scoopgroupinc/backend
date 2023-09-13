@@ -118,15 +118,24 @@ export class UserService {
                     })
 
                     if (user) {
+                        const userProfile: UserProfileInput = {
+                            userId: user.userId,
+                        }
                         await this.federatedCredentialRepository.save({
                             provider,
                             providerUserId: id,
                             email,
                             userId: user.userId,
                         })
-                        this.userTagsTypeVisibleService.prePopulateUserTags(
-                            user.userId
+                        const resp = await this.userProfileSvc.saveUserProfile(
+                            userProfile
                         )
+
+                        if (resp) {
+                            await this.userTagsTypeVisibleService.prePopulateUserTags(
+                                user.userId
+                            )
+                        }
                     } else {
                         await this.userRepository.delete({ email })
                     }
