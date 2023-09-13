@@ -18,7 +18,7 @@ export class UserProfileInput {
 
     @Field({ nullable: true })
     @IsOptional()
-    profilePhoto: string
+    profilePhoto?: string
 
     @Field({ nullable: true })
     @IsOptional()
@@ -41,13 +41,13 @@ export class UserProfileInput {
     jobTitle?: string
 
     @Field({ nullable: true })
-    company: string
+    company?: string
 
     @Field({ nullable: true })
-    homeTown: string
+    homeTown?: string
 
     @Field({ nullable: true })
-    school: string
+    school?: string
 
-    userTagsTypeVisibleInput: UserTagsTypeVisibleInput
+    userTagsTypeVisibleInput?: UserTagsTypeVisibleInput
 }
