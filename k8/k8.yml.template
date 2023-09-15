@@ -3,7 +3,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend-deployment
-  namespace: scoop-dev-ingress-controlled-namespace
   labels:
     app: backend
 spec:
