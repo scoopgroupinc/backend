@@ -23,7 +23,7 @@ export enum tagType {
     education = 'education',
     ethnicity = 'ethnicity',
     religion = 'religion',
-    religion_practice = 'religion_practice',
+    religious_practice = 'religious_practice',
     cannibis_usage = 'cannibis_usage',
     relationship_type = 'relationship_type',
     relationship_goal = 'relationship_goal',

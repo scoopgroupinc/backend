@@ -63,22 +63,6 @@ export class UserProfile extends BaseEntity {
     @Column({ nullable: true })
     locationId?: string
 
-    @Field(() => String, { nullable: true })
-    @Column({ nullable: true })
-    jobTitle?: string
-
-    @Field(() => String, { nullable: true })
-    @Column({ nullable: true })
-    company?: string
-
-    @Field(() => String, { nullable: true })
-    @Column({ nullable: true })
-    homeTown?: string
-
-    @Field(() => String, { nullable: true })
-    @Column({ nullable: true })
-    school?: string
-
     @Field(() => [String], { nullable: true })
     @Column({ type: 'varchar', array: true, nullable: true, default: [] })
     promptIds?: string[]

@@ -91,10 +91,6 @@ type UserProfile {
   height: String
   gender: String
   locationId: String
-  jobTitle: String
-  company: String
-  homeTown: String
-  school: String
   promptIds: [String!]
   prompts: [UserPrompts!]
   tags: [UserTagsTypeVisibleEntity!]
