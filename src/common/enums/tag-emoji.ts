@@ -11,7 +11,7 @@ export enum tagEmoji {
     ethnicity = '👨🏻‍🤝‍👨🏻',
     gender = '👨🏻‍🤝‍👨🏻',
     going_out = '🍻',
-    homeTown = '🏠',
+    home_town = '🏠',
     job = '👨🏻‍💻',
     language = '🗣',
     meyer_briggs = '🧠',

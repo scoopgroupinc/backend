@@ -1,11 +1,6 @@
-import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql'
-import { tag_type } from 'src/common/enums'
+import { Field, ID, ObjectType } from '@nestjs/graphql'
 import { UserTagsTypeVisibleEntity } from 'src/user-tags-type-visible/entities/user-tags-type-visible.entity'
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
-
-registerEnumType(tag_type, {
-    name: 'tag_type',
-})
 
 @ObjectType({
     description: 'Entity for user tags',
