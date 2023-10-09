@@ -18,7 +18,7 @@ export enum tagEmoji {
     music_genre = '🎵',
     parenting_goal = '👶🏻',
     parenting_type = '👨🏻‍🤝‍👨🏻',
-    peronsality = '🧠',
+    personality = '🧠',
     pets = '🐶',
     physical_activity = '🏋🏻‍♂️',
     politics = '🇺🇸',
