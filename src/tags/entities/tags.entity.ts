@@ -2,6 +2,8 @@ import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from 'typeorm'
 import { ObjectType, Field } from '@nestjs/graphql'
 
 export enum tagType {
+    job = 'job',
+    home_town = 'home_town',
     physical_activity = 'physical_activity',
     physical_activity_frequency = 'physical_activity_frequency',
     drink = 'drink',
