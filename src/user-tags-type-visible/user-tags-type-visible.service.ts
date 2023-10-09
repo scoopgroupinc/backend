@@ -21,6 +21,7 @@ export class UserTagsTypeVisibleService {
     ) {}
 
     async saveUserTagsTypeVisible(input: UserTagsTypeVisibleInput[]) {
+
         try {
             for (const _i of input) {
                 const { userId, tagType, visible } = _i
@@ -90,8 +91,6 @@ export class UserTagsTypeVisibleService {
 
     async prePopulateUserTags(userId: any) {
         try {
-            console.log('prePopulateUserTags userId', userId)
-
             // Check if the user tags have already been populated for the given user ID
             const existingUserTags =
                 await this.userTagsTypeVisibleRepository.find({
@@ -111,7 +110,6 @@ export class UserTagsTypeVisibleService {
                 tagType: tag_type_visible[tag],
                 userTags: [],
             }))
-            console.log('userTagsTypeVisible', userTagsTypeVisible)
 
             return this.saveUserTagsTypeVisible(userTagsTypeVisible)
         } catch (error) {

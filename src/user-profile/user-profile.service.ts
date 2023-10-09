@@ -50,8 +50,7 @@ export class UserProfileService {
             }
 
             return await this.createProfile({
-                ...userProfileInput,
-                displayName: existingUser.firstName,
+                ...userProfileInput
             })
         } catch (error) {
             logger.debug(error)
@@ -149,7 +148,7 @@ export class UserProfileService {
                 return new BadRequestException('User profile does not exist')
             return await this.userProfileRepository.save({
                 ...profile,
-                ...userProfileInput,
+                ...userProfileInput
             })
         } catch (error) {
             logger.debug(error)
@@ -158,7 +157,13 @@ export class UserProfileService {
     }
 
     async createProfile(userProfileInput: UserProfileInput): Promise<any> {
-        return await this.userProfileRepository.save(userProfileInput)
+        const user = await this.userRepository.findOne({
+            userId: userProfileInput.userId,
+        })
+        return await this.userProfileRepository.save({
+            ...userProfileInput,
+            displayName: userProfileInput.displayName || user.firstName,
+        })
     }
 
     async updateProfilePhoto(userId: string, key: string): Promise<any> {

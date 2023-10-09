@@ -88,7 +88,7 @@ type UserProfile {
   displayName: String
   profilePhoto: String
   birthday: String
-  height: String
+  height: Float
   gender: String
   locationId: String
   promptIds: [String!]
@@ -100,7 +100,7 @@ type UserProfile {
 type UserPreference {
   userId: ID!
   createdAt: String
-  heightRange: [String!]
+  heightRange: [Float!]
   ageRange: [String!]
   gender: [String!]
   distance: Float!
@@ -592,6 +592,7 @@ enum tag_type_visible {
   personality
   pets
   physical_activity
+  physical_activity_frequency
   politics
   relationship_goal
   relationship_type
@@ -617,7 +618,7 @@ input UserProfileInput {
   displayName: String
   profilePhoto: String
   birthday: String
-  height: String
+  height: Float
   gender: String
   locationId: String
   jobTitle: String

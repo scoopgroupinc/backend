@@ -23,6 +23,7 @@ export enum tag_type_visible {
     personality,
     pets,
     physical_activity,
+    physical_activity_frequency,
     politics,
     relationship_goal,
     relationship_type,

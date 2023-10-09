@@ -50,10 +50,10 @@ export class UserProfile extends BaseEntity {
     @Column({ nullable: true })
     birthday?: string
 
-    @Field(() => String, { nullable: true })
+    @Field(() => Number, { nullable: true })
     @IsNumber()
     @Column({ nullable: true })
-    height?: string
+    height?: number
 
     @Field(() => String, { nullable: true })
     @Column({ type: 'enum', enum: gender, nullable: true })
