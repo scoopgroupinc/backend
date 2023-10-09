@@ -5,7 +5,7 @@ import {
     NotFoundException,
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { tagEmoji, tag_type, tags } from 'src/common/enums'
+import { tag_type_visible, tags_visible } from 'src/common/enums'
 import { UserTagsService } from 'src/user-tags/user-tags.service'
 import logger from 'src/utils/logger'
 import { Repository } from 'typeorm'
@@ -21,10 +21,11 @@ export class UserTagsTypeVisibleService {
     ) {}
 
     async saveUserTagsTypeVisible(input: UserTagsTypeVisibleInput[]) {
+
         try {
             for (const _i of input) {
                 const { userId, tagType, visible } = _i
-                const tagTypeFromInput = tag_type[tagType]
+                const tagTypeFromInput = tag_type_visible[tagType]
                 const dbUserTags =
                     await this.userTagsTypeVisibleRepository.findOne({
                         userId,
@@ -35,9 +36,6 @@ export class UserTagsTypeVisibleService {
                     await this.userTagsTypeVisibleRepository.save({
                         ...dbUserTags,
                         visible,
-                        emoji: convertFromEmojiToHexa(
-                            tagEmoji[tagTypeFromInput]
-                        ),
                         tagType: tagTypeFromInput,
                     })
                 } else {
@@ -45,9 +43,6 @@ export class UserTagsTypeVisibleService {
                     const userTagsTypeVisibleToSave = {
                         userId,
                         tagType: tagTypeFromInput,
-                        emoji: convertFromEmojiToHexa(
-                            tagEmoji[tagTypeFromInput]
-                        ),
                     }
                     await this.userTagsTypeVisibleRepository.save(
                         userTagsTypeVisibleToSave
@@ -87,15 +82,7 @@ export class UserTagsTypeVisibleService {
                     `User with Id ${userId} has no tag types`
                 )
 
-            // convert emoji
-            const modifiedOutput = results.map((result) => {
-                return {
-                    ...result,
-                    emoji: convertFromHexaToEmoji(result.emoji),
-                }
-            })
-
-            return modifiedOutput
+            return results
         } catch (error) {
             logger.debug(error)
             throw new HttpException(error.message, HttpStatus.BAD_REQUEST)
@@ -104,8 +91,6 @@ export class UserTagsTypeVisibleService {
 
     async prePopulateUserTags(userId: any) {
         try {
-            console.log('prePopulateUserTags userId', userId)
-
             // Check if the user tags have already been populated for the given user ID
             const existingUserTags =
                 await this.userTagsTypeVisibleRepository.find({
@@ -119,14 +104,12 @@ export class UserTagsTypeVisibleService {
                 )
             }
 
-            const userTagsTypeVisible = tags.map((tag) => ({
+            const userTagsTypeVisible = tags_visible.map((tag) => ({
                 userId,
                 visible: true,
-                emoji: '',
-                tagType: tag_type[tag],
+                tagType: tag_type_visible[tag],
                 userTags: [],
             }))
-            console.log('userTagsTypeVisible', userTagsTypeVisible)
 
             return this.saveUserTagsTypeVisible(userTagsTypeVisible)
         } catch (error) {
@@ -137,12 +120,4 @@ export class UserTagsTypeVisibleService {
             )
         }
     }
-}
-
-export const convertFromEmojiToHexa = (emoji) => {
-    return emoji.toString().codePointAt(0).toString(16)
-}
-
-export const convertFromHexaToEmoji = (hex) => {
-    return String.fromCodePoint(parseInt('0x' + hex))
 }

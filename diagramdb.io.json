@@ -97,9 +97,8 @@ Ref: "user_preferences"."sportsPreferences" < "tags"."id"
 Enum tag_type {
   job
   company
-  homeTown
+  home_town
   school
-
   physical_activity
   zodiac
   education
@@ -126,7 +125,7 @@ Enum tag_type {
   gender
   laguage
   meyer_briggs
-  peronsality
+  personality
 }
 
 Table tags {

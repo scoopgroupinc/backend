@@ -50,10 +50,10 @@ export class UserProfile extends BaseEntity {
     @Column({ nullable: true })
     birthday?: string
 
-    @Field(() => String, { nullable: true })
+    @Field(() => Number, { nullable: true })
     @IsNumber()
     @Column({ nullable: true })
-    height?: string
+    height?: number
 
     @Field(() => String, { nullable: true })
     @Column({ type: 'enum', enum: gender, nullable: true })
@@ -62,22 +62,6 @@ export class UserProfile extends BaseEntity {
     @Field(() => String, { nullable: true })
     @Column({ nullable: true })
     locationId?: string
-
-    @Field(() => String, { nullable: true })
-    @Column({ nullable: true })
-    jobTitle?: string
-
-    @Field(() => String, { nullable: true })
-    @Column({ nullable: true })
-    company?: string
-
-    @Field(() => String, { nullable: true })
-    @Column({ nullable: true })
-    homeTown?: string
-
-    @Field(() => String, { nullable: true })
-    @Column({ nullable: true })
-    school?: string
 
     @Field(() => [String], { nullable: true })
     @Column({ type: 'varchar', array: true, nullable: true, default: [] })

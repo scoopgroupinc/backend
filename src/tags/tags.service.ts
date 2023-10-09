@@ -43,12 +43,6 @@ export class TagsService {
 
     async findAll(): Promise<TagsEntity[]> {
         const result = await this.tagsRepository.find({})
-
-        result.forEach((tag) => {
-            if (tag.emoji) {
-                tag.emoji = this.convertFromHexaToEmoji(tag.emoji)
-            }
-        })
         return result
     }
 
@@ -67,22 +61,13 @@ export class TagsService {
 
     async getTagsbyType(tagType: string): Promise<TagsEntity[]> {
         const result = await this.tagsRepository.find({ type: tagType })
-        result.forEach((tag) => {
-            if (tag.emoji !== '' && typeof tag.emoji === 'string' && tag.emoji.match(/^[0-9a-fA-F]+$/)) {
-                tag.emoji = this.convertFromHexaToEmoji(tag.emoji)
-            }
-        })
         return result
     }
 
     async uploadTags() {
-        const alltags = await this.getTags('religion')
-        if (alltags.length > 0)
-            throw new HttpException(
-                'Tags already uploaded',
-                HttpStatus.FORBIDDEN
-            )
         const filePath = path.resolve('dist/tags.xlsx')
+
+        let process = 'Upload successful'
 
         readXlsxFile(filePath, { sheet: 'tags' }).then(async (rows) => {
             rows.shift()
@@ -95,42 +80,32 @@ export class TagsService {
                     name: row[2],
                     order: row[3],
                     visible: row[4],
-                    emoji:
-                        row[5] !== null && typeof row[5] === 'string' && row[5].length > 0
-                            ? this.convertFromEmojiToHexa(row[5])
-                            : null,
+                    emoji: row[5],
                 }
 
                 tags.push(tag)
             })
 
-            await this.tagsRepository.create(tags)
-            const result = await this.tagsRepository.save(tags)
-            if (!result)
+            try {
+                for (const tag of tags) {
+                    const existingTag = await this.tagsRepository.findOne(
+                        tag.id
+                    )
+                    if (existingTag) {
+                        await this.tagsRepository.update(tag.id, tag)
+                        process = 'Update successful'
+                    } else {
+                        await this.tagsRepository.insert(tag)
+                    }
+                }
+            } catch (error) {
                 throw new HttpException(
                     'Upload failed',
                     HttpStatus.EXPECTATION_FAILED
                 )
+            }
         })
-        return 'Upload successful'
-    }
 
-    convertFromEmojiToHexa(emoji) {
-        if (typeof emoji === 'string' && emoji.length > 0) {
-            return emoji.codePointAt(0).toString(16)
-        } else {
-            throw new Error('Invalid input for emoji conversion')
-        }
-    }
-
-    convertFromHexaToEmoji(hex) {
-        if (typeof hex !== 'string' || !hex.match(/^[0-9a-fA-F]+$/)) {
-            throw new Error('Invalid hex input')
-        }
-        const codePoint = parseInt(hex, 16)
-        if (isNaN(codePoint)) {
-            throw new Error('Invalid code point')
-        }
-        return String.fromCodePoint(codePoint)
+        return process
     }
 }

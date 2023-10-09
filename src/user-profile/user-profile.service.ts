@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { HttpService } from '@nestjs/axios'
-import { catchError, firstValueFrom } from 'rxjs'
+import { firstValueFrom } from 'rxjs'
 import {
     Injectable,
     BadRequestException,
@@ -17,7 +17,6 @@ import { UserPromptsOrderInput } from './dto/user-prompts-order.input'
 import { User } from 'src/user/entities/user.entity'
 import { UserVisuals } from './user-visuals/user-visuals.entity'
 import { UserPrompts } from 'src/user-prompts/entities/user-prompts.entity'
-import { convertFromHexaToEmoji } from 'src/user-tags-type-visible/user-tags-type-visible.service'
 
 @Injectable()
 export class UserProfileService {
@@ -51,8 +50,7 @@ export class UserProfileService {
             }
 
             return await this.createProfile({
-                ...userProfileInput,
-                displayName: existingUser.firstName,
+                ...userProfileInput
             })
         } catch (error) {
             logger.debug(error)
@@ -70,12 +68,6 @@ export class UserProfileService {
         const userProfile = await this.getUserProfileWithRelations(userId)
         if (userProfile) {
             userProfile.prompts = this.filterPrompts(userProfile)
-            userProfile.tags = userProfile.tags.map((tag) => {
-                return {
-                    ...tag,
-                    emoji: convertFromHexaToEmoji(tag.emoji),
-                }
-            })
 
             /* comment this when working on a localhost */
             const visualsResponse = await this.getVisuals(userId)
@@ -156,7 +148,7 @@ export class UserProfileService {
                 return new BadRequestException('User profile does not exist')
             return await this.userProfileRepository.save({
                 ...profile,
-                ...userProfileInput,
+                ...userProfileInput
             })
         } catch (error) {
             logger.debug(error)
@@ -165,7 +157,13 @@ export class UserProfileService {
     }
 
     async createProfile(userProfileInput: UserProfileInput): Promise<any> {
-        return await this.userProfileRepository.save(userProfileInput)
+        const user = await this.userRepository.findOne({
+            userId: userProfileInput.userId,
+        })
+        return await this.userProfileRepository.save({
+            ...userProfileInput,
+            displayName: userProfileInput.displayName || user.firstName,
+        })
     }
 
     async updateProfilePhoto(userId: string, key: string): Promise<any> {

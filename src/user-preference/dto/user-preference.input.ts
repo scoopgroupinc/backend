@@ -17,7 +17,7 @@ export class UserPreferenceInput {
     @Field(() => [String], { nullable: true })
     @IsArray()
     @IsOptional()
-    heightRange?: string[]
+    heightRange?: number[]
 
     @Field(() => [String], { nullable: true })
     @IsArray()

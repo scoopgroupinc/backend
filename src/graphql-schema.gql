@@ -63,7 +63,6 @@ type UserTagsEntity {
 type UserTagsTypeVisibleEntity {
   id: ID!
   userId: ID!
-  emoji: String
   tagType: String!
   visible: Boolean!
   userTags: [UserTagsEntity!]!
@@ -89,13 +88,9 @@ type UserProfile {
   displayName: String
   profilePhoto: String
   birthday: String
-  height: String
+  height: Float
   gender: String
   locationId: String
-  jobTitle: String
-  company: String
-  homeTown: String
-  school: String
   promptIds: [String!]
   prompts: [UserPrompts!]
   tags: [UserTagsTypeVisibleEntity!]
@@ -105,7 +100,7 @@ type UserProfile {
 type UserPreference {
   userId: ID!
   createdAt: String
-  heightRange: [String!]
+  heightRange: [Float!]
   ageRange: [String!]
   gender: [String!]
   distance: Float!
@@ -568,12 +563,11 @@ input UserDeviceInput {
 input UserTagsTypeVisibleInput {
   userId: ID!
   visible: Boolean!
-  emoji: String!
-  tagType: tag_type!
+  tagType: tag_type_visible!
   userTags: [UserTagsInput!]
 }
 
-enum tag_type {
+enum tag_type_visible {
   alcohol_usage
   book_genre
   cannibis_usage
@@ -588,16 +582,17 @@ enum tag_type {
   film_genre
   gender
   going_out
-  homeTown
+  home_town
   job
   language
   meyer_briggs
   music_genre
   parenting_goal
   parenting_type
-  peronsality
+  personality
   pets
   physical_activity
+  physical_activity_frequency
   politics
   relationship_goal
   relationship_type
@@ -614,7 +609,7 @@ enum tag_type {
 input UserTagsInput {
   userId: ID!
   tagName: String!
-  tagType: tag_type!
+  tagType: tag_type_visible!
 }
 
 input UserProfileInput {
@@ -623,7 +618,7 @@ input UserProfileInput {
   displayName: String
   profilePhoto: String
   birthday: String
-  height: String
+  height: Float
   gender: String
   locationId: String
   jobTitle: String

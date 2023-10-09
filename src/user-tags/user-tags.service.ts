@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { tag_type } from 'src/common/enums'
+import { tag_type_visible } from 'src/common/enums'
 import { UserTagsTypeVisibleInput } from 'src/user-tags-type-visible/dto/create-user-tag-type-visible.input'
 import { Repository } from 'typeorm'
 import { UserTagsEntity } from './entities/user-tags.entity'
@@ -18,7 +18,7 @@ export class UserTagsService {
             const { userId, tagType, userTags } = userTagsInput
             const dbUserTags = await this.userTagsRespository.find({
                 userId,
-                tagType: tag_type[tagType],
+                tagType: tag_type_visible[tagType],
             })
             if (dbUserTags.length > 0) {
                 await this.userTagsRespository.remove(dbUserTags)
@@ -28,7 +28,7 @@ export class UserTagsService {
             const userTagsToSave = userTags.map((tag) => {
                 return {
                     userId,
-                    tagType: tag_type[tagType],
+                    tagType: tag_type_visible[tagType],
                     tagName: tag.tagName,
                 }
             })

@@ -1,5 +1,5 @@
 import { Field, ID, ObjectType, registerEnumType } from '@nestjs/graphql'
-import { tag_type } from 'src/common/enums'
+import { tag_type_visible } from 'src/common/enums'
 import { UserProfile } from 'src/user-profile/user-profile.entity'
 import { UserTagsEntity } from 'src/user-tags/entities/user-tags.entity'
 import {
@@ -11,8 +11,8 @@ import {
     PrimaryGeneratedColumn,
 } from 'typeorm'
 
-registerEnumType(tag_type, {
-    name: 'tag_type',
+registerEnumType(tag_type_visible, {
+    name: 'tag_type_visible',
 })
 
 @ObjectType({
@@ -27,10 +27,6 @@ export class UserTagsTypeVisibleEntity {
     @Field(() => ID)
     @Column({ type: 'bigint' })
     userId: string
-
-    @Field(() => String, { nullable: true })
-    @Column({ nullable: true })
-    emoji?: string
 
     @Field(() => String)
     @Column()

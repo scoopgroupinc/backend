@@ -26,7 +26,7 @@ export class UserProfileInput {
 
     @Field({ nullable: true })
     @IsOptional()
-    height?: string
+    height?: number
 
     @Field({ nullable: true })
     @IsOptional()
