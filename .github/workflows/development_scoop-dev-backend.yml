@@ -30,7 +30,7 @@ jobs:
               uses: docker/build-push-action@v3
               with:
                 push: true
-                tags: scoopdevcontainerregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_22c65bee59134efc834781cf216c0ff5 }}/backend:${{ github.sha }}
+                tags: scoopdevcontainerregistry.azurecr.io/backend:${{ github.sha }}
                 file: ./Dockerfile
                 secrets: |
                   DB_TYPE: ${{ vars.DB_TYPE_DEV }}
@@ -50,7 +50,7 @@ jobs:
               uses: docker/build-push-action@v3
               with:
                 push: true
-                tags: scoopdevcontainerregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_22c65bee59134efc834781cf216c0ff5 }}/backend:latest
+                tags: scoopdevcontainerregistry.azurecr.io/backend:latest
                 file: ./Dockerfile
                 build-args: |
                   DB_TYPE: ${{ vars.DB_TYPE_DEV }}
