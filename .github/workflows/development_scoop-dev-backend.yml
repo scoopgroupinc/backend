@@ -52,7 +52,7 @@ jobs:
                 push: true
                 tags: scoopdevcontainerregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_22c65bee59134efc834781cf216c0ff5 }}/backend:latest
                 file: ./Dockerfile
-                secrets: |
+                build-args: |
                   DB_TYPE: ${{ vars.DB_TYPE_DEV }}
                   DB_DATABASE: ${{ vars.DB_DATABASE_DEV }}
                   DB_HOST: ${{ vars.DB_HOST_DEV }}
