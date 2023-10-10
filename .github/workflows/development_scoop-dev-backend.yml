@@ -32,7 +32,7 @@ jobs:
                 push: true
                 tags: scoopdevcontainerregistry.azurecr.io/backend:${{ github.sha }}
                 file: ./Dockerfile
-                secrets: |
+                build-args: |
                   DB_TYPE: ${{ vars.DB_TYPE_DEV }}
                   DB_DATABASE: ${{ vars.DB_DATABASE_DEV }}
                   DB_HOST: ${{ vars.DB_HOST_DEV }}
@@ -81,4 +81,4 @@ jobs:
                   app-name: 'scoop-dev-backend'
                   slot-name: 'production'
                   publish-profile: ${{ secrets.AzureAppService_PublishProfile_e701ab39c8fc487aa80e83f44b85f23e }}
-                  images: 'scoopdevcontainerregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_22c65bee59134efc834781cf216c0ff5 }}/backend:${{ github.sha }}'
+                  images: 'scoopdevcontainerregistry.azurecr.io/backend:${{ github.sha }}'
