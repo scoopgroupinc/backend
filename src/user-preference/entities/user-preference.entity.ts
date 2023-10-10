@@ -27,7 +27,7 @@ export class UserPreference extends BaseEntity {
     createdAt?: string
 
     @Field(() => [Number], { nullable: true })
-    @Column('simple-array', { nullable: true, default: [] })
+    @Column('simple-array', { nullable: true, default: [36, 87] })
     heightRange?: number[]
 
     @Field(() => [String], { nullable: true })

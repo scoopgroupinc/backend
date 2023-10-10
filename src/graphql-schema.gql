@@ -437,6 +437,7 @@ type Query {
   getProfileFeedbackById(id: String!): ProfileFeedback!
   getAllProfileFeedbacks: [ProfileFeedback!]!
   getAllPersonalityFeedbacks: [PersonalityFeedback!]!
+  getUserProfileByLinkId(id: String!): UserProfile!
 }
 
 input IGetRatingInput {
@@ -515,7 +516,6 @@ type Mutation {
   updateShareProfileRaterId(id: String!, raterId: String!): FeedbackGroup!
   createProfileFeedback(profileFeedbackInput: ProfileFeedbackInput!): ProfileFeedback!
   createPersonalityFeedback(personalityFeedbackInput: PersonalityFeedbackInput!): PersonalityFeedback!
-  getUserProfileByLinkId(id: String!): UserProfile!
   getUserShareProfileLink(userId: String!): UserLink!
   updateUserLinkState(id: String!, state: String!): UserLink!
   deleteUserLink(id: String!): UserLink!
