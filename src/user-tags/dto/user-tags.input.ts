@@ -17,4 +17,7 @@ export class UserTagsInput {
 
     @Field(() => tag_type_visible)
     tagType: tag_type_visible
+
+    @Field(() => Number, { nullable: true })
+    tagId?: number
 }

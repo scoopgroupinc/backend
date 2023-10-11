@@ -23,6 +23,10 @@ export class UserTagsEntity {
     @Column()
     tagType: string
 
+    @Field(() => Number, { nullable: true })
+    @Column({ nullable: true })
+    tagId: number | null
+
     @Field(() => UserTagsTypeVisibleEntity)
     @ManyToOne(
         () => UserTagsTypeVisibleEntity,
