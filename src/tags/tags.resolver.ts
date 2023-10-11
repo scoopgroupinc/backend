@@ -24,7 +24,6 @@ export class TagsResolver {
         return await this.tagsService.findOne(id)
     }
 
-    @UseGuards(GqlAuthGuard)
     @Query(() => [TagsEntity], {
         name: 'getTags',
         description:
