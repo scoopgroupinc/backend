@@ -5,5 +5,5 @@ DB:
     synchronize: true
 
 jwt:
-    secret: 'some secrete her'
+    secret: 'some secret here'
     expiresIn: 7200

@@ -56,7 +56,7 @@ type UserTagsEntity {
   userId: ID!
   tagName: String!
   tagType: String!
-  tagId: Float
+  tagId: ID
   userTagsTypeVisible: UserTagsTypeVisibleEntity!
 }
 
@@ -611,7 +611,7 @@ input UserTagsInput {
   userId: ID!
   tagName: String!
   tagType: tag_type_visible!
-  tagId: Float
+  tagId: String
 }
 
 input UserProfileInput {

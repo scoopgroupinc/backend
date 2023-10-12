@@ -30,6 +30,7 @@ export class UserTagsService {
                     userId,
                     tagType: tag_type_visible[tagType],
                     tagName: tag.tagName,
+                    tagId: tag.tagId,
                 }
             })
 
