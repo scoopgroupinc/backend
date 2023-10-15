@@ -28,7 +28,7 @@ export class LocationService {
     async createLocation(
         createLocationInput: CreateLocationInput
     ): Promise<any> {
-        return await this.locationRepository.create(createLocationInput)
+        return await this.locationRepository.save(createLocationInput)
     }
 
     async findUser(userId: string): Promise<LocationEntity> {
