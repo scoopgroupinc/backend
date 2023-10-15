@@ -30,18 +30,6 @@ type UserDevice {
   notificationToken: String
 }
 
-type LocationEntity {
-  userId: ID!
-  latitude: String
-  longitude: String
-  addressLine1: String
-  addressLine2: String
-  stateProvince: String
-  country: String
-  city: String
-  zipPostal: Float
-}
-
 type UserPrompts {
   id: ID!
   createdAt: String!
@@ -92,11 +80,24 @@ type UserProfile {
   birthday: String
   height: Float
   gender: String
-  locationId: String
   promptIds: [String!]
   prompts: [UserPrompts!]
   tags: [UserTagsTypeVisibleEntity!]
   visuals: [UserVisuals!]
+  location: LocationEntity
+}
+
+type LocationEntity {
+  userId: ID!
+  latitude: String
+  longitude: String
+  addressLine1: String
+  addressLine2: String
+  stateProvince: String
+  country: String
+  city: String
+  zipPostal: Float
+  userProfile: [UserProfile!]
 }
 
 type UserPreference {

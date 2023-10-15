@@ -8,11 +8,13 @@ import {
     Column,
     CreateDateColumn,
     OneToMany,
+    OneToOne,
 } from 'typeorm'
 import { IsNumber } from 'class-validator'
 import { UserPrompts } from 'src/user-prompts/entities/user-prompts.entity'
 import { UserTagsTypeVisibleEntity } from 'src/user-tags-type-visible/entities/user-tags-type-visible.entity'
 import { UserVisuals } from './user-visuals/user-visuals.entity'
+import { LocationEntity } from 'src/location/entities/location.entity'
 
 export enum educationLevels {
     highSchool = 'high School',
@@ -59,10 +61,6 @@ export class UserProfile extends BaseEntity {
     @Column({ type: 'enum', enum: gender, nullable: true })
     gender?: string
 
-    @Field(() => String, { nullable: true })
-    @Column({ nullable: true })
-    locationId?: string
-
     @Field(() => [String], { nullable: true })
     @Column({ type: 'varchar', array: true, nullable: true, default: [] })
     promptIds?: string[]
@@ -81,4 +79,8 @@ export class UserProfile extends BaseEntity {
     @Field(() => [UserVisuals], { nullable: true })
     @OneToMany(() => UserVisuals, (userVisuals) => userVisuals.userProfile)
     visuals?: UserVisuals[]
+
+    @Field(() => LocationEntity, { nullable: true })
+    @OneToOne(() => LocationEntity, (location) => location.userProfile)
+    location?: LocationEntity
 }

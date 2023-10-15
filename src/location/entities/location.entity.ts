@@ -7,6 +7,7 @@ import {
     Unique,
 } from 'typeorm'
 import { ObjectType, ID, Field } from '@nestjs/graphql'
+import { UserProfile } from 'src/user-profile/user-profile.entity'
 @Entity('location')
 @ObjectType()
 @Unique(['userId'])
@@ -46,4 +47,7 @@ export class LocationEntity extends BaseEntity {
     @Field(() => Number, { nullable: true })
     @Column({ nullable: true })
     zipPostal: number
+
+    @Field(() => [UserProfile], { nullable: true })
+    userProfile?: UserProfile
 }
