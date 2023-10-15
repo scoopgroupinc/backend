@@ -38,6 +38,7 @@ type LocationEntity {
   addressLine2: String
   stateProvince: String
   country: String
+  city: String
   zipPostal: Float
 }
 
@@ -648,6 +649,7 @@ input CreateLocationInput {
   addressLine2: String
   stateProvince: String
   country: String
+  city: String
   zipPostal: String
 }
 

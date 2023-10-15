@@ -39,5 +39,9 @@ export class CreateLocationInput {
 
     @Field(() => String, { nullable: true })
     @IsOptional()
+    city?: string
+
+    @Field(() => String, { nullable: true })
+    @IsOptional()
     zipPostal?: number
 }
