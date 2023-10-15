@@ -17,12 +17,15 @@ import { UserPromptsOrderInput } from './dto/user-prompts-order.input'
 import { User } from 'src/user/entities/user.entity'
 import { UserVisuals } from './user-visuals/user-visuals.entity'
 import { UserPrompts } from 'src/user-prompts/entities/user-prompts.entity'
+import { LocationEntity } from 'src/location/entities/location.entity'
 
 @Injectable()
 export class UserProfileService {
     constructor(
         @InjectRepository(UserProfile)
         private userProfileRepository: Repository<UserProfile>,
+        @InjectRepository(LocationEntity)
+        private userLocationRepository: Repository<LocationEntity>,
         @InjectRepository(User)
         private userRepository: Repository<User>,
         private httpService: HttpService
@@ -50,7 +53,7 @@ export class UserProfileService {
             }
 
             return await this.createProfile({
-                ...userProfileInput
+                ...userProfileInput,
             })
         } catch (error) {
             logger.debug(error)
@@ -66,8 +69,13 @@ export class UserProfileService {
 
     async getFullProfile(userId: string): Promise<UserProfile> {
         const userProfile = await this.getUserProfileWithRelations(userId)
+        const userLocation = await this.getUserLocation(userId)
         if (userProfile) {
             userProfile.prompts = this.filterPrompts(userProfile)
+
+            if (userLocation) {
+                userProfile.location = userLocation
+            }
 
             /* comment this when working on a localhost */
             const visualsResponse = await this.getVisuals(userId)
@@ -88,6 +96,10 @@ export class UserProfileService {
             where: { userId },
             relations: ['prompts', 'tags'],
         })
+    }
+
+    private async getUserLocation(userId: string): Promise<any> {
+        return await this.userLocationRepository.findOne({ userId })
     }
 
     private filterPrompts(userProfile: UserProfile): UserPrompts[] {
@@ -148,7 +160,7 @@ export class UserProfileService {
                 return new BadRequestException('User profile does not exist')
             return await this.userProfileRepository.save({
                 ...profile,
-                ...userProfileInput
+                ...userProfileInput,
             })
         } catch (error) {
             logger.debug(error)

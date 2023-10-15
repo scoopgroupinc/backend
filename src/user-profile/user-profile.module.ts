@@ -7,10 +7,16 @@ import { UserVisuals } from './user-visuals/user-visuals.entity'
 import { UserProfileResolver } from './user-profile.resolver'
 import { UserProfileService } from './user-profile.service'
 import { ConfigModule, ConfigService } from '@nestjs/config'
+import { LocationEntity } from 'src/location/entities/location.entity'
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([UserProfile, User, UserVisuals]),
+        TypeOrmModule.forFeature([
+            UserProfile,
+            User,
+            UserVisuals,
+            LocationEntity,
+        ]),
         HttpModule.registerAsync({
             imports: [ConfigModule],
             inject: [ConfigService],
