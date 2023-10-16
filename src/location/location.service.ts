@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common'
 import { CreateLocationInput } from './dto/location.input'
-import { locationDTO } from './dto/location.dto'
 import { LocationEntity } from './entities/location.entity'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
@@ -28,7 +27,8 @@ export class LocationService {
     async createLocation(
         createLocationInput: CreateLocationInput
     ): Promise<any> {
-        return await this.locationRepository.save(createLocationInput)
+        const rst = await this.locationRepository.save(createLocationInput)
+        return rst
     }
 
     async findUser(userId: string): Promise<LocationEntity> {
@@ -38,12 +38,7 @@ export class LocationService {
     async updateLocation(
         updateLocationInput: CreateLocationInput
     ): Promise<any> {
-        const { userId } = updateLocationInput
-        const location = await this.findUser(userId)
-        return await this.locationRepository.save({
-            ...location,
-            updateLocationInput,
-        })
+        return await this.locationRepository.save(updateLocationInput)
     }
 
     async calculateDistance(lat1, long1, lat2, long2) {
