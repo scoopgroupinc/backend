@@ -746,7 +746,8 @@ input FeedBackInput {
 }
 
 input FeedbackGroupInput {
-  userId: String!
+  userId: String
+  uuid: String
   raterId: String
   templateId: String
 }

@@ -8,6 +8,7 @@ import { FeedbackGroupInput } from './feedback-group.input'
 import { PersonalityFeedbackInput } from './personality-feedback/personality-feedback.input'
 import { ProfileFeedbackInput } from './profile-feedback/profile-feedback.input'
 import { TEMPLATE_ID } from '../user-link/user-link.constants'
+import { UserLink } from '../user-link/user-link.entity'
 
 @Injectable()
 export class FeedbackGroupService {
@@ -17,7 +18,9 @@ export class FeedbackGroupService {
         @InjectRepository(PersonalityFeedback)
         private readonly personalityFeedbackRepository: Repository<PersonalityFeedback>,
         @InjectRepository(ProfileFeedback)
-        private readonly profileFeedbackRepository: Repository<ProfileFeedback>
+        private readonly profileFeedbackRepository: Repository<ProfileFeedback>,
+        @InjectRepository(UserLink)
+        private readonly userLinkRepository: Repository<UserLink>
     ) {}
 
     async getShareProfileFeedback(userId: string): Promise<FeedbackGroup[]> {
@@ -35,9 +38,19 @@ export class FeedbackGroupService {
         personalityFeedbacksInput: PersonalityFeedbackInput[],
         profileFeedbackInput: ProfileFeedbackInput
     ): Promise<FeedbackGroup> {
+        let userId = feedbackGroupInput.userId
+        if (feedbackGroupInput.uuid) {
+            const link = await this.userLinkRepository.findOne({
+                where: {
+                    id: feedbackGroupInput.uuid,
+                    templateId: TEMPLATE_ID.SHARE_PROFILE,
+                },
+            })
+            userId = link.userId
+        }
         // Create FeedbackGroup entity
         const feedbackGroup = this.feedbackGroupRepository.create({
-            userId: feedbackGroupInput.userId,
+            userId,
             raterId: feedbackGroupInput.raterId,
             templateId: TEMPLATE_ID.SHARE_PROFILE,
         })

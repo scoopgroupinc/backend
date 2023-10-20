@@ -46,6 +46,7 @@ Table user_profile {
   userId big_int [pk, increment] // auto-increment
   createdAt datetime
   profilePhoto string
+  displayName string
   birthday date
   height int
   gender gender
