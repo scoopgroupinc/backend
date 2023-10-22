@@ -23,6 +23,7 @@ export class UserToken {
 
     @Field({ nullable: true })
     user: UserOutput
+
     @Field({ nullable: true })
-    message: string
+    message: string | null
 }

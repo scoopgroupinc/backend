@@ -474,6 +474,7 @@ type Mutation {
   updateUser(updateUserInput: UpdateUserInput!): User!
   deleteUser(userId: String!, email: String!): String!
   login(loginUserInput: LoginUserInput!): UserToken!
+  validateAppleCredentials(credentials: AppleAuthCredentialsInput!): UserToken!
   loginWithProvider(authProviderInput: AuthProviderInput!): UserToken!
   activateAccount(code: Float!, email: String!): UserToken!
   resendActivationCode(email: String!): String!
@@ -539,6 +540,25 @@ input UpdateUserInput {
 input LoginUserInput {
   email: String!
   password: String!
+}
+
+input AppleAuthCredentialsInput {
+  authorizationCode: String!
+  email: String
+  fullName: AppleAuthenticationFullName
+  identityToken: String!
+  realUserStatus: Float!
+  state: String
+  user: String!
+}
+
+input AppleAuthenticationFullName {
+  familyName: String
+  givenName: String
+  middleName: String
+  namePrefix: String
+  nameSuffix: String
+  nickname: String
 }
 
 input AuthProviderInput {

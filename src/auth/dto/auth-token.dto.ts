@@ -8,4 +8,7 @@ export class UserToken {
 
     @Field()
     user: User
+
+    @Field({ nullable: true })
+    message: string | null
 }
