@@ -8,9 +8,12 @@ import { AuthService } from './auth.service'
 import { AuthResolver } from './auth.resolver'
 import { JwtStrategy } from './strategies/jwt.strategy'
 import { ConfigService } from '@nestjs/config' // Import ConfigService
+import { AppleService } from './apple/apple.service'
+import { HttpModule } from '@nestjs/axios'
 
 @Module({
     imports: [
+        HttpModule,
         PassportModule.register({ defaultStrategy: 'jwt' }),
         JwtModule.registerAsync({
             useFactory: async (configService: ConfigService) => ({
@@ -23,7 +26,19 @@ import { ConfigService } from '@nestjs/config' // Import ConfigService
         }),
         TypeOrmModule.forFeature([User]),
     ],
-    providers: [AuthResolver, JwtStrategy, GqlAuthGuard, AuthService],
-    exports: [AuthService, GqlAuthGuard, JwtStrategy, PassportModule],
+    providers: [
+        AuthResolver,
+        JwtStrategy,
+        GqlAuthGuard,
+        AuthService,
+        AppleService,
+    ],
+    exports: [
+        AuthService,
+        GqlAuthGuard,
+        JwtStrategy,
+        PassportModule,
+        AppleService,
+    ],
 })
 export class AuthModule {}

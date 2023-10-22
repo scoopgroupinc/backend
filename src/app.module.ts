@@ -10,6 +10,7 @@ import { join } from 'path'
 import * as configs from 'config'
 import { config } from './config/config'
 import { UserModule } from './user/user.module'
+import { AppleModule } from './auth/apple/apple.module'
 import { AuthModule } from './auth/auth.module'
 import { UserProfileModule } from './user-profile/user-profile.module'
 import { LocationModule } from './location/location.module'
@@ -78,6 +79,7 @@ const { user, pass, host, port } = configs.get('mail')
                 },
             },
         }),
+        AppleModule,
         AuthModule,
         UserModule,
         UserProfileModule,
