@@ -9,9 +9,9 @@ import { UpdateUserInput } from './dto/update-user.input'
 import { AuthProviderInput, LoginUserInput } from './dto/login-user.input'
 import { VerifyRestPasswordCode } from './dto/verify-Code-output'
 import { OnBoardInput } from './dto/onBoarding.input'
-import { HttpStatusType } from './types/http-status.schema'
 import { GqlAuthGuard } from 'src/auth/guards/jwt-auth.guard'
-import { AppleProviderInput } from './dto/apple-provider.input'
+import { AppleAuthCredentialsInput } from './dto/apple-auth-credentials.input'
+import { Any } from 'typeorm'
 
 @Resolver(() => User)
 export class UserResolver {
@@ -57,6 +57,13 @@ export class UserResolver {
     @Mutation(() => UserToken)
     async login(@Args('loginUserInput') loginUserInput: LoginUserInput) {
         return await this.userService.login(loginUserInput)
+    }
+
+    @Mutation(() => UserToken)
+    async validateAppleCredentials(
+        @Args('credentials') credentials: AppleAuthCredentialsInput
+    ) {
+        return await this.userService.validateAppleCredentials(credentials)
     }
 
     @Mutation(() => UserToken)

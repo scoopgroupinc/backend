@@ -23,6 +23,8 @@ import { OnBoardInput } from './dto/onBoarding.input'
 import { FederatedCredential } from './entities/federated-credential.entity'
 import { UserProfileService } from 'src/user-profile/user-profile.service'
 import { UserProfileInput } from 'src/user-profile/dto/user-profile.input'
+import { AppleAuthCredentialsInput } from './dto/apple-auth-credentials.input'
+import { UserToken } from './types/user-token.schema'
 
 @Injectable()
 export class UserService {
@@ -53,6 +55,97 @@ export class UserService {
         return {
             token: this.authService.generateJwt(user.email, user.userId),
             user,
+        }
+    }
+
+    async validateAppleCredentials(credentials: AppleAuthCredentialsInput) {
+        try {
+            const decoded = await this.authService.validateAppleIdentityToken(
+                credentials?.identityToken
+            )
+
+            if (decoded.sub) {
+                const appleUser =
+                    await this.federatedCredentialRepository.findOne({
+                        where: {
+                            providerUserId: decoded.sub,
+                            provider: 'apple',
+                        },
+                    })
+
+                if (appleUser) {
+                    const user = await this.userRepository.findOne({
+                        where: { userId: appleUser.userId },
+                    })
+
+                    if (user) {
+                        const token = this.authService.generateJwt(
+                            user.email,
+                            user.userId
+                        )
+                        return {
+                            token,
+                            user,
+                            message: null,
+                        }
+                    } else {
+                        await this.federatedCredentialRepository.delete(
+                            appleUser
+                        )
+                        throw new HttpException(
+                            'User not found',
+                            HttpStatus.NOT_FOUND
+                        )
+                    }
+                } else {
+                    const user = await this.userRepository.save({
+                        email: credentials.email,
+                        password: null,
+                        code: null,
+                        isVerified: true,
+                    })
+
+                    if (user) {
+                        const userProfile: UserProfileInput = {
+                            userId: user.userId,
+                        }
+                        await this.federatedCredentialRepository.save({
+                            provider: 'apple',
+                            providerUserId: decoded.sub,
+                            email: user.email,
+                            userId: user.userId,
+                        })
+                        const resp = await this.userProfileSvc.saveUserProfile(
+                            userProfile
+                        )
+
+                        if (resp) {
+                            await this.userTagsTypeVisibleService.prePopulateUserTags(
+                                user.userId
+                            )
+                        }
+                    } else {
+                        await this.userRepository.delete({
+                            email: credentials.email,
+                        })
+                    }
+
+                    return {
+                        token: this.authService.generateJwt(
+                            user.email,
+                            user.userId
+                        ),
+                        user,
+                        message: null,
+                    }
+                }
+            }
+        } catch (error) {
+            logger.debug(error)
+            throw new HttpException(
+                'Failed to validate token',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
         }
     }
 
@@ -136,7 +229,6 @@ export class UserService {
                                 user.userId
                             )
                         }
-
                     } else {
                         await this.userRepository.delete({ email })
                     }
