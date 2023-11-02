@@ -28,7 +28,7 @@ env:
     AZURE_PUBLIC_IP: ${{ vars.AZURE_PUBLIC_IP_DEV }}
     NAMESPACE: facets-services-namespace
     RESOURCE_GROUP: scoop-dev-rg
-    CLUSTER_NAME: facets-dev-cluster
+    CLUSTER_NAME: facets-cluster
 
 jobs:
     build:
