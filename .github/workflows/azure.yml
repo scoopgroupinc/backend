@@ -117,7 +117,7 @@ jobs:
               uses: azure/aks-set-context@v3
               with:
                   resource-group: ${{ env.RESOURCE_GROUP }}
-                  cluster-name: ${{ env.CLUSTER_NAME }}}
+                  cluster-name: ${{ env.CLUSTER_NAME }}
 
             - name: Checkout repository
               uses: actions/checkout@v3
