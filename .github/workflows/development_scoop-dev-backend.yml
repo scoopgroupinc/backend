@@ -23,7 +23,7 @@ jobs:
             - name: Print DB_SSL_CA_CERT_DEV
               run: echo ${{ secrets.DB_SSL_CA_CERT_DEV }}
 
-            - name: Set secrets as build arguments
+            - name: Set secrets as build arguments for entire workflow
               env:
                   DB_TYPE: ${{ vars.DB_TYPE_DEV }}
                   DB_DATABASE: ${{ vars.DB_DATABASE_DEV }}

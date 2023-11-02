@@ -11,7 +11,7 @@ DB:
     synchronize: true
 
 jwt:
-    secret: 'jwtsecret'
+    secret: 'JWT_SECRET'
     expiresIn: '1d'
 
 mail:
