@@ -3,12 +3,39 @@ name: Build and deploy Node.js app to scoopProdContainerRegistry
 on:
     push:
         branches:
-            - test
+            - workflow2
+
+env:
+    NODE_VERSION: '16' # Define node version here to maintain consistency across jobs
+    PYTHON_VERSION: '3.x' # Define python version here to maintain consistency across jobs
+    DB_TYPE: ${{ vars.DB_TYPE_PROD }}
+    DB_DATABASE: ${{ vars.DB_DATABASE_PROD }}
+    DB_HOST: ${{ vars.DB_HOST_PROD }}
+    DB_USERNAME: ${{ secrets.DB_USERNAME_PROD }}
+    DB_PORT: ${{ vars.DB_PORT_PROD }}
+    DB_PASSWORD: ${{ secrets.DB_PASSWORD_PROD }}
+    DB_SSL_CA_CERT: ${{ secrets.DB_SSL_CA_CERT_PROD }}
+    JWT_SECRET: ${{ secrets.JWT_SECRET_PROD }}
+    JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN_PROD }}
+    PORT: ${{ vars.PORT_PROD }}
+    FILESERVICE_PORT: ${{ vars.FILESERVICE_PORT_PROD }}
+    BE_FILE_SERVER_URL: ${{ vars.BE_FILE_SERVER_URL_PROD }}
+    REGISTRY_FOLDER: backend
+    AZURE_CONTAINER_REGISTRY_LOGIN_SERVER: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
+    AZURE_CONTAINER_REGISTRY_USERNAME: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
+    AZURE_CONTAINER_REGISTRY_PASSWORD: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_PROD }}
+    AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS_PROD }}
+    AZURE_PUBLIC_IP: ${{ vars.AZURE_PUBLIC_IP_PROD }}
+    NAMESPACE: scoop-prod-ingress-controlled-namespace
+    RESOURCE_GROUP: scoop-prod-rg
+    CLUSTER_NAME: scoop-prod-cluster
 
 jobs:
-    build-prod:
+    build:
         runs-on: ubuntu-latest
-        if: github.ref_name == 'main'
+        permissions:
+            contents: read
+            packages: write
 
         steps:
             - name: Checkout repository
@@ -16,109 +43,81 @@ jobs:
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Print DB_SSL_CA_CERT_PROD
-              run: echo ${{ secrets.DB_SSL_CA_CERT_PROD }}
-
-            - name: Set secrets as build arguments
-              env:
-                  DB_TYPE: ${{ vars.DB_TYPE_PROD }}
-                  DB_DATABASE: ${{ vars.DB_DATABASE_PROD }}
-                  DB_HOST: ${{ vars.DB_HOST_PROD }}
-                  DB_USERNAME: ${{ secrets.DB_USERNAME_PROD }}
-                  DB_PORT: ${{ vars.DB_PORT_PROD }}
-                  DB_PASSWORD: ${{ secrets.DB_PASSWORD_PROD }}
-                  DB_SSL_CA_CERT: ${{ secrets.DB_SSL_CA_CERT_PROD }}
-                  JWT_SECRET: ${{ secrets.JWT_SECRET_PROD }}
-                  JWT_EXPIRES_IN: ${{ vars.JWT_EXPIRES_IN_PROD }}
-                  PORT: ${{ vars.PORT_PROD }}
-                  FILESERVICE_PORT: ${{ vars.FILESERVICE_PORT_PROD }}
-                  BE_FILE_SERVER_URL: ${{ vars.BE_FILE_SERVER_URL_PROD }}
-              run: |
-                  echo "DB_TYPE=${DB_TYPE}" >> $GITHUB_ENV
-                  echo "DB_DATABASE=${DB_DATABASE}" >> $GITHUB_ENV
-                  echo "DB_HOST=${DB_HOST}" >> $GITHUB_ENV
-                  echo "DB_USERNAME=${DB_USERNAME}" >> $GITHUB_ENV
-                  echo "DB_PORT=${DB_PORT}" >> $GITHUB_ENV
-                  echo "DB_PASSWORD=${DB_PASSWORD}" >> $GITHUB_ENV
-                  echo "DB_SSL_CA_CERT=${DB_SSL_CA_CERT}" >> $GITHUB_ENV
-                  echo "JWT_SECRET=${JWT_SECRET}" >> $GITHUB_ENV
-                  echo "JWT_EXPIRES_IN=${JWT_EXPIRES_IN}" >> $GITHUB_ENV
-                  echo "PORT=${PORT}" >> $GITHUB_ENV
-                  echo "FILESERVICE_PORT=${FILESERVICE_PORT}" >> $GITHUB_ENV
-                  echo "BE_FILE_SERVER_URL=${BE_FILE_SERVER_URL}" >> $GITHUB_ENV
-
-            - name: Print env variables
-              run: |
-                  echo "DB_TYPE=$DB_TYPE" 
-                  echo "DB_DATABASE=$DB_DATABASE"
-                  echo "DB_HOST=$DB_HOST"
-                  echo "DB_USERNAME=$DB_USERNAME"
-                  echo "DB_PORT=$DB_PORT"
-                  echo "DB_PASSWORD=$DB_PASSWORD"
-                  echo "DB_SSL_CA_CERT=$DB_SSL_CA_CERT"
-                  echo "JWT_SECRET=$JWT_SECRET"
-                  echo "JWT_EXPIRES_IN=$JWT_EXPIRES_IN"
-                  echo "PORT=$PORT"
-                  echo "FILESERVICE_PORT=$FILESERVICE_PORT"
-                  echo "BE_FILE_SERVER_URL=$BE_FILE_SERVER_URL"
-
-            - uses: actions/setup-node@v3
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
               with:
-                  node-version: '16'
+                  node-version: ${{ env.NODE_VERSION }}
 
-            - uses: azure/docker-login@v1
+            - name: Login to Docker Registry
+              uses: docker/login-action@v1
               with:
-                  login-server: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
-                  username: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
-                  password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_PROD }}
+                  registry: ${{ env.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER }}
+                  username: ${{ env.AZURE_CONTAINER_REGISTRY_USERNAME }}
+                  password: ${{ env.AZURE_CONTAINER_REGISTRY_PASSWORD }}
 
-            - name: Build and push Docker image (Production)
-              run: |
-                  docker build -t ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }} -f Dockerfile --build-arg DB_TYPE="${DB_TYPE}" --build-arg DB_DATABASE="${DB_DATABASE}" --build-arg DB_HOST="${DB_HOST}" --build-arg DB_USERNAME="${DB_USERNAME}" --build-arg DB_PORT="${DB_PORT}" --build-arg DB_PASSWORD="${DB_PASSWORD}" --build-arg DB_SSL_CA_CERT="${DB_SSL_CA_CERT}" --build-arg JWT_SECRET="${JWT_SECRET}" --build-arg JWT_EXPIRES_IN="${JWT_EXPIRES_IN}" --build-arg PORT="${PORT}" --build-arg BE_FILE_SERVER_URL="${BE_FILE_SERVER_URL}" .
-                  docker push ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
-                  docker build -t ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:latest -f Dockerfile --build-arg DB_TYPE="${DB_TYPE}" --build-arg DB_DATABASE="${DB_DATABASE}" --build-arg DB_HOST="${DB_HOST}" --build-arg DB_USERNAME="${DB_USERNAME}" --build-arg DB_PORT="${DB_PORT}" --build-arg DB_PASSWORD="${DB_PASSWORD}" --build-arg DB_SSL_CA_CERT="${DB_SSL_CA_CERT}" --build-arg JWT_SECRET="${JWT_SECRET}" --build-arg JWT_EXPIRES_IN="${JWT_EXPIRES_IN}" --build-arg PORT="${PORT}" --build-arg BE_FILE_SERVER_URL="${BE_FILE_SERVER_URL}" .
-                  docker push ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:latest
+            - name: Build and push Docker images
+              uses: docker/build-push-action@v2
+              with:
+                  context: .
+                  file: Dockerfile
+                  build-args: |
+                      DB_TYPE=${{ env.DB_TYPE }}
+                      DB_DATABASE=${{ env.DB_DATABASE }}
+                      DB_HOST=${{ env.DB_HOST }}
+                      DB_USERNAME=${{ env.DB_USERNAME }}
+                      DB_PORT=${{ env.DB_PORT }}
+                      DB_PASSWORD=${{ env.DB_PASSWORD }}
+                      DB_SSL_CA_CERT=${{ env.DB_SSL_CA_CERT }}
+                      JWT_SECRET=${{ env.JWT_SECRET }}
+                      JWT_EXPIRES_IN=${{ env.JWT_EXPIRES_IN }}
+                      PORT=${{ env.PORT }}
+                      FILESERVICE_PORT=${{ env.FILESERVICE_PORT }}
+                      BE_FILE_SERVER_URL=${{ env.BE_FILE_SERVER_URL }}
+                  push: true
+                  tags: |
+                      ${{ env.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.REGISTRY_FOLDER }}:${{ github.sha }}
+                      ${{ env.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.REGISTRY_FOLDER }}:latest
 
-    deploy-prod:
+    deploy:
+        runs-on: ubuntu-latest
+        needs: build
         permissions:
-            actions: read
             contents: read
             id-token: write
-        runs-on: ubuntu-latest
-        needs: build-prod
-        if: github.ref_name == 'main'
+            deployments: write
 
         steps:
-            - uses: actions/setup-node@v3
+            - name: Setup Node.js
+              uses: actions/setup-node@v3
               with:
-                  node-version: '16'
+                  node-version: ${{ env.NODE_VERSION }}
 
             - name: Set up Python and Azure CLI
               uses: actions/setup-python@v2
               with:
-                  python-version: '3.x'
+                  python-version: ${{ env.PYTHON_VERSION }}
 
             - name: Login to Azure
               uses: azure/login@v1
               with:
-                  creds: ${{ secrets.AZURE_CREDENTIALS_PROD }}
+                  creds: ${{ env.AZURE_CREDENTIALS }}
 
             - uses: azure/docker-login@v1
               with:
-                  login-server: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
-                  username: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_PROD }}
-                  password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_PROD }}
-
-            - uses: azure/aks-set-context@v3
-              with:
-                  resource-group: scoop-prod-rg
-                  cluster-name: scoop-prod-cluster
+                  login-server: ${{ env.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER }}
+                  username: ${{ env.AZURE_CONTAINER_REGISTRY_USERNAME }}
+                  password: ${{ env.AZURE_CONTAINER_REGISTRY_PASSWORD }}
 
             - name: Setup kubectl
               uses: azure/setup-kubectl@v3
               with:
                   version: 'latest'
-              id: install
+
+            - name: Set up AKS context
+              uses: azure/aks-set-context@v3
+              with:
+                  resource-group: ${{ env.RESOURCE_GROUP }}
+                  cluster-name: ${{ env.CLUSTER_NAME }}
 
             - name: Checkout repository
               uses: actions/checkout@v3
@@ -127,14 +126,16 @@ jobs:
 
             - name: Substitute environment variables in k8s config
               run: |
-                  export PORT=${{ vars.PORT_PROD }}
-                  export FILESERVICE_PORT=${{ vars.FILESERVICE_PORT_PROD }}
+                  export PORT=${{ env.PORT }}
                   export IMAGE_TAG=${{ github.sha }}
-                  export CONTAINER_REGISTRY=${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}
-                  export PUBLIC_IP=${{ vars.AZURE_PUBLIC_IP_PROD }}
+                  export CONTAINER_REGISTRY=${{ env.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER }}
+                  export PUBLIC_IP=${{ env.AZURE_PUBLIC_IP }}
+                  export REGISTRY_FOLDER=${{ env.REGISTRY_FOLDER }}
+                  export RESOURCE_GROUP=${{ env.RESOURCE_GROUP }}
                   touch k8/k8.yml
                   envsubst < k8/k8.yml.template > k8/k8.yml
 
+            #to remove after certain it works
             - name: Echo contents of k8.yml
               run: cat k8/k8.yml
 
@@ -142,7 +143,7 @@ jobs:
               id: deploy-aks
               uses: Azure/k8s-deploy@v4
               with:
-                  namespace: default
-                  images: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_PROD }}/backend:${{ github.sha }}
+                  namespace: ${{ env.NAMESPACE }}
+                  images: ${{ env.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER }}/${{ env.REGISTRY_FOLDER }}:${{ github.sha }}
                   manifests: |
                       k8/k8.yml
