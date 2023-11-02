@@ -100,7 +100,7 @@ jobs:
             - name: Login to Azure
               uses: azure/login@v1
               with:
-                  creds: ${{ env.AZURE_CREDENTIALS }}
+                  enable-managed-identity: true
 
             - uses: azure/docker-login@v1
               with:
