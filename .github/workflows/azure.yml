@@ -3,7 +3,7 @@ name: Build and deploy Node.js app to scoopDevContainerRegistry
 on:
     push:
         branches:
-            - main
+            - workflow2
 
 env:
     NODE_VERSION: '16' # Define node version here to maintain consistency across jobs
@@ -28,7 +28,7 @@ env:
     AZURE_PUBLIC_IP: ${{ vars.AZURE_PUBLIC_IP_DEV }}
     NAMESPACE: scoop-dev-ingress-controlled-namespace
     RESOURCE_GROUP: scoop-dev-rg
-    CLUSTER_NAME: scoop-dev-cluster
+    CLUSTER_NAME: facets-dev-cluster
 
 jobs:
     build:

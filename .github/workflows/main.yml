@@ -3,7 +3,7 @@ name: Build and deploy Node.js app to scoopProdContainerRegistry
 on:
     push:
         branches:
-            - workflow2
+            - test
 
 env:
     NODE_VERSION: '16' # Define node version here to maintain consistency across jobs
