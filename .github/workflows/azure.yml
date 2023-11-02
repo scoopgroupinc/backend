@@ -11,7 +11,7 @@ env:
     DB_TYPE: ${{ vars.DB_TYPE_DEV }}
     DB_DATABASE: ${{ vars.DB_DATABASE_DEV }}
     DB_HOST: ${{ vars.DB_HOST_DEV }}
-    DB_USERNAME: ${{ vars.DB_USERNAME_DEV }}
+    DB_USERNAME: ${{ secrets.DB_USERNAME_DEV }}
     DB_PORT: ${{ vars.DB_PORT_DEV }}
     DB_PASSWORD: ${{ secrets.DB_PASSWORD_DEV }}
     DB_SSL_CA_CERT: ${{ secrets.DB_SSL_CA_CERT_DEV }}
