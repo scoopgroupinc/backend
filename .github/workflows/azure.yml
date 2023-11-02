@@ -29,6 +29,7 @@ env:
     NAMESPACE: facets-services-namespace
     RESOURCE_GROUP: scoop-dev-rg
     CLUSTER_NAME: facets-cluster
+    FACETS_GITHUB_SERVICE_PRINCIPLE: ${{ secrets.FACETS_GITHUB_SERVICE_PRINCIPLE }}
 
 jobs:
     build:
@@ -101,7 +102,7 @@ jobs:
             - name: Login to Azure
               uses: azure/login@v1
               with:
-                  enable-managed-identity: true
+                  creds: ${{ env.FACETS_GITHUB_SERVICE_PRINCIPLE }}
 
             - name: Setup kubectl
               uses: azure/setup-kubectl@v3
