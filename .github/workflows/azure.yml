@@ -24,7 +24,7 @@ env:
     AZURE_CONTAINER_REGISTRY_LOGIN_SERVER: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
     AZURE_CONTAINER_REGISTRY_USERNAME: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
     AZURE_CONTAINER_REGISTRY_PASSWORD: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
-    AZURE_CREDENTIALS: $${{ secrets.AZURE_CREDENTIALS_DEV }}
+    AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS_DEV }}
     AZURE_PUBLIC_IP: ${{ vars.AZURE_PUBLIC_IP_DEV }}
     NAMESPACE: scoop-dev-ingress-controlled-namespace
     RESOURCE_GROUP: scoop-dev-rg
@@ -130,6 +130,8 @@ jobs:
                   export IMAGE_TAG=${{ github.sha }}
                   export CONTAINER_REGISTRY=${{ env.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER }}
                   export PUBLIC_IP=${{ env.AZURE_PUBLIC_IP }}
+                  export REGISTRY_FOLDER:${{ env.REGISTRY_FOLDER }}
+                  export RESOURCE_GROUP:${{ env.RESOURCE_GROUP }}
                   touch k8/k8.yml
                   envsubst < k8/k8.yml.template > k8/k8.yml
 
