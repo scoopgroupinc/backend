@@ -45,7 +45,9 @@ jobs:
               uses: docker/build-push-action@v3
               with:
                   push: true
-                  tags: scoopdevcontainerregistry.azurecr.io/backend:${{ github.sha }}
+                  tags: |
+                    scoopdevcontainerregistry.azurecr.io/backend:${{ github.sha }}
+                    scoopdevcontainerregistry.azurecr.io/backend:latest
                   file: ./Dockerfile
                   build-args: |
                       DB_TYPE=${{ env.DB_TYPE }}
