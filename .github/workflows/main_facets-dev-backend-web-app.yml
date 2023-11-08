@@ -9,6 +9,21 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  DB_TYPE: ${{ vars.DB_TYPE_DEV }}
+  DB_DATABASE: ${{ vars.DB_DATABASE_DEV }}
+  DB_HOST: ${{ vars.DB_HOST_DEV }}
+  DB_USERNAME: ${{ secrets.DB_USERNAME_DEV }}
+  DB_PORT: ${{ vars.DB_PORT_DEV }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD_DEV }}
+  DB_SSL_CA_CERT: ${{ secrets.DB_SSL_CA_CERT_DEV }}
+  JWT_SECRET: ${{ secrets.JWT_SECRET_DEV }}
+  JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN_DEV }}
+  PORT: ${{ vars.PORT_DEV }}
+  FILESERVICE_PORT: ${{ vars.FILESERVICE_PORT_DEV }}
+  BE_FILE_SERVER_URL: ${{ vars.BE_FILE_SERVER_URL_DEV }}
+  REGISTRY_FOLDER: backend
+
 jobs:
   build:
     runs-on: 'ubuntu-latest'
@@ -32,6 +47,18 @@ jobs:
         push: true
         tags: scoopdevcontainerregistry.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_caa87d685c664acfb02a3917d39a2954 }}/backend:${{ github.sha }}
         file: ./Dockerfile
+        build-args: |
+          DB_TYPE=${{ env.DB_TYPE }}
+          DB_DATABASE=${{ env.DB_DATABASE }}
+          DB_HOST=${{ env.DB_HOST }}
+          DB_USERNAME=${{ env.DB_USERNAME }}
+          DB_PORT=${{ env.DB_PORT }}
+          DB_PASSWORD=${{ env.DB_PASSWORD }}
+          DB_SSL_CA_CERT=${{ env.DB_SSL_CA_CERT }}
+          JWT_SECRET=${{ env.JWT_SECRET }}
+          JWT_EXPIRES_IN=${{ env.JWT_EXPIRES_IN }}
+          PORT=${{ env.PORT }}
+          BE_FILE_SERVER_URL=${{ env.BE_FILE_SERVER_URL }}
 
   deploy:
     runs-on: ubuntu-latest
