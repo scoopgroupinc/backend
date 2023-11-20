@@ -125,7 +125,6 @@ jobs:
                     BE_FILE_SERVER_URL=${{ env.BE_FILE_SERVER_URL }}
   
     deploy:
->>>>>>> main
         permissions:
             contents: read
             id-token: write
