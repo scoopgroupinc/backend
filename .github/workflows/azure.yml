@@ -3,6 +3,8 @@ name: Build and deploy Node.js app to scoopDevContainerRegistry
 on:
     push:
         branches:
+            - main
+            - test
             - workflow
 
 env:
