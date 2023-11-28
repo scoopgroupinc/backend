@@ -45,8 +45,11 @@ if (process.env.NODE_ENV === 'local') {
 export const config = () => {
     return {
         port: parseInt(process.env.PORT, 10) || 4000,
-        jwtSecret: process.env.JWT_SECRET,
-        jwtExpiresIn: parseInt(process.env.JWT_EXPIRES_IN, 10) || 86400,
+        JWT_SECRET: process.env.JWT_SECRET,
+        JWT_EXPIRES_IN: parseInt(process.env.JWT_EXPIRES_IN, 10) || 86400,
+        JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
+        JWT_REFRESH_EXPIRES_IN:
+            parseInt(process.env.JWT_REFRESH_EXPIRES_IN, 10) || 86400,
         database: {
             type: process.env.DB_TYPE,
             host: process.env.DB_HOST,
