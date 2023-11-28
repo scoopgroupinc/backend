@@ -17,9 +17,9 @@ import { UserProfileModule } from 'src/user-profile/user-profile.module'
         TypeOrmModule.forFeature([User, FederatedCredential]),
         JwtModule.registerAsync({
             useFactory: async (configService: ConfigService) => ({
-                secret: configService.get<string>('JWT_SECRET'), // Get JWT secret from ConfigService
+                secret: configService.get<string>('jwtSecret'), // Get JWT secret from ConfigService
                 signOptions: {
-                    expiresIn: configService.get<number>('JWT_EXPIRES_IN'), // Get JWT expiration from ConfigService
+                    expiresIn: configService.get<number>('jwtExpiresIn'), // Get JWT expiration from ConfigService
                 },
             }),
             inject: [ConfigService],
