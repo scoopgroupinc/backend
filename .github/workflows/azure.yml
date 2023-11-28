@@ -6,7 +6,7 @@ on:
             - workflow
 
 env:
-    NODE_VERSION: '20' # Define node version here to maintain consistency across jobs
+    NODE_VERSION: '16' # Define node version here to maintain consistency across jobs
     PYTHON_VERSION: '3.x' # Define python version here to maintain consistency across jobs
     DB_TYPE: ${{ vars.DB_TYPE_DEV }}
     DB_DATABASE: ${{ vars.DB_DATABASE_DEV }}
