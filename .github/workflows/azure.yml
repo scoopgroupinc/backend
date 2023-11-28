@@ -6,6 +6,7 @@ on:
             - test
 
 env:
+<<<<<<< HEAD
   DB_TYPE: ${{ vars.DB_TYPE_DEV }}
   DB_DATABASE: ${{ vars.DB_DATABASE_DEV }}
   DB_HOST: ${{ vars.DB_HOST_DEV }}
@@ -19,6 +20,31 @@ env:
   FILESERVICE_PORT: ${{ vars.FILESERVICE_PORT_DEV }}
   BE_FILE_SERVER_URL: ${{ vars.BE_FILE_SERVER_URL_DEV }}
   REGISTRY_FOLDER: backend
+=======
+    NODE_VERSION: '16' # Define node version here to maintain consistency across jobs
+    PYTHON_VERSION: '3.x' # Define python version here to maintain consistency across jobs
+    DB_TYPE: ${{ vars.DB_TYPE_DEV }}
+    DB_DATABASE: ${{ vars.DB_DATABASE_DEV }}
+    DB_HOST: ${{ vars.DB_HOST_DEV }}
+    DB_USERNAME: ${{ vars.DB_USERNAME_DEV }}
+    DB_PORT: ${{ vars.DB_PORT_DEV }}
+    DB_PASSWORD: ${{ secrets.DB_PASSWORD_DEV }}
+    DB_SSL_CA_CERT: ${{ secrets.DB_SSL_CA_CERT_DEV }}
+    JWT_SECRET: ${{ secrets.JWT_SECRET_DEV }}
+    JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN_DEV }}
+    PORT: ${{ vars.PORT_DEV }}
+    FILESERVICE_PORT: ${{ vars.FILESERVICE_PORT_DEV }}
+    BE_FILE_SERVER_URL: ${{ vars.BE_FILE_SERVER_URL_DEV }}
+    REGISTRY_FOLDER: backend #folder name making it easier to find all docker images from same repo
+    AZURE_CONTAINER_REGISTRY_LOGIN_SERVER: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
+    AZURE_CONTAINER_REGISTRY_USERNAME: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
+    AZURE_CONTAINER_REGISTRY_PASSWORD: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
+    AZURE_CREDENTIALS: $${{ secrets.AZURE_CREDENTIALS_DEV }}
+    AZURE_PUBLIC_IP: ${{ vars.AZURE_PUBLIC_IP_DEV }}
+    NAMESPACE: scoop-dev-ingress-controlled-namespace
+    RESOURCE_GROUP: scoop-dev-rg
+    CLUSTER_NAME: scoop-dev-cluster
+>>>>>>> parent of d519207 (fix typo)
 
 jobs:
     build:
