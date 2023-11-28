@@ -10,6 +10,7 @@ import { JwtStrategy } from './strategies/jwt.strategy'
 import { ConfigService } from '@nestjs/config' // Import ConfigService
 import { AppleService } from './apple/apple.service'
 import { HttpModule } from '@nestjs/axios'
+import { JwtRefreshTokenStrategy } from './strategies/jwt-refresh.strategy'
 
 @Module({
     imports: [
@@ -17,9 +18,9 @@ import { HttpModule } from '@nestjs/axios'
         PassportModule.register({ defaultStrategy: 'jwt' }),
         JwtModule.registerAsync({
             useFactory: async (configService: ConfigService) => ({
-                secret: configService.get<string>('jwtSecret'), // Get JWT secret from ConfigService
+                secret: configService.get<string>('JWT_SECRET'), // Get JWT secret from ConfigService
                 signOptions: {
-                    expiresIn: configService.get<number>('jwtExpiresIn'), // Get JWT expiration from ConfigService
+                    expiresIn: configService.get<number>('JWT_EXPIRES_IN'), // Get JWT expiration from ConfigService
                 },
             }),
             inject: [ConfigService],
@@ -29,6 +30,7 @@ import { HttpModule } from '@nestjs/axios'
     providers: [
         AuthResolver,
         JwtStrategy,
+        JwtRefreshTokenStrategy,
         GqlAuthGuard,
         AuthService,
         AppleService,
@@ -38,6 +40,7 @@ import { HttpModule } from '@nestjs/axios'
         GqlAuthGuard,
         JwtStrategy,
         PassportModule,
+        JwtRefreshTokenStrategy,
         AppleService,
     ],
 })
