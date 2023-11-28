@@ -5,66 +5,88 @@ on:
         branches:
             - test
 
-env:
-  DB_TYPE: ${{ vars.DB_TYPE_DEV }}
-  DB_DATABASE: ${{ vars.DB_DATABASE_DEV }}
-  DB_HOST: ${{ vars.DB_HOST_DEV }}
-  DB_USERNAME: ${{ secrets.DB_USERNAME_DEV }}
-  DB_PORT: ${{ vars.DB_PORT_DEV }}
-  DB_PASSWORD: ${{ secrets.DB_PASSWORD_DEV }}
-  DB_SSL_CA_CERT: ${{ secrets.DB_SSL_CA_CERT_DEV }}
-  JWT_SECRET: ${{ secrets.JWT_SECRET_DEV }}
-  JWT_EXPIRES_IN: ${{ secrets.JWT_EXPIRES_IN_DEV }}
-  PORT: ${{ vars.PORT_DEV }}
-  FILESERVICE_PORT: ${{ vars.FILESERVICE_PORT_DEV }}
-  BE_FILE_SERVER_URL: ${{ vars.BE_FILE_SERVER_URL_DEV }}
-  REGISTRY_FOLDER: backend
-
 jobs:
-    build:
+    build-dev:
         runs-on: ubuntu-latest
+        if: github.ref_name == 'development'
 
         steps:
-          - uses: actions/checkout@v2
+            - name: Checkout repository
+              uses: actions/checkout@v3
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
 
-          - name: Set up Docker Buildx
-            uses: docker/setup-buildx-action@v2
+            - name: Print DB_SSL_CA_CERT_DEV
+              run: echo ${{ secrets.DB_SSL_CA_CERT_DEV }}
 
-          - name: Log in to registry
-            uses: docker/login-action@v2
-            with:
-                registry: https://scoopdevcontainerregistry.azurecr.io/
-                username: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
-                password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
-                
-          - name: Build and push container image to registry
-            uses: docker/build-push-action@v3
-            with:
-                push: true
-                tags: |
-                  scoopdevcontainerregistry.azurecr.io/backend:${{ github.sha }}
-                  scoopdevcontainerregistry.azurecr.io/backend:latest
-                file: ./Dockerfile
-                build-args: |
-                    DB_TYPE=${{ env.DB_TYPE }}
-                    DB_DATABASE=${{ env.DB_DATABASE }}
-                    DB_HOST=${{ env.DB_HOST }}
-                    DB_USERNAME=${{ env.DB_USERNAME }}
-                    DB_PORT=${{ env.DB_PORT }}
-                    DB_PASSWORD=${{ env.DB_PASSWORD }}
-                    DB_SSL_CA_CERT=${{ env.DB_SSL_CA_CERT }}
-                    JWT_SECRET=${{ env.JWT_SECRET }}
-                    JWT_EXPIRES_IN=${{ env.JWT_EXPIRES_IN }}
-                    PORT=${{ env.PORT }}
-                    BE_FILE_SERVER_URL=${{ env.BE_FILE_SERVER_URL }}
-  
-    deploy:
+            - name: Set secrets as build arguments
+              env:
+                  DB_TYPE: ${{ vars.DB_TYPE_DEV }}
+                  DB_DATABASE: ${{ vars.DB_DATABASE_DEV }}
+                  DB_HOST: ${{ vars.DB_HOST_DEV }}
+                  DB_USERNAME: ${{ secrets.DB_USERNAME_DEV }}
+                  DB_PORT: ${{ vars.DB_PORT_DEV }}
+                  DB_PASSWORD: ${{ secrets.DB_PASSWORD_DEV }}
+                  DB_SSL_CA_CERT: ${{ secrets.DB_SSL_CA_CERT_DEV }}
+                  JWT_SECRET: ${{ secrets.JWT_SECRET_DEV }}
+                  JWT_EXPIRES_IN: ${{ vars.JWT_EXPIRES_IN_DEV }}
+                  PORT: ${{ vars.PORT_DEV }}
+                  FILESERVICE_PORT: ${{ vars.FILESERVICE_PORT_DEV }}
+                  BE_FILE_SERVER_URL: ${{ vars.BE_FILE_SERVER_URL_DEV }}
+              run: |
+                  echo "DB_TYPE=${DB_TYPE}" >> $GITHUB_ENV
+                  echo "DB_DATABASE=${DB_DATABASE}" >> $GITHUB_ENV
+                  echo "DB_HOST=${DB_HOST}" >> $GITHUB_ENV
+                  echo "DB_USERNAME=${DB_USERNAME}" >> $GITHUB_ENV
+                  echo "DB_PORT=${DB_PORT}" >> $GITHUB_ENV
+                  echo "DB_PASSWORD=${DB_PASSWORD}" >> $GITHUB_ENV
+                  echo "DB_SSL_CA_CERT=${DB_SSL_CA_CERT}" >> $GITHUB_ENV
+                  echo "JWT_SECRET=${JWT_SECRET}" >> $GITHUB_ENV
+                  echo "JWT_EXPIRES_IN=${JWT_EXPIRES_IN}" >> $GITHUB_ENV
+                  echo "PORT=${PORT}" >> $GITHUB_ENV
+                  echo "FILESERVICE_PORT=${FILESERVICE_PORT}" >> $GITHUB_ENV
+                  echo "BE_FILE_SERVER_URL=${BE_FILE_SERVER_URL}" >> $GITHUB_ENV
+
+            - name: Print env variables
+              run: |
+                  echo "DB_TYPE=$DB_TYPE" 
+                  echo "DB_DATABASE=$DB_DATABASE"
+                  echo "DB_HOST=$DB_HOST"
+                  echo "DB_USERNAME=$DB_USERNAME"
+                  echo "DB_PORT=$DB_PORT"
+                  echo "DB_PASSWORD=$DB_PASSWORD"
+                  echo "DB_SSL_CA_CERT=$DB_SSL_CA_CERT"
+                  echo "JWT_SECRET=$JWT_SECRET"
+                  echo "JWT_EXPIRES_IN=$JWT_EXPIRES_IN"
+                  echo "PORT=$PORT"
+                  echo "FILESERVICE_PORT=$FILESERVICE_PORT"
+                  echo "BE_FILE_SERVER_URL=$BE_FILE_SERVER_URL"
+
+            - uses: actions/setup-node@v3
+              with:
+                  node-version: '16'
+
+            - uses: azure/docker-login@v1
+              with:
+                  login-server: ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
+                  username: ${{ vars.AZURE_CONTAINER_REGISTRY_USERNAME_DEV }}
+                  password: ${{ secrets.AZURE_CONTAINER_REGISTRY_PASSWORD_DEV }}
+
+            - name: Build and push Docker image (Development)
+              run: |
+                  docker build -t ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }} -f Dockerfile.dev --build-arg DB_TYPE="${DB_TYPE}" --build-arg DB_DATABASE="${DB_DATABASE}" --build-arg DB_HOST="${DB_HOST}" --build-arg DB_USERNAME="${DB_USERNAME}" --build-arg DB_PORT="${DB_PORT}" --build-arg DB_PASSWORD="${DB_PASSWORD}"  --build-arg DB_SSL_CA_CERT="${DB_SSL_CA_CERT}" --build-arg JWT_SECRET="${JWT_SECRET}" --build-arg JWT_EXPIRES_IN="${JWT_EXPIRES_IN}" --build-arg PORT="${PORT}" --build-arg BE_FILE_SERVER_URL="${BE_FILE_SERVER_URL}" .
+                  docker push ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:${{ github.sha }}
+                  docker build -t ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:latest -f Dockerfile.dev --build-arg DB_TYPE="${DB_TYPE}" --build-arg DB_DATABASE="${DB_DATABASE}" --build-arg DB_HOST="${DB_HOST}" --build-arg DB_USERNAME="${DB_USERNAME}" --build-arg DB_PORT="${DB_PORT}" --build-arg DB_PASSWORD="${DB_PASSWORD}" --build-arg DB_SSL_CA_CERT="${DB_SSL_CA_CERT}" --build-arg JWT_SECRET="${JWT_SECRET}" --build-arg JWT_EXPIRES_IN="${JWT_EXPIRES_IN}" --build-arg PORT="${PORT}" --build-arg BE_FILE_SERVER_URL="${BE_FILE_SERVER_URL}" .
+                  docker push ${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}/backend:latest
+
+    deploy-dev:
         permissions:
             actions: read
             contents: read
             id-token: write
         runs-on: ubuntu-latest
-        needs: build
+        needs: build-dev
+        if: github.ref_name == 'development'
 
         steps:
             - uses: actions/setup-node@v3
@@ -105,7 +127,7 @@ jobs:
 
             - name: Substitute environment variables in k8s config
               run: |
-                  export PORT=${{ env.PORT }}
+                  export PORT=${{ vars.PORT_DEV }}
                   export IMAGE_TAG=${{ github.sha }}
                   export CONTAINER_REGISTRY=${{ vars.AZURE_CONTAINER_REGISTRY_LOGIN_SERVER_DEV }}
                   export PUBLIC_IP=${{ vars.AZURE_PUBLIC_IP_DEV }}
