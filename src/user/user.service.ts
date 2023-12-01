@@ -103,7 +103,7 @@ export class UserService {
                             userId: appUser.userId,
                         })
                     }
-                    console.log('here')
+                    
                     return {
                         token: this.authService.generateJwt(
                             appUser.email,
