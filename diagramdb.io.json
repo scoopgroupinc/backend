@@ -388,7 +388,7 @@ Ref: "notifications"."title" < "notifications"."isRead"
 
 
 // --------- TAGS ------------
-// ethnicity, sports, smoking, cannabis, alcohol, drugs, diet, languages, musicGenre, creativeOulet, religions, religiousPractice, zodiac, meyerBriggs, characteristics, politics, parentingGoal, relationshipGoals, relationshipTypes, pets
+// ethnicity, sports, smoking_usage, cannabis, alcohol, drugs, diet, languages, musicGenre, creativeOulet, religions, religiousPractice, zodiac, meyerBriggs, characteristics, politics, parentingGoal, relationshipGoals, relationshipTypes, pets
 Table user_tags {
 id  bigint [pk, increment]
 userId  bigint
@@ -404,7 +404,7 @@ Table user_tag_type_visibility {
 id  bigint [pk, increment]
 userId  bigint
 visible boolean [note: 'is the property visible on the users profile']
-type tag_type [note: 'ex ethnicity, sports, smoking, cannabis...']
+type tag_type [note: 'ex ethnicity, sports, smoking_usage, cannabis...']
 userTags user_tags[]
 }
 

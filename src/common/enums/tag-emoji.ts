@@ -28,7 +28,7 @@ export enum tagEmoji {
     religious_practice = '🙏🏻',
     school = '🏫',
     staying_in = '🏠',
-    smoking = '🚬',
+    smoking_usage = '🚬',
     travel_goals = '✈️',
     zodiac = '♓️',
 }
