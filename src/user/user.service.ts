@@ -59,12 +59,106 @@ export class UserService {
     }
 
     async validateAppleCredentials(credentials: AppleAuthCredentialsInput) {
+        console.log('credentials', credentials)
         try {
             const decoded = await this.authService.validateAppleIdentityToken(
                 credentials?.identityToken
             )
 
-            if (decoded.sub) {
+            //use switch statement to handle when email is null or not
+            //case when email is not null
+            if (credentials.email !== null) {
+                console.log('email not null')
+                const appUser = await this.userRepository.findOne({
+                    where: { email: credentials.email },
+                })
+                if (appUser) {
+                    console.log('app user exists')
+                    //check if user has apple credentials
+                    const fedratedAppleUser =
+                        await this.federatedCredentialRepository.findOne({
+                            where: {
+                                providerUserId: decoded.sub,
+                                provider: 'apple',
+                                userId: appUser.userId,
+                            },
+                        })
+
+                    if (fedratedAppleUser) {
+                        const token = this.authService.generateJwt(
+                            appUser.email,
+                            appUser.userId
+                        )
+                        return {
+                            token,
+                            user: appUser,
+                            message: null,
+                        }
+                    } else {
+                        //add apple credentials to user
+                        await this.federatedCredentialRepository.save({
+                            provider: 'apple',
+                            providerUserId: decoded.sub,
+                            email: appUser.email,
+                            userId: appUser.userId,
+                        })
+                    }
+                    
+                    return {
+                        token: this.authService.generateJwt(
+                            appUser.email,
+                            appUser.userId
+                        ),
+                        user: appUser,
+                        message: null,
+                    }
+                } else {
+                    console.log('app user does not exist')
+                    //create user
+                    const user = await this.userRepository.save({
+                        email: credentials.email,
+                        password: null,
+                        code: null,
+                        isVerified: true,
+                        firstName: credentials.fullName?.givenName,
+                        lastName: credentials.fullName?.familyName,
+                    })
+
+                    if (user) {
+                        const userProfile: UserProfileInput = {
+                            userId: user.userId,
+                        }
+                        await this.federatedCredentialRepository.save({
+                            provider: 'apple',
+                            providerUserId: decoded.sub,
+                            email: user.email,
+                            userId: user.userId,
+                        })
+                        const resp = await this.userProfileSvc.saveUserProfile(
+                            userProfile
+                        )
+
+                        if (resp) {
+                            await this.userTagsTypeVisibleService.prePopulateUserTags(
+                                user.userId
+                            )
+                        }
+                    }
+
+                    const token = this.authService.generateJwt(
+                        user.email,
+                        user.userId
+                    )
+                    return {
+                        token,
+                        user,
+                        message: null,
+                    }
+                }
+            }
+            //case when email is null
+            else {
+                console.log('email is null')
                 const appleUser =
                     await this.federatedCredentialRepository.findOne({
                         where: {
@@ -72,7 +166,7 @@ export class UserService {
                             provider: 'apple',
                         },
                     })
-
+                console.log('appleUser', appleUser)
                 if (appleUser) {
                     const user = await this.userRepository.findOne({
                         where: { userId: appleUser.userId },
@@ -98,36 +192,45 @@ export class UserService {
                         )
                     }
                 } else {
-                    const user = await this.userRepository.save({
-                        email: credentials.email,
-                        password: null,
-                        code: null,
-                        isVerified: true,
+                    const user = await this.userRepository.findOne({
+                        where: { email: credentials.email },
                     })
-
                     if (user) {
-                        const userProfile: UserProfileInput = {
-                            userId: user.userId,
-                        }
                         await this.federatedCredentialRepository.save({
                             provider: 'apple',
                             providerUserId: decoded.sub,
                             email: user.email,
                             userId: user.userId,
                         })
-                        const resp = await this.userProfileSvc.saveUserProfile(
-                            userProfile
-                        )
-
-                        if (resp) {
-                            await this.userTagsTypeVisibleService.prePopulateUserTags(
-                                user.userId
-                            )
-                        }
                     } else {
-                        await this.userRepository.delete({
+                        const user = await this.userRepository.save({
                             email: credentials.email,
+                            password: null,
+                            code: null,
+                            isVerified: true,
                         })
+
+                        if (user) {
+                            const userProfile: UserProfileInput = {
+                                userId: user.userId,
+                            }
+                            await this.federatedCredentialRepository.save({
+                                provider: 'apple',
+                                providerUserId: decoded.sub,
+                                email: user.email,
+                                userId: user.userId,
+                            })
+                            const resp =
+                                await this.userProfileSvc.saveUserProfile(
+                                    userProfile
+                                )
+
+                            if (resp) {
+                                await this.userTagsTypeVisibleService.prePopulateUserTags(
+                                    user.userId
+                                )
+                            }
+                        }
                     }
 
                     return {
