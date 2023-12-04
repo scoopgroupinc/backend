@@ -31,7 +31,7 @@ export enum tag_type_visible {
     religious_practice,
     school,
     staying_in,
-    smoking,
+    smoking_usage,
     travel_goals,
     zodiac,
 }
@@ -65,7 +65,7 @@ export const tags_visible = [
     'religion',
     'religious_practice',
     'staying_in',
-    'smoking',
+    'smoking_usage',
     'travel_goals',
     'zodiac',
 ]
