@@ -96,5 +96,6 @@ export const config = () => {
             },
         },
         fileServer_Url: process.env.BE_FILE_SERVER_URL,
+        segmentWriteKey: process.env.SEGMENT_WRITE_KEY,
     }
 }

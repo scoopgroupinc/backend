@@ -35,6 +35,7 @@ import { ProfileFeedbackModule } from './deep-link-features/feedback-group/profi
 import { PersonalityFeedbackModule } from './deep-link-features/feedback-group/personality-feedback/personality-feedback.module'
 import { UserLinkModule } from './deep-link-features/user-link/user-link.module'
 import { UserVisualsModule } from './user-profile/user-visuals/user-visuals.module'
+import { AnalyticsModule } from './analytics/analytics.module'
 
 const { user, pass, host, port } = configs.get('mail')
 @Module({
@@ -79,6 +80,7 @@ const { user, pass, host, port } = configs.get('mail')
                 },
             },
         }),
+        AnalyticsModule,
         AppleModule,
         AuthModule,
         UserModule,

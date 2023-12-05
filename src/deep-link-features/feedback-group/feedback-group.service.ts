@@ -9,6 +9,7 @@ import { PersonalityFeedbackInput } from './personality-feedback/personality-fee
 import { ProfileFeedbackInput } from './profile-feedback/profile-feedback.input'
 import { TEMPLATE_ID } from '../user-link/user-link.constants'
 import { UserLink } from '../user-link/user-link.entity'
+import { AnalyticsService } from 'src/analytics/analytics.service'
 
 @Injectable()
 export class FeedbackGroupService {
@@ -20,7 +21,8 @@ export class FeedbackGroupService {
         @InjectRepository(ProfileFeedback)
         private readonly profileFeedbackRepository: Repository<ProfileFeedback>,
         @InjectRepository(UserLink)
-        private readonly userLinkRepository: Repository<UserLink>
+        private readonly userLinkRepository: Repository<UserLink>,
+        private readonly analyticsService: AnalyticsService
     ) {}
 
     async getShareProfileFeedback(userId: string): Promise<FeedbackGroup[]> {
@@ -48,6 +50,7 @@ export class FeedbackGroupService {
             })
             userId = link.userId
         }
+
         // Create FeedbackGroup entity
         const feedbackGroup = this.feedbackGroupRepository.create({
             userId,
@@ -77,6 +80,17 @@ export class FeedbackGroupService {
         // Update the FeedbackGroup entity with the associated PersonalityFeedback and ProfileFeedback entities
         createdFeedbackGroup.personalityFeedbacks = personalityFeedbacks
         createdFeedbackGroup.profileFeedback = profileFeedback
+
+        console.log('analyticsService.track', {
+            feedbackGroup,
+            personalityFeedbacks,
+            profileFeedback,
+        })
+        this.analyticsService.track('Shareprofile Feedback Received', userId, {
+            feedbackGroup,
+            personalityFeedbacks,
+            profileFeedback,
+        })
 
         return createdFeedbackGroup
     }

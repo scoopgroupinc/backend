@@ -6,6 +6,7 @@ import { FeedbackGroupResolver } from './feedback-group.resolver'
 import { PersonalityFeedback } from './personality-feedback/personality-feedback.entity'
 import { ProfileFeedback } from './profile-feedback/profile-feedback.entity'
 import { UserLink } from '../user-link/user-link.entity'
+import { AnalyticsService } from 'src/analytics/analytics.service'
 
 @Module({
     imports: [
@@ -16,7 +17,7 @@ import { UserLink } from '../user-link/user-link.entity'
             UserLink,
         ]),
     ],
-    providers: [FeedbackGroupService, FeedbackGroupResolver],
-    exports: [FeedbackGroupService],
+    providers: [FeedbackGroupService, FeedbackGroupResolver, AnalyticsService],
+    exports: [FeedbackGroupService, AnalyticsService],
 })
 export class FeedbackGroupModule {}
